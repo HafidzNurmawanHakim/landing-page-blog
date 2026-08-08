@@ -2,10 +2,14 @@ import { BenefitsSection } from "@/components/layout/sections/benefits";
 import { ContactSection } from "@/components/layout/sections/contact";
 import { FAQSection } from "@/components/layout/sections/faq";
 import { FeaturesSection } from "@/components/layout/sections/features";
-import { HeroSection } from "@/components/layout/sections/hero";
+import { HeroSection } from "@/components/layout/sections/hero2";
 import { FeaturedPackages } from "@/components/layout/sections/featured-packages";
 import { TestimonialSection } from "@/components/layout/sections/testimonial";
 import { listPackages, serializePackage } from "@/lib/db/repositories/packages";
+import {
+  listTestimonials,
+  serializeTestimonial,
+} from "@/lib/db/repositories/testimonials";
 import { getServerLocale } from "@/lib/i18n/server";
 import { getSeo } from "@/lib/config/site";
 
@@ -33,6 +37,11 @@ export async function generateMetadata() {
 export default async function Home() {
   const { items } = await listPackages({ activeOnly: true, limit: 4 });
   const packages = items.map(serializePackage);
+  const { items: testimonialRows } = await listTestimonials({
+    activeOnly: true,
+    limit: 12,
+  });
+  const testimonials = testimonialRows.map(serializeTestimonial);
 
   return (
     <>
@@ -40,7 +49,7 @@ export default async function Home() {
       <BenefitsSection />
       <FeaturesSection />
       <FeaturedPackages packages={packages} />
-      <TestimonialSection />
+      <TestimonialSection testimonials={testimonials} />
       <ContactSection />
       <FAQSection />
     </>

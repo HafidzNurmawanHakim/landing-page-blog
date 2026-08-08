@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Heart, Plus, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -49,6 +49,7 @@ export default async function AdminGalleryPage() {
                   <th className="p-4 font-medium">Foto</th>
                   <th className="p-4 font-medium">Caption</th>
                   <th className="p-4 font-medium">Ditambahkan</th>
+                  <th className="p-4 font-medium">Engagement</th>
                   <th className="p-4 font-medium" />
                 </tr>
               </thead>
@@ -72,6 +73,18 @@ export default async function AdminGalleryPage() {
                     </td>
                     <td className="p-4 text-muted-foreground">
                       {formatDate(item.createdAt)}
+                    </td>
+                    <td className="p-4">
+                      <div className="flex items-center gap-3 text-muted-foreground">
+                        <span className="inline-flex items-center gap-1">
+                          <Heart className="h-4 w-4 text-foreground/50" />
+                          {item.likeCount}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <Share2 className="h-4 w-4 text-foreground/50" />
+                          {item.shareCount}
+                        </span>
+                      </div>
                     </td>
                     <td className="p-4 text-right">
                       <GalleryRowActions item={item} />

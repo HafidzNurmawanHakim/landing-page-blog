@@ -22,6 +22,15 @@ export async function generateMetadata(): Promise<Metadata> {
     description: seo.description,
     metadataBase: new URL(siteConfig.url),
     alternates: { canonical: "/" },
+    icons: {
+      icon: [
+        { url: "/favicon/favicon.ico", sizes: "48x48", type: "image/x-icon" },
+        { url: "/favicon/icon1.png", sizes: "96x96", type: "image/png" },
+      ],
+      apple: [{ url: "/favicon/apple-icon.png", sizes: "180x180" }],
+      shortcut: { url: "/favicon/favicon.ico", type: "image/x-icon" },
+    },
+    manifest: "/favicon/manifest.json",
     openGraph: {
       type: "website",
       title: seo.title,

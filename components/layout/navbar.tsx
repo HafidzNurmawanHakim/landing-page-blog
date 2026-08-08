@@ -31,7 +31,25 @@ export const Navbar = () => {
 
   return (
     <header className="bg-card/80 backdrop-blur w-[94%] md:w-[80%] lg:max-w-screen-xl top-5 mx-auto sticky z-40 rounded-2xl flex justify-between items-center p-2">
-      <Logo />
+      <div className="flex items-center gap-2">
+        <Logo />
+
+        {/* Desktop */}
+        <nav
+          className="hidden lg:flex items-center gap-1"
+          aria-label={t("nav.mainNav")}
+        >
+          {routeList.map(({ href, labelKey }) => (
+            <Link
+              key={href}
+              href={href}
+              className="rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
+            >
+              {t(labelKey)}
+            </Link>
+          ))}
+        </nav>
+      </div>
 
       {/* Mobile */}
       <div className="flex items-center lg:hidden gap-1">
@@ -85,21 +103,6 @@ export const Navbar = () => {
       </div>
 
       {/* Desktop */}
-      <nav
-        className="hidden lg:flex items-center gap-1"
-        aria-label={t("nav.mainNav")}
-      >
-        {routeList.map(({ href, labelKey }) => (
-          <Link
-            key={href}
-            href={href}
-            className="rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-accent"
-          >
-            {t(labelKey)}
-          </Link>
-        ))}
-      </nav>
-
       <div className="hidden lg:flex items-center gap-2">
         <LanguageSwitcher />
         <ToggleTheme />

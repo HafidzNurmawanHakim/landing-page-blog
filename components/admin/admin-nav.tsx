@@ -6,6 +6,7 @@ import {
   CalendarCheck,
   Images,
   LayoutDashboard,
+  MessageSquareQuote,
   Package,
   type LucideIcon,
 } from "lucide-react";
@@ -23,6 +24,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/bookings", label: "Booking", icon: CalendarCheck },
   { href: "/admin/packages", label: "Paket & Produk", icon: Package },
   { href: "/admin/gallery", label: "Galeri", icon: Images },
+  { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
 ] as const;
 
 export function AdminNav() {

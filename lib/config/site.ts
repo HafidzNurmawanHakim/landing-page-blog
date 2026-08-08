@@ -152,7 +152,6 @@ export const siteConfig = {
         links: [
           { labelKey: "footer.about", href: "/about" },
           { labelKey: "footer.gallery", href: "/gallery" },
-          { labelKey: "footer.admin", href: "/admin" },
         ],
       },
     ] satisfies FooterColumn[],

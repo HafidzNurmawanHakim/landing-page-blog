@@ -1,8 +1,15 @@
 "use client";
+import Link from "next/link";
+import {
+  ArrowRight,
+  Compass,
+  MessageCircle,
+  ShieldCheck,
+  Wallet,
+} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
-import { Compass, MessageCircle, ShieldCheck, Wallet } from "lucide-react";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import { useI18n } from "@/lib/i18n/provider";
 
 interface BenefitsProps {
@@ -54,14 +61,13 @@ export const BenefitsSection = () => {
             {t("benefits.desc")}
           </p>
 
-          <div className="relative overflow-hidden rounded-3xl">
-            <Image
-              width={800}
-              height={500}
-              className="w-full object-cover rounded-3xl"
-              src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop"
-              alt={t("benefits.imageAlt")}
-            />
+          <div className="mt-6">
+            <Button asChild className="rounded-full" size="lg">
+              <Link href="/packages">
+                {t("hero.seePackages")}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
 

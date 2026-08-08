@@ -57,7 +57,15 @@
     "title": "Galeri",
     "subtitle": "Detik-detik perjalanan ke Batam yang dirakam oleh pasukan dan pelanggan kami.",
     "emptyTitle": "Belum ada foto",
-    "emptyDesc": "Galeri sedang diisi. Sila semak semula kemudian."
+    "emptyDesc": "Galeri sedang diisi. Sila semak semula kemudian.",
+    "like": "Suka",
+    "liked": "Disukai",
+    "share": "Kongsi",
+    "shared": "Dikongsi",
+    "copied": "Pautan disalin!",
+    "rateLimit": "Terlalu banyak permintaan. Sila cuba lagi kemudian.",
+    "notFound": "Foto tidak dijumpai.",
+    "error": "Berlaku ralat. Sila cuba lagi."
   },
   "booking": {
     "title": "Borang Tempahan",
@@ -182,13 +190,7 @@
   },
   "testimonial": {
     "title": "Testimoni",
-    "heading": "Apa Kata 1000+ Pelanggan Kami",
-    "t1": "Tempahan senang sangat, pengesahan admin cepat melalui WhatsApp. Pakej lengkap, pemandu mesra!",
-    "t2": "City tour sehari sesuai untuk masa terhad. Kenderaan selesa dan itinerari jelas.",
-    "t3": "Jemputan lapangan terbang tepat masa, pemandu mesra. Disyorkan untuk yang perlukan pengangkutan di Batam.",
-    "t4": "Suasana resort tenang, sesuai untuk relaksasi. Proses tempahan selamat dan jelas.",
-    "t5": "Pemandangan matahari terbit Jambatan Barelang terbaik. Pemandu tahu lokasi foto terbaik.",
-    "t6": "Semua beres: hotel, makan, pengangkutan. Tinggal jalan sahaja. Pengesahan WA sangat cepat."
+    "heading": "Apa Kata 1000+ Pelanggan Kami"
   },
   "benefits": {
     "title": "Kelebihan",

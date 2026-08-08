@@ -149,6 +149,7 @@ curl -s -H "Cache-Control: no-cache" $URL/gallery \
 
 # 3. Guard admin (tanpa cookie harus redirect ke login)
 curl -s $URL/admin/gallery | grep -o "url=/admin/login"        # harus ketemu
+curl -s $URL/admin/testimonials | grep -o "url=/admin/login"   # harus ketemu
 
 # 4. Upload route terkunci (tanpa session → 401)
 curl -s -o /dev/null -w "%{http_code}\n" \
@@ -156,6 +157,7 @@ curl -s -o /dev/null -w "%{http_code}\n" \
 
 # 5. Data dari D1 remote tampil
 curl -s $URL/gallery | grep -o "Pantai tropis"                  # caption hasil seed
+curl -s $URL | grep -o "Bookingnya gampang banget"              # testimoni hasil seed
 ```
 
 Checklist manual:
@@ -165,6 +167,7 @@ Checklist manual:
 - [ ] `/admin/*` redirect ke `/admin/login` saat belum login
 - [ ] Login admin berhasil, CRUD jalan
 - [ ] Upload gambar (paket & galeri) tersimpan di R2 dan tampil
+- [ ] CRUD testimoni jalan; testimoni baru muncul di beranda setelah aktif
 - [ ] Booking baru masuk ke D1 remote
 - [ ] Error boundaries tidak muncul di konsol / halaman
 

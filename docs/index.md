@@ -2,7 +2,7 @@
 
 **Dokumentasi Utama**
 
-**Versi:** 1.1
+**Versi:** 1.2
 **Tanggal:** 8 Agustus 2026
 **Tech Stack:** Next.js 15 + Cloudflare Workers (OpenNext) + Cloudflare D1 + Drizzle ORM
 **Target Scale:** 1.000.000 request / bulan
@@ -31,7 +31,8 @@ Platform marketplace paket tour Batam. Customer bisa memilih paket (Tour, Transp
 | Landing page template    | ✅ Ada (14 section + shadcn/ui)                                                                          |
 | Boilerplate per docs     | ✅ Route katalog, booking, admin, actions, DB layer                                                      |
 | Booking platform (fitur) | ✅ MVP: katalog+filter, booking real (D1/SQLite), notif fire-and-forget, admin auth + dashboard + status |
-| Gallery (fitur)          | ✅ Grid Instagram-style `/gallery`, caption per bahasa, CRUD admin (upload via image-uploadr)            |
+| Gallery (fitur)          | ✅ Grid Instagram-style `/gallery`, caption per bahasa, CRUD admin (upload via image-uploadr), like & share per IP (rate limited) |
+| Testimoni (fitur)        | ✅ Carousel beranda dinamis (DB), komentar/role per bahasa, rating 0–5, CRUD admin `/admin/testimonials` |
 
 Repo berisi **shadcn landing page template** (14 section) + **platform booking MVP** yang dibangun di atasnya mengikuti dokumen ini.
 
@@ -50,6 +51,7 @@ destitour/
 │   ├── actions/admin.ts      # login/logout/updateBookingStatus (auth session)
 │   ├── actions/packages.ts   # create/update/delete/toggle paket (auth session)
 │   ├── actions/gallery.ts    # create/update/delete foto galeri (auth session)
+│   ├── actions/testimonials.ts # create/update/delete testimoni (auth session)
 │   ├── (marketing)/packages/ # Katalog paket (filter kategori) + detail [slug] (real data)
 │   │   └── [slug]/           # Detail paket + BookingDialog modal (form + sukses)
 │   ├── (marketing)/gallery/  # Grid galeri publik (Instagram-style, caption per bahasa)
@@ -60,7 +62,8 @@ destitour/
 │   │   ├── bookings/         # Dashboard booking (real data, filter, pagination, search)
 │   │   │   └── [id]/         # Detail booking + ubah status + admin notes
 │   │   ├── packages/         # CRUD paket (list, new, [id]/edit)
-│   │   └── gallery/          # CRUD galeri (list, new, [id]/edit)
+│   │   ├── gallery/          # CRUD galeri (list, new, [id]/edit)
+│   │   └── testimonials/     # CRUD testimoni (list, new, [id]/edit)
 │   └── api/
 │       ├── packages/         # GET /api/packages (+ filter category)
 │       ├── packages/[slug]/  # GET /api/packages/[slug]
@@ -73,14 +76,14 @@ destitour/
 ├── lib/
 │   ├── auth/                 # password.ts (PBKDF2 WebCrypto), session.ts (HMAC cookie)
 │   ├── db/
-│   │   ├── schema.ts         # Drizzle: packages, bookings, admins, gallery_items
+│   │   ├── schema.ts         # Drizzle: packages, bookings, admins, gallery_items, testimonials
 │   │   ├── client.ts         # D1 (production) + better-sqlite3 (local dev), auto-migrate
-│   │   ├── seed.ts           # Data paket + galeri awal
-│   │   └── repositories/     # packages.ts, bookings.ts, admins.ts, gallery.ts
+│   │   ├── seed.ts           # Data paket + galeri + testimoni awal
+│   │   └── repositories/     # packages.ts, bookings.ts, admins.ts, gallery.ts, testimonials.ts
 │   ├── services/
 │   │   ├── booking-code.ts   # Generator kode booking BT-YYYYMMDD-NNN
 │   │   └── notifications.ts  # WA admin + Resend email (fire-and-forget, never block)
-│   ├── validations/          # booking.ts, packages.ts, gallery.ts (zod schema)
+│   ├── validations/          # booking.ts, packages.ts, gallery.ts, testimonials.ts (zod schema)
 │   ├── security/rate-limit.ts# In-memory sliding window per IP
 │   ├── i18n/provider.tsx     # Lightweight i18n (id/ms/en/zh) via messages/
 │   ├── env.ts                # Validasi env (zod)
@@ -177,6 +180,8 @@ Detail lengkap: [02-technical-spec.md](./02-technical-spec.md)
 | `packages`     | Katalog paket (tour/transport/hotel)       | ✅     |
 | `bookings`     | Semua data booking customer                | ✅     |
 | `gallery_items`| Foto galeri publik (image_url + caption)   | ✅     |
+| `gallery_reactions`| Like & share per IP (like_count/share_count denormalized) | ✅ |
+| `testimonials`| Testimoni beranda (komentar/role per bahasa) | ✅     |
 | `admins`       | Kredensial admin (opsional)                | ✅     |
 
 Detail lengkap: [03-database-schema.md](./03-database-schema.md)
@@ -222,6 +227,8 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 5 Agustus 2026 | Perbaikan deps: install tanpa `--legacy-peer-deps`, hilangkan warning `element.ref` React 19, upgrade next → 15.5.22 (fix CVE critical) + drizzle-orm → 0.45.2 + drizzle-kit → 0.31.10 (fix CVE high)                                                                                                                                             |
 | 5 Agustus 2026 | **MVP production-ready**: DB dual-mode (D1 + SQLite lokal), seed + migration otomatis, createBooking real (rate limit + zod + booking code + notif fire-and-forget), admin auth (PBKDF2 + HMAC session), dashboard real (filter/pagination/search/status), API routes, error boundaries, i18n lightweight, design rules borderless + font Poppins |
 | 8 Agustus 2026 | **Fitur Galeri**: tabel `gallery_items` + migration, CRUD admin `/admin/gallery` (upload via image-uploadr, crop 1:1), grid publik `/gallery` Instagram-style (square tile + caption per bahasa), seed sample, i18n + SEO 4 bahasa |
+| 8 Agustus 2026 | **Like & share galeri (per IP)**: tabel `gallery_reactions` + kolom `like_count`/`share_count` (migration 0006), Server Actions `toggleGalleryLikeAction`/`shareGalleryItemAction` (rate limit per IP, `ON CONFLICT DO NOTHING`), tombol like/share di grid publik (Web Share API + clipboard fallback), state reaksi per IP di-preload server, i18n 4 bahasa, kolom engagement di admin |
+| 8 Agustus 2026 | **Testimoni dinamis**: tabel `testimonials` + migration 0005, CRUD admin `/admin/testimonials` (avatar upload crop 1:1, rating 0–5, urutan, aktif/nonaktif, komentar+role per bahasa), carousel beranda baca dari DB (`activeOnly`), rating partial-fill, empty-state sembunyi, seed 6 testimoni, hapus key `testimonial.t1..t6` dari messages |
 | 8 Agustus 2026 | **Deploy staging**: sync env R2 ke staging, apply migration 0002–0004 + seed galeri ke D1 remote, fix `NEXT_PUBLIC_SITE_URL`, verifikasi guard/upload/canonical. Tambah [14-deployment.md](./14-deployment.md) (panduan + best practices deploy) |
 | 8 Agustus 2026 | Docs: [12-design-rules.md](./12-design-rules.md) — aturan wajib pakai `ModalImageUploader` untuk semua upload gambar (pola, rasio crop per konteks, larangan) |
 

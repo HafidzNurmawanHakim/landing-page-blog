@@ -57,7 +57,15 @@
     "title": "Gallery",
     "subtitle": "Trip moments in Batam captured by our team and customers.",
     "emptyTitle": "No photos yet",
-    "emptyDesc": "The gallery is being filled. Check back soon."
+    "emptyDesc": "The gallery is being filled. Check back soon.",
+    "like": "Like",
+    "liked": "Liked",
+    "share": "Share",
+    "shared": "Shared",
+    "copied": "Link copied!",
+    "rateLimit": "Too many requests. Please try again later.",
+    "notFound": "Photo not found.",
+    "error": "Something went wrong. Please try again."
   },
   "booking": {
     "title": "Booking Form",
@@ -182,13 +190,7 @@
   },
   "testimonial": {
     "title": "Testimonials",
-    "heading": "Hear What Our 1000+ Clients Say",
-    "t1": "Booking was super easy, admin confirmation fast via WhatsApp. Complete package, friendly guide!",
-    "t2": "One-day city tour is perfect for those with limited time. Comfortable fleet and clear itinerary.",
-    "t3": "Airport pickup on time, friendly driver. Recommended for those needing transport in Batam.",
-    "t4": "Calm resort atmosphere, perfect for relaxing. The booking process is safe and clear.",
-    "t5": "Barelang Bridge sunrise view is the best. The guide knows the best photo spots.",
-    "t6": "Everything handled: hotel, meals, transport. Just show up. WhatsApp confirmation super fast."
+    "heading": "Hear What Our 1000+ Clients Say"
   },
   "benefits": {
     "title": "Benefits",

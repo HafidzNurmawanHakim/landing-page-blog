@@ -37,8 +37,13 @@ export async function createBooking(data: {
 | `createGalleryItemAction(input)`               | Tambah foto galeri (admin session)      |
 | `updateGalleryItemAction(id, input)`           | Edit foto galeri (admin session)        |
 | `deleteGalleryItemAction(id)`                  | Hapus foto galeri (admin session)       |
+| `createTestimonialAction(input)`               | Tambah testimoni (admin session)        |
+| `updateTestimonialAction(id, input)`           | Edit testimoni (admin session)          |
+| `deleteTestimonialAction(id)`                  | Hapus testimoni (admin session)         |
 
 Public page reads gallery via repository `listGalleryItems` (server component), no public write endpoint.
+Public homepage reads testimonials via repository `listTestimonials({ activeOnly: true })` (server component) → no public write endpoint.
+Semua action testimoni memakai `requireAdmin()` + redirect `/admin/login`, validasi zod di sisi server, dan `try/catch` agar error DB tidak bocor ke client.
 
 ## 5.3 Daftar Endpoint Publik (Route Handlers)
 
@@ -50,6 +55,32 @@ Public page reads gallery via repository `listGalleryItems` (server component), 
 | POST   | `/api/admin/media/upload` | Upload gambar produk (admin session, multipart `file`) → `{ data: { url } }` |
 
 > Preferensi utama: pakai Server Actions (form action) daripada API route untuk alur booking, supaya aman dari CSRF dan terintegrasi dengan form state.
+
+## 5.3b Aksi Publik: Like & Share Galeri (Server Actions)
+
+Reaksi galeri (like/share) dihitung **per IP visitor** — data disimpan di
+`gallery_reactions` (lihat [03-database-schema.md](./03-database-schema.md) §3.3b),
+bukan cookie/localStorage (bisa dihapus/diubah user, dan tidak konsisten lintas device).
+
+| Action                            | Perilaku                                                                  |
+| --------------------------------- | ------------------------------------------------------------------------- |
+| `toggleGalleryLikeAction(id)`     | Toggle like. 1 IP = 1 like per foto (unique index `gallery_id+ip+type`). Returns `{ liked, likeCount }`. |
+| `shareGalleryItemAction(id)`      | Catat share. 1 IP = 1 count per foto (dedupe). Returns `{ counted, shareCount }`. |
+
+- Penulisan hanya lewat Server Action (bukan API route) → aman CSRF (lihat §5.6).
+- **Rate limiting per IP** dengan key `gallery-like:<ip>` (max 20/menit) dan
+  `gallery-share:<ip>` (max 30/menit) memakai `checkRateLimit` di
+  `lib/security/rate-limit.ts` (D1-backed, konsisten lintas worker).
+- Insert memakai `INSERT ... ON CONFLICT DO NOTHING` + `UPDATE ... SET counter = counter + 1`
+  supaya counter tetap benar saat ada race.
+- Halaman `/gallery` (server component) membaca state reaksi IP saat ini via
+  `getGalleryReactionStates(ids, ip)` → button sudah benar sejak first paint.
+- Error dikembalikan sebagai kode pendek (`invalid_id` / `not_found` /
+  `rate_limited` / `server_error`) dan di-map ke string lokal di client —
+  action tidak perlu tahu locale request.
+- Share client memakai Web Share API (`navigator.share`), fallback ke
+  `navigator.clipboard.writeText`, dan hanya menghitung saat share benar-benar
+  berhasil (cancel native sheet ≠ dihitung).
 
 ## 5.4 Kontrak Response API
 
@@ -149,6 +180,7 @@ export const bookingSchema = z.object({
 
 - Semua input divalidasi zod sebelum masuk DB
 - Server Action `createBooking` dilindungi rate limiting (mis. max 10/menit per IP)
+- Aksi like/share galeri dilindungi rate limiting per IP (max 20/menit like, 30/menit share) + unique index per IP
 - Admin routes butuh sesi Auth.js; cek sesi di setiap action
 - XSS dicegah: render data via React (auto-escape), jangan pakai `dangerouslySetInnerHTML`
 

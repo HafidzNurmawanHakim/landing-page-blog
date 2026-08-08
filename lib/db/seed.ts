@@ -219,3 +219,130 @@ export const seedGalleryItems = [
     },
   },
 ];
+
+/**
+ * Initial testimonials seeded on first run. Each comment is a localized
+ * object resolved via `pickLocale` (docs/06-i18n.md); `id` is required.
+ */
+export const seedTestimonials = [
+  {
+    name: "Budi Santoso",
+    role: {
+      id: "Tour Batam 3D2N",
+      ms: "Tour Batam 3D2N",
+      en: "Batam 3D2N Tour",
+      zh: "巴淡 3 天 2 夜之旅",
+    },
+    comment: {
+      id: "Bookingnya gampang banget, konfirmasi admin cepat via WhatsApp. Paket lengkap, guide ramah!",
+      ms: "Tempahan memang mudah, pengesahan admin pantas melalui WhatsApp. Pakej lengkap, pemandu mesra!",
+      en: "Booking was super easy, admin confirmation fast via WhatsApp. Complete package, friendly guide!",
+      zh: "预订非常简单，管理员通过 WhatsApp 快速确认。套餐齐全，导游友好！",
+    },
+    rating: 5,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=256&auto=format&fit=crop",
+    isActive: 1,
+    sortOrder: 1,
+  },
+  {
+    name: "Siti Aminah",
+    role: {
+      id: "City Tour & Barelang",
+      ms: "City Tour & Barelang",
+      en: "City Tour & Barelang",
+      zh: "城市观光与巴兰桥",
+    },
+    comment: {
+      id: "City tour satu hari pas buat yang waktu terbatas. Armada nyaman dan itinerary jelas.",
+      ms: "City tour sehari sesuai untuk yang masa terhad. Armada selesa dan itinerary jelas.",
+      en: "One-day city tour is perfect for those with limited time. Comfortable fleet and clear itinerary.",
+      zh: "一日城市观光非常适合时间有限的人。车队舒适，行程清晰。",
+    },
+    rating: 4.8,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=256&auto=format&fit=crop",
+    isActive: 1,
+    sortOrder: 2,
+  },
+  {
+    name: "John Tan",
+    role: {
+      id: "Airport Transfer",
+      ms: "Airport Transfer",
+      en: "Airport Transfer",
+      zh: "机场接送",
+    },
+    comment: {
+      id: "Penjemputan bandara tepat waktu, driver ramah. Recommended buat yang butuh transport di Batam.",
+      ms: "Jemputan lapangan terbang tepat masa, pemandu mesra. Disyorkan untuk yang perlukan pengangkutan di Batam.",
+      en: "Airport pickup on time, friendly driver. Recommended for those needing transport in Batam.",
+      zh: "机场接机准时，司机友好。推荐给需要在巴淡岛交通的人。",
+    },
+    rating: 4.9,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=256&auto=format&fit=crop",
+    isActive: 1,
+    sortOrder: 3,
+  },
+  {
+    name: "Ethan Parker",
+    role: {
+      id: "Eco Stay Resort",
+      ms: "Eco Stay Resort",
+      en: "Eco Stay Resort",
+      zh: "生态度假村",
+    },
+    comment: {
+      id: "Suasana resort tenang, cocok banget buat relaksasi. Proses booking aman dan jelas.",
+      ms: "Suasana resort tenang, sesuai untuk relaksasi. Proses tempahan selamat dan jelas.",
+      en: "Calm resort atmosphere, perfect for relaxing. The booking process is safe and clear.",
+      zh: "度假村氛围宁静，非常适合放松。预订过程安全清晰。",
+    },
+    rating: 5,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=256&auto=format&fit=crop",
+    isActive: 1,
+    sortOrder: 4,
+  },
+  {
+    name: "Ava Mitchell",
+    role: {
+      id: "City Tour & Barelang",
+      ms: "City Tour & Barelang",
+      en: "City Tour & Barelang",
+      zh: "城市观光与巴兰桥",
+    },
+    comment: {
+      id: "Jembatan Barelang sunrise view-nya juara. Guide tau spot foto terbaik.",
+      ms: "Pemandangan matahari terbit Jambatan Barelang memang juara. Pemandu tahu spot foto terbaik.",
+      en: "Barelang Bridge sunrise view is the best. The guide knows the best photo spots.",
+      zh: "巴兰桥的日出景色太棒了。导游知道最好的拍照地点。",
+    },
+    rating: 5,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=256&auto=format&fit=crop",
+    isActive: 1,
+    sortOrder: 5,
+  },
+  {
+    name: "Isabella Reed",
+    role: {
+      id: "Tour Batam 3D2N",
+      ms: "Tour Batam 3D2N",
+      en: "Batam 3D2N Tour",
+      zh: "巴淡 3 天 2 夜之旅",
+    },
+    comment: {
+      id: "Semua beres: hotel, makan, transport. Tinggal jalan aja. Konfirmasi via WA cepat banget.",
+      ms: "Semua beres: hotel, makanan, pengangkutan. Tinggal jalan sahaja. Pengesahan melalui WA pantas.",
+      en: "Everything handled: hotel, meals, transport. Just show up. WhatsApp confirmation super fast.",
+      zh: "一切都安排好了：酒店、餐饮、交通。只管去就行。WhatsApp 确认超快。",
+    },
+    rating: 4.9,
+    avatarUrl:
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=256&auto=format&fit=crop",
+    isActive: 1,
+    sortOrder: 6,
+  },
+];

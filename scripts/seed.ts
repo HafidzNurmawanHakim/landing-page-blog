@@ -8,9 +8,9 @@
  */
 
 import { getDb } from "../lib/db/client";
-import { packages, admins, bookings, galleryItems } from "../lib/db/schema";
+import { packages, admins, bookings, galleryItems, testimonials } from "../lib/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { seedPackages, seedGalleryItems } from "../lib/db/seed";
+import { seedPackages, seedGalleryItems, seedTestimonials } from "../lib/db/seed";
 import { hashPassword } from "../lib/auth/password";
 import { env } from "../lib/env";
 
@@ -122,6 +122,20 @@ async function seed() {
     console.log(`✅ Inserted ${seedGalleryItems.length} gallery items`);
   } else {
     console.log("ℹ️  Gallery items already present, skipping");
+  }
+
+  // --- Testimonials ---
+  const existingTestimonials = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(testimonials);
+  if (Number(existingTestimonials[0]?.count ?? 0) === 0) {
+    const now = Math.floor(Date.now() / 1000);
+    await db.insert(testimonials).values(
+      seedTestimonials.map((item) => ({ ...item, createdAt: now, updatedAt: now }))
+    );
+    console.log(`✅ Inserted ${seedTestimonials.length} testimonials`);
+  } else {
+    console.log("ℹ️  Testimonials already present, skipping");
   }
 
   console.log("🎉 Seed complete!");

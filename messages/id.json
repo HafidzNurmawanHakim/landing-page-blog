@@ -57,7 +57,15 @@
     "title": "Galeri",
     "subtitle": "Momen perjalanan ke Batam yang diabadikan oleh tim dan pelanggan kami.",
     "emptyTitle": "Belum ada foto",
-    "emptyDesc": "Galeri sedang diisi. Cek kembali nanti."
+    "emptyDesc": "Galeri sedang diisi. Cek kembali nanti.",
+    "like": "Suka",
+    "liked": "Disukai",
+    "share": "Bagikan",
+    "shared": "Dibagikan",
+    "copied": "Tautan disalin!",
+    "rateLimit": "Terlalu banyak permintaan. Coba lagi nanti.",
+    "notFound": "Foto tidak ditemukan.",
+    "error": "Terjadi kesalahan. Coba lagi."
   },
   "booking": {
     "title": "Form Booking",
@@ -182,13 +190,7 @@
   },
   "testimonial": {
     "title": "Testimoni",
-    "heading": "Apa Kata 1000+ Klien Kami",
-    "t1": "Bookingnya gampang banget, konfirmasi admin cepat via WhatsApp. Paket lengkap, guide ramah!",
-    "t2": "City tour satu hari pas buat yang waktu terbatas. Armada nyaman dan itinerary jelas.",
-    "t3": "Penjemputan bandara tepat waktu, driver ramah. Recommended buat yang butuh transport di Batam.",
-    "t4": "Suasana resort tenang, cocok banget buat relaksasi. Proses booking aman dan jelas.",
-    "t5": "Jembatan Barelang sunrise view-nya juara. Guide tau spot foto terbaik.",
-    "t6": "Semua beres: hotel, makan, transport. Tinggal jalan aja. Konfirmasi via WA cepat banget."
+    "heading": "Apa Kata 1000+ Klien Kami"
   },
   "benefits": {
     "title": "Keunggulan",
