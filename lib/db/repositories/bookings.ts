@@ -109,6 +109,8 @@ export async function createBookingRecord(data: {
   bookingCode: string;
   packageCode: string;
   packageName: string;
+  itemType?: "tour" | "transport" | "hotel";
+  bookingOptions?: import("../schema").BookingOptions | null;
   locale?: string;
   customerName: string;
   phone: string;
@@ -123,6 +125,8 @@ export async function createBookingRecord(data: {
     .insert(bookings)
     .values({
       ...data,
+      itemType: data.itemType ?? "tour",
+      bookingOptions: data.bookingOptions ?? null,
       locale: data.locale ?? "id",
       status: "pending",
     })

@@ -34,6 +34,12 @@ type TemplateStrings = {
   guests: string;
   wait: string;
   contact: string;
+  pickup: string;
+  dropoff: string;
+  time: string;
+  vehicles: string;
+  extras: string;
+  estTotal: string;
 };
 
 const TEMPLATES: Record<Locale, TemplateStrings> = {
@@ -56,6 +62,12 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     guests: "orang",
     wait: "Tunggu konfirmasi admin via WhatsApp/telepon.",
     contact: "Hubungi kami:",
+    pickup: "Jemput",
+    dropoff: "Antar",
+    time: "Jam",
+    vehicles: "Kendaraan",
+    extras: "Ekstra",
+    estTotal: "Estimasi Total",
   },
   ms: {
     alert: "🚨 TEMPAHAN BARU",
@@ -76,6 +88,12 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     guests: "orang",
     wait: "Tunggu pengesahan admin melalui WhatsApp/telefon.",
     contact: "Hubungi kami:",
+    pickup: "Jemput",
+    dropoff: "Hantar",
+    time: "Masa",
+    vehicles: "Kenderaan",
+    extras: "Ekstra",
+    estTotal: "Anggaran Jumlah",
   },
   en: {
     alert: "🚨 NEW BOOKING",
@@ -96,6 +114,12 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     guests: "people",
     wait: "Wait for admin confirmation via WhatsApp/phone.",
     contact: "Contact us:",
+    pickup: "Pickup",
+    dropoff: "Drop-off",
+    time: "Time",
+    vehicles: "Vehicles",
+    extras: "Extras",
+    estTotal: "Estimated Total",
   },
   zh: {
     alert: "🚨 新预订",
@@ -116,6 +140,12 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     guests: "人",
     wait: "请等待管理员通过 WhatsApp/电话确认。",
     contact: "联系我们：",
+    pickup: "接车",
+    dropoff: "下车",
+    time: "时间",
+    vehicles: "车辆",
+    extras: "附加",
+    estTotal: "预计总额",
   },
 };
 
@@ -229,6 +259,38 @@ function buildWhatsAppTemplate(booking: Booking): string {
   const adminLink = `${siteUrl}/admin/bookings/${booking.id}`;
   const T = strings(booking.locale);
 
+  if (booking.itemType === "transport" && booking.bookingOptions) {
+    const o = booking.bookingOptions;
+    const unitTotal = o.price + o.extraTotal;
+    const grandTotal = unitTotal * o.vehicleQty;
+    const extrasLine =
+      o.extraCharges.length > 0
+        ? o.extraCharges
+            .map((e) => `+${e.price} ${e.currency} (${e.name})`)
+            .join(", ")
+        : "-";
+
+    return [
+      T.alert,
+      "",
+      `${T.code}: ${booking.bookingCode}`,
+      `${T.package}: ${booking.packageName}`,
+      `${T.name}: ${booking.customerName}`,
+      `${T.phone}: ${booking.phone}`,
+      `${T.pickup}: ${o.pickupLocation} (${o.pickupDate} ${o.pickupTime})`,
+      ...(o.dropoffLocation
+        ? [`${T.dropoff}: ${o.dropoffLocation}`]
+        : []),
+      `${T.vehicles}: ${o.vehicleQty}`,
+      `${T.package} ${o.pricingPackageName}: ${o.price} ${o.currency}`,
+      `${T.extras}: ${extrasLine}`,
+      `${T.estTotal}: ${grandTotal} ${o.currency}`,
+      ...(booking.notes ? [`${T.notes}: ${booking.notes}`] : []),
+      "",
+      `${T.view}: ${adminLink}`,
+    ].join("\n");
+  }
+
   return [
     T.alert,
     "",
@@ -246,6 +308,14 @@ function buildWhatsAppTemplate(booking: Booking): string {
 
 function buildEmailTemplate(booking: Booking): string {
   const T = strings(booking.locale);
+  const extraRows =
+    booking.itemType === "transport" && booking.bookingOptions
+      ? transportEmailRows(booking)
+      : `
+        <tr><td style="padding: 6px 0;">${T.depDate}</td><td>${booking.departureDate}</td></tr>
+        <tr><td style="padding: 6px 0;">${T.retDate}</td><td>${booking.returnDate}</td></tr>
+        <tr><td style="padding: 6px 0;">${T.participants}</td><td>${booking.participants} ${T.guests}</td></tr>`;
+
   return `
     <div style="font-family: Arial, sans-serif; max-width: 560px; margin: auto; padding: 24px;">
       <h2 style="margin: 0 0 16px;">${T.subject}</h2>
@@ -254,14 +324,31 @@ function buildEmailTemplate(booking: Booking): string {
       <table style="border-collapse: collapse; width: 100%;">
         <tr><td style="padding: 6px 0;">${T.bookingCode}</td><td><strong>${booking.bookingCode}</strong></td></tr>
         <tr><td style="padding: 6px 0;">${T.package}</td><td>${escapeHtml(booking.packageName)}</td></tr>
-        <tr><td style="padding: 6px 0;">${T.depDate}</td><td>${booking.departureDate}</td></tr>
-        <tr><td style="padding: 6px 0;">${T.retDate}</td><td>${booking.returnDate}</td></tr>
-        <tr><td style="padding: 6px 0;">${T.participants}</td><td>${booking.participants} ${T.guests}</td></tr>
+        ${extraRows}
       </table>
       <p style="margin-top: 16px;">${T.wait}</p>
       <p style="color: #777;">${T.contact} ${env.WHATSAPP_ADMIN_NUMBER || ""}</p>
     </div>
   `;
+}
+
+function transportEmailRows(booking: Booking): string {
+  const T = strings(booking.locale);
+  const o = booking.bookingOptions;
+  if (!o) return "";
+  const unitTotal = o.price + o.extraTotal;
+  const grandTotal = unitTotal * o.vehicleQty;
+  const extras = o.extraCharges
+    .map((e) => `${escapeHtml(e.name)} +${e.price} ${e.currency}`)
+    .join(", ");
+  return `
+    <tr><td style="padding: 6px 0;">${T.pickup}</td><td>${escapeHtml(o.pickupLocation)}</td></tr>
+    <tr><td style="padding: 6px 0;">${T.time}</td><td>${o.pickupDate} ${o.pickupTime}</td></tr>
+    ${o.dropoffLocation ? `<tr><td style="padding: 6px 0;">${T.dropoff}</td><td>${escapeHtml(o.dropoffLocation)}</td></tr>` : ""}
+    <tr><td style="padding: 6px 0;">${T.vehicles}</td><td>${o.vehicleQty}</td></tr>
+    <tr><td style="padding: 6px 0;">${T.package}</td><td>${escapeHtml(o.pricingPackageName)} ${o.price} ${o.currency}</td></tr>
+    <tr><td style="padding: 6px 0;">${T.extras}</td><td>${extras || "-"}</td></tr>
+    <tr><td style="padding: 6px 0;"><strong>${T.estTotal}</strong></td><td><strong>${grandTotal} ${o.currency}</strong></td></tr>`;
 }
 
 function escapeHtml(value: string): string {

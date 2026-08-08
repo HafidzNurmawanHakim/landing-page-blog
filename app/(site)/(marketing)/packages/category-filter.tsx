@@ -7,8 +7,6 @@ import { useI18n } from "@/lib/i18n/provider";
 const CATEGORIES = [
   { value: "all", labelKey: "common.all" },
   { value: "tour", labelKey: "common.tour" },
-  { value: "transport", labelKey: "common.transport" },
-  { value: "hotel", labelKey: "common.hotel" },
 ] as const;
 
 export function CategoryFilter({ selected }: { selected: string }) {

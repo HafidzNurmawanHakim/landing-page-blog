@@ -1,6 +1,314 @@
 import type { Package } from "./schema";
 
 /**
+ * Initial transport products (docs/15-transport-product.md). Prices are stored
+ * as integer whole units per currency. Pricing packages + extra charges are
+ * inserted alongside each product on first run.
+ */
+export type SeedTransportProduct = {
+  code: string;
+  title: { id: string; ms?: string; en?: string; zh?: string };
+  slug: string;
+  category: string;
+  capacity: number;
+  capacityUnit: string;
+  description?: { id: string; ms?: string; en?: string; zh?: string };
+  featuredImage?: string;
+  images?: string[];
+  includedServices: string[];
+  isActive?: number;
+  pricingPackages: {
+    name: { id: string; ms?: string; en?: string; zh?: string };
+    type: "HOURLY" | "ONE_WAY";
+    durationHours?: number | null;
+    coveredAreas?: string[];
+    price: number;
+    currency: string;
+  }[];
+  extraCharges: {
+    name: { id: string; ms?: string; en?: string; zh?: string };
+    type: "LOCATION_SURCHARGE" | "EXTRA_HOUR";
+    price: number;
+    currency: string;
+    unit?: string;
+  }[];
+};
+
+export const seedTransportProducts: SeedTransportProduct[] = [
+  {
+    code: "TR-MPV-6",
+    title: {
+      id: "MPV 6 Seaters",
+      ms: "MPV 6 Tempat Duduk",
+      en: "MPV 6 Seaters",
+      zh: "MPV 6 座",
+    },
+    slug: "mpv-6-seaters",
+    category: "MPV",
+    capacity: 6,
+    capacityUnit: "Seaters",
+    description: {
+      id: "MPV nyaman untuk 6 penumpang, cocok untuk keluarga atau grup kecil. Dilengkapi AC dan driver berpengalaman.",
+      en: "Comfortable MPV for 6 passengers, ideal for families or small groups. Air-conditioned with an experienced driver.",
+      zh: "舒适 MPV，可容纳 6 名乘客，适合家庭或小团体。配备空调和资深司机。",
+    },
+    featuredImage: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop",
+      "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?q=80&w=800&auto=format&fit=crop",
+    ],
+    includedServices: ["DRIVER_ONLY"],
+    isActive: 1,
+    pricingPackages: [
+      {
+        name: {
+          id: "10 Hours Usage",
+          ms: "Penggunaan 10 Jam",
+          en: "10 Hours Usage",
+          zh: "10 小时使用",
+        },
+        type: "HOURLY",
+        durationHours: 10,
+        coveredAreas: ["Batam Centre", "Nagoya", "Nongsa"],
+        price: 100,
+        currency: "SGD",
+      },
+      {
+        name: {
+          id: "8 Hours Usage",
+          ms: "Penggunaan 8 Jam",
+          en: "8 Hours Usage",
+          zh: "8 小时使用",
+        },
+        type: "HOURLY",
+        durationHours: 8,
+        coveredAreas: ["Batam Centre", "Nagoya", "Nongsa"],
+        price: 80,
+        currency: "SGD",
+      },
+      {
+        name: {
+          id: "4 Hours Usage",
+          ms: "Penggunaan 4 Jam",
+          en: "4 Hours Usage",
+          zh: "4 小时使用",
+        },
+        type: "HOURLY",
+        durationHours: 4,
+        coveredAreas: ["Batam Centre", "Nagoya"],
+        price: 65,
+        currency: "SGD",
+      },
+      {
+        name: {
+          id: "1 Way Transfer",
+          ms: "Pemindahan 1 Hala",
+          en: "1 Way Transfer",
+          zh: "单程接送",
+        },
+        type: "ONE_WAY",
+        coveredAreas: ["Airport", "Ferry Terminal", "Hotel"],
+        price: 35,
+        currency: "SGD",
+      },
+    ],
+    extraCharges: [
+      {
+        name: {
+          id: "Additional Charge Enter Barelang",
+          ms: "Caj Tambahan Masuk Barelang",
+          en: "Additional Charge for Enter Barelang",
+          zh: "进入巴兰桥附加费",
+        },
+        type: "LOCATION_SURCHARGE",
+        price: 10,
+        currency: "SGD",
+        unit: "per entry",
+      },
+      {
+        name: {
+          id: "Additional Hour",
+          ms: "Jam Tambahan",
+          en: "Additional Hour",
+          zh: "额外小时",
+        },
+        type: "EXTRA_HOUR",
+        price: 15,
+        currency: "SGD",
+        unit: "per hour",
+      },
+    ],
+  },
+  {
+    code: "TR-VAN-13",
+    title: {
+      id: "Mini Van 13 Seaters",
+      ms: "Mini Van 13 Tempat Duduk",
+      en: "Mini Van 13 Seaters",
+      zh: "小型面包车 13 座",
+    },
+    slug: "mini-van-13-seaters",
+    category: "MINI_VAN",
+    capacity: 13,
+    capacityUnit: "Seaters",
+    description: {
+      id: "Mini van untuk 13 penumpang, cocok untuk grup menengah dan antar-jemput rombongan.",
+      en: "Mini van for 13 passengers, ideal for mid-size groups and group transfers.",
+      zh: "可容纳 13 名乘客的小型面包车，适合中型团体和团体接送。",
+    },
+    featuredImage: "https://images.unsplash.com/photo-1489824904134-891ab64532f1?q=80&w=1200&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1489824904134-891ab64532f1?q=80&w=800&auto=format&fit=crop",
+    ],
+    includedServices: ["DRIVER_ONLY"],
+    isActive: 1,
+    pricingPackages: [
+      {
+        name: {
+          id: "10 Hours Usage",
+          ms: "Penggunaan 10 Jam",
+          en: "10 Hours Usage",
+          zh: "10 小时使用",
+        },
+        type: "HOURLY",
+        durationHours: 10,
+        coveredAreas: ["Batam Centre", "Nagoya", "Nongsa"],
+        price: 130,
+        currency: "SGD",
+      },
+      {
+        name: {
+          id: "8 Hours Usage",
+          ms: "Penggunaan 8 Jam",
+          en: "8 Hours Usage",
+          zh: "8 小时使用",
+        },
+        type: "HOURLY",
+        durationHours: 8,
+        coveredAreas: ["Batam Centre", "Nagoya", "Nongsa"],
+        price: 110,
+        currency: "SGD",
+      },
+      {
+        name: {
+          id: "1 Way Transfer",
+          ms: "Pemindahan 1 Hala",
+          en: "1 Way Transfer",
+          zh: "单程接送",
+        },
+        type: "ONE_WAY",
+        coveredAreas: ["Airport", "Ferry Terminal", "Hotel"],
+        price: 45,
+        currency: "SGD",
+      },
+    ],
+    extraCharges: [
+      {
+        name: {
+          id: "Additional Charge Enter Barelang",
+          ms: "Caj Tambahan Masuk Barelang",
+          en: "Additional Charge for Enter Barelang",
+          zh: "进入巴兰桥附加费",
+        },
+        type: "LOCATION_SURCHARGE",
+        price: 10,
+        currency: "SGD",
+        unit: "per entry",
+      },
+      {
+        name: {
+          id: "Additional Hour",
+          ms: "Jam Tambahan",
+          en: "Additional Hour",
+          zh: "额外小时",
+        },
+        type: "EXTRA_HOUR",
+        price: 18,
+        currency: "SGD",
+        unit: "per hour",
+      },
+    ],
+  },
+  {
+    code: "TR-BUS-22",
+    title: {
+      id: "Mini Bus 22 Seaters",
+      ms: "Mini Bas 22 Tempat Duduk",
+      en: "Mini Bus 22 Seaters",
+      zh: "小型巴士 22 座",
+    },
+    slug: "mini-bus-22-seaters",
+    category: "MINI_BUS",
+    capacity: 22,
+    capacityUnit: "Seaters",
+    description: {
+      id: "Mini bus untuk 22 penumpang, pilihan utama untuk rombongan besar dan corporate trip. Bisa dengan driver & guide.",
+      en: "Mini bus for 22 passengers, the top choice for large groups and corporate trips. Available with driver & guide.",
+      zh: "可容纳 22 名乘客的小型巴士，是大型团体和企业旅行的首选。可配备司机与导游。",
+    },
+    featuredImage: "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=1200&auto=format&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1570125909232-eb263c188f7e?q=80&w=800&auto=format&fit=crop",
+    ],
+    includedServices: ["DRIVER_ONLY", "DRIVER_AND_GUIDE"],
+    isActive: 1,
+    pricingPackages: [
+      {
+        name: {
+          id: "10 Hours Usage",
+          ms: "Penggunaan 10 Jam",
+          en: "10 Hours Usage",
+          zh: "10 小时使用",
+        },
+        type: "HOURLY",
+        durationHours: 10,
+        coveredAreas: ["Batam Centre", "Nagoya", "Nongsa", "Barelang"],
+        price: 180,
+        currency: "SGD",
+      },
+      {
+        name: {
+          id: "1 Way Transfer",
+          ms: "Pemindahan 1 Hala",
+          en: "1 Way Transfer",
+          zh: "单程接送",
+        },
+        type: "ONE_WAY",
+        coveredAreas: ["Airport", "Ferry Terminal", "Hotel"],
+        price: 65,
+        currency: "SGD",
+      },
+    ],
+    extraCharges: [
+      {
+        name: {
+          id: "Additional Charge Enter Barelang",
+          ms: "Caj Tambahan Masuk Barelang",
+          en: "Additional Charge for Enter Barelang",
+          zh: "进入巴兰桥附加费",
+        },
+        type: "LOCATION_SURCHARGE",
+        price: 15,
+        currency: "SGD",
+        unit: "per entry",
+      },
+      {
+        name: {
+          id: "Additional Hour",
+          ms: "Jam Tambahan",
+          en: "Additional Hour",
+          zh: "额外小时",
+        },
+        type: "EXTRA_HOUR",
+        price: 25,
+        currency: "SGD",
+        unit: "per hour",
+      },
+    ],
+  },
+];
+
+/**
  * Initial catalog seeded on first run. Matches the sample data documented in
  * docs/11-appendix.md and the marketing pages.
  *
@@ -130,7 +438,7 @@ export const seedPackages: SeedPackage[] = [
     },
     imageUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop",
     imageAlt: L.transfer,
-    isActive: 1,
+    isActive: 0,
   },
   {
     code: "BATAM-ECO-STAY",
@@ -167,7 +475,7 @@ export const seedPackages: SeedPackage[] = [
     },
     imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200&auto=format&fit=crop",
     imageAlt: L.eco,
-    isActive: 1,
+    isActive: 0,
   },
 ];
 

@@ -3,6 +3,7 @@
 import { after } from "next/server";
 import { bookingSchema, type BookingInput } from "@/lib/validations/booking";
 import { getPackageByCode } from "@/lib/db/repositories/packages";
+import { getTransportProductByCode } from "@/lib/db/repositories/transport";
 import {
   createBookingRecord,
   getBookingByCode,
@@ -10,7 +11,12 @@ import {
 import { generateUniqueBookingCode } from "@/lib/services/booking-code";
 import { dispatchBookingNotifications } from "@/lib/services/notifications";
 import { checkRateLimit, getClientIp } from "@/lib/security/rate-limit";
-import { DEFAULT_LOCALE, pickLocale } from "@/lib/i18n/locales";
+import {
+  DEFAULT_LOCALE,
+  pickLocale,
+  type Locale,
+} from "@/lib/i18n/locales";
+import type { BookingOptions } from "@/lib/db/schema";
 
 export type CreateBookingResult =
   | { success: true; bookingCode: string }
@@ -51,32 +57,110 @@ export async function createBooking(
   }
 
   const data = parsed.data;
+  const locale: Locale = data.locale ?? DEFAULT_LOCALE;
 
-  // 3. Verify the package exists & is active
-  const pkg = await getPackageByCode(data.packageCode);
-  if (!pkg || pkg.isActive !== 1) {
-    return {
-      success: false,
-      status: 404,
-      message: "Paket tidak ditemukan atau tidak aktif.",
+  // 3. Resolve the item being booked (package vs transport product) and the
+  //    denormalized booking payload (docs/15-transport-product.md §15.6).
+  let itemType: "tour" | "transport" | "hotel" = "tour";
+  let itemCode: string;
+  let itemName: string;
+  let bookingOptions: BookingOptions | null = null;
+
+  if (data.itemType === "transport") {
+    const product = await getTransportProductByCode(data.packageCode);
+    if (!product || product.isActive !== 1) {
+      return {
+        success: false,
+        status: 404,
+        message: "Produk transport tidak ditemukan atau tidak aktif.",
+      };
+    }
+    const options = data.bookingOptions;
+    if (!options) {
+      return {
+        success: false,
+        status: 422,
+        errors: [{ field: "bookingOptions", message: "Opsi booking tidak lengkap." }],
+      };
+    }
+
+    const pricingPackage = product.pricingPackages.find(
+      (p) => p.id === options.pricingPackageId
+    );
+    if (!pricingPackage) {
+      return {
+        success: false,
+        status: 422,
+        errors: [{ field: "pricingPackageId", message: "Paket harga tidak valid." }],
+      };
+    }
+
+    const selectedExtras = product.extraCharges.filter((e) =>
+      options.extraChargeIds.includes(e.id)
+    );
+    const extraTotal = selectedExtras.reduce((sum, e) => sum + e.price, 0);
+
+    itemType = "transport";
+    itemCode = product.code;
+    itemName = pickLocale(product.title, locale);
+    bookingOptions = {
+      pricingPackageId: pricingPackage.id,
+      pricingPackageName: pickLocale(pricingPackage.name, locale),
+      price: pricingPackage.price,
+      currency: pricingPackage.currency as BookingOptions["currency"],
+      extraCharges: selectedExtras.map((e) => ({
+        id: e.id,
+        name: pickLocale(e.name, locale),
+        price: e.price,
+        currency: e.currency as BookingOptions["currency"],
+        unit: e.unit ?? undefined,
+      })),
+      extraTotal,
+      vehicleQty: options.vehicleQty,
+      pickupLocation: options.pickupLocation.trim(),
+      pickupDate: options.pickupDate,
+      pickupTime: options.pickupTime,
+      dropoffLocation: options.dropoffLocation?.trim() || undefined,
     };
+  } else {
+    const pkg = await getPackageByCode(data.packageCode);
+    if (!pkg || pkg.isActive !== 1) {
+      return {
+        success: false,
+        status: 404,
+        message: "Paket tidak ditemukan atau tidak aktif.",
+      };
+    }
+    itemType = data.itemType === "hotel" ? "hotel" : "tour";
+    itemCode = pkg.code;
+    itemName = pickLocale(pkg.name, locale);
   }
 
   // 4. Persist booking (status pending)
   let bookingCode: string;
   try {
-    const locale = data.locale ?? DEFAULT_LOCALE;
+    const departureDate =
+      itemType === "transport"
+        ? (bookingOptions as NonNullable<BookingOptions>).pickupDate
+        : data.departureDate;
+    const returnDate =
+      itemType === "transport"
+        ? departureDate
+        : data.returnDate;
+
     bookingCode = await generateUniqueBookingCode();
     await createBookingRecord({
       bookingCode,
-      packageCode: pkg.code,
-      packageName: pickLocale(pkg.name, locale),
+      packageCode: itemCode,
+      packageName: itemName,
+      itemType,
+      bookingOptions,
       locale,
       customerName: data.customerName,
       phone: data.phone,
       email: data.email || undefined,
-      departureDate: data.departureDate,
-      returnDate: data.returnDate,
+      departureDate,
+      returnDate,
       participants: data.participants,
       notes: data.notes,
     });

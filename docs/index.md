@@ -2,7 +2,7 @@
 
 **Dokumentasi Utama**
 
-**Versi:** 1.2
+**Versi:** 1.4
 **Tanggal:** 8 Agustus 2026
 **Tech Stack:** Next.js 15 + Cloudflare Workers (OpenNext) + Cloudflare D1 + Drizzle ORM
 **Target Scale:** 1.000.000 request / bulan
@@ -33,6 +33,7 @@ Platform marketplace paket tour Batam. Customer bisa memilih paket (Tour, Transp
 | Booking platform (fitur) | ✅ MVP: katalog+filter, booking real (D1/SQLite), notif fire-and-forget, admin auth + dashboard + status |
 | Gallery (fitur)          | ✅ Grid Instagram-style `/gallery`, caption per bahasa, CRUD admin (upload via image-uploadr), like & share per IP (rate limited) |
 | Testimoni (fitur)        | ✅ Carousel beranda dinamis (DB), komentar/role per bahasa, rating 0–5, CRUD admin `/admin/testimonials` |
+| Transport (produk)       | ✅ Produk mandiri (`/transport` + `/admin/transport`): 3 tabel, paket harga + biaya tambahan, multi-currency, booking polymorphic (`item_type` + `booking_options`) |
 
 Repo berisi **shadcn landing page template** (14 section) + **platform booking MVP** yang dibangun di atasnya mengikuti dokumen ini.
 
@@ -154,6 +155,7 @@ npm run db:studio
 | 12  | [12-design-rules.md](./12-design-rules.md)               | Design rules: Google Material, rounded full, flat, modern, simple                      |
 | 13  | [13-blog.md](./13-blog.md)                               | PRD Blog: TipTap JSON, R2, SEO, roadmap                                                |
 | 14  | [14-deployment.md](./14-deployment.md)                   | Panduan deploy ke Cloudflare: env, migration, verifikasi, rollback                     |
+| 15  | [15-transport-product.md](./15-transport-product.md)     | Produk transport/rental kendaraan: model data, schema, integrasi booking, roadmap     |
 
 ---
 
@@ -177,7 +179,10 @@ Detail lengkap: [02-technical-spec.md](./02-technical-spec.md)
 
 | Tabel          | Fungsi                                     | Status |
 | -------------- | ------------------------------------------ | ------ |
-| `packages`     | Katalog paket (tour/transport/hotel)       | ✅     |
+| `packages`     | Katalog paket tour (transport/hotel dipisah ke produk mandiri, lihat [15-transport-product.md](./15-transport-product.md)) | ✅ |
+| `transport_products` | Produk rental kendaraan (kapasitas, layanan, galeri)     | ✅ |
+| `transport_pricing_packages` | Paket harga transport (durasi/transfer, area, mata uang) | ✅ |
+| `transport_extra_charges` | Biaya tambahan transport (surcharge, extra hour)         | ✅ |
 | `bookings`     | Semua data booking customer                | ✅     |
 | `gallery_items`| Foto galeri publik (image_url + caption)   | ✅     |
 | `gallery_reactions`| Like & share per IP (like_count/share_count denormalized) | ✅ |
@@ -231,6 +236,8 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 8 Agustus 2026 | **Testimoni dinamis**: tabel `testimonials` + migration 0005, CRUD admin `/admin/testimonials` (avatar upload crop 1:1, rating 0–5, urutan, aktif/nonaktif, komentar+role per bahasa), carousel beranda baca dari DB (`activeOnly`), rating partial-fill, empty-state sembunyi, seed 6 testimoni, hapus key `testimonial.t1..t6` dari messages |
 | 8 Agustus 2026 | **Deploy staging**: sync env R2 ke staging, apply migration 0002–0004 + seed galeri ke D1 remote, fix `NEXT_PUBLIC_SITE_URL`, verifikasi guard/upload/canonical. Tambah [14-deployment.md](./14-deployment.md) (panduan + best practices deploy) |
 | 8 Agustus 2026 | Docs: [12-design-rules.md](./12-design-rules.md) — aturan wajib pakai `ModalImageUploader` untuk semua upload gambar (pola, rasio crop per konteks, larangan) |
+| 8 Agustus 2026 | Docs: [15-transport-product.md](./15-transport-product.md) — produk transport/rental kendaraan jadi entitas mandiri (pisah dari `packages`): 3 tabel (produk + paket harga + biaya tambahan), multi-currency, integrasi booking polymorphic (`item_type` + `booking_options`), roadmap implementasi |
+| 8 Agustus 2026 | **Produk Transport**: migration `0007` (3 tabel + kolom `item_type`/`booking_options` di bookings), repository + zod, CRUD admin `/admin/transport/*`, katalog publik `/transport` + detail `[slug]` (pilih paket harga + extra, estimasi total live), booking transport (jemput/antar, jam, qty kendaraan, `createBooking` hitung ulang harga server-side), notif WA/email blok transport, API `/api/transport`, i18n 4 bahasa, seed 3 kendaraan; filter `/packages` tour-only + legacy transport/hotel non-aktif |
 
 ---
 

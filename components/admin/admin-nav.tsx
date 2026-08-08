@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   CalendarCheck,
+  Car,
   Images,
   LayoutDashboard,
   MessageSquareQuote,
@@ -22,7 +23,8 @@ type NavItem = {
 const NAV_ITEMS: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/bookings", label: "Booking", icon: CalendarCheck },
-  { href: "/admin/packages", label: "Paket & Produk", icon: Package },
+  { href: "/admin/packages", label: "Paket Tour", icon: Package },
+  { href: "/admin/transport", label: "Transport", icon: Car },
   { href: "/admin/gallery", label: "Galeri", icon: Images },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
 ] as const;

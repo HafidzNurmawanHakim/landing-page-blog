@@ -8,9 +8,22 @@
  */
 
 import { getDb } from "../lib/db/client";
-import { packages, admins, bookings, galleryItems, testimonials } from "../lib/db/schema";
+import {
+  packages,
+  admins,
+  bookings,
+  galleryItems,
+  testimonials,
+  transportProducts,
+} from "../lib/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { seedPackages, seedGalleryItems, seedTestimonials } from "../lib/db/seed";
+import {
+  seedPackages,
+  seedGalleryItems,
+  seedTestimonials,
+  seedTransportProducts,
+} from "../lib/db/seed";
+import { createTransportProduct } from "../lib/db/repositories/transport";
 import { hashPassword } from "../lib/auth/password";
 import { env } from "../lib/env";
 
@@ -27,6 +40,51 @@ async function seed() {
     console.log(`✅ Inserted ${seedPackages.length} packages`);
   } else {
     console.log("ℹ️  Packages already present, skipping");
+  }
+
+  // --- Transport products ---
+  const existingTransport = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(transportProducts);
+  if (Number(existingTransport[0]?.count ?? 0) === 0) {
+    const now = Math.floor(Date.now() / 1000);
+    for (const item of seedTransportProducts) {
+      await createTransportProduct({
+        code: item.code,
+        title: item.title,
+        slug: item.slug,
+        category: item.category as never,
+        capacity: item.capacity,
+        capacityUnit: item.capacityUnit,
+        description: item.description ?? null,
+        featuredImage: item.featuredImage ?? null,
+        images: item.images ?? [],
+        includedServices: item.includedServices as never,
+        isActive: item.isActive ?? 1,
+        pricingPackages: item.pricingPackages.map((p, index) => ({
+          name: p.name,
+          type: p.type,
+          durationHours: p.durationHours ?? null,
+          coveredAreas: p.coveredAreas ?? [],
+          price: p.price,
+          currency: p.currency as never,
+          sortOrder: index,
+        })),
+        extraCharges: item.extraCharges.map((e, index) => ({
+          name: e.name,
+          type: e.type,
+          price: e.price,
+          currency: e.currency as never,
+          unit: e.unit ?? null,
+          sortOrder: index,
+        })),
+      });
+    }
+    console.log(
+      `✅ Inserted ${seedTransportProducts.length} transport products (created_at=${now})`
+    );
+  } else {
+    console.log("ℹ️  Transport products already present, skipping");
   }
 
   // --- Admin ---

@@ -38,6 +38,8 @@ export const bookings = sqliteTable(
     bookingCode: text("booking_code").notNull().unique(),
     packageCode: text("package_code").notNull(),
     packageName: text("package_name").notNull(),
+    itemType: text("item_type").notNull().default("tour"),
+    bookingOptions: text("booking_options", { mode: "json" }).$type<BookingOptions>(),
     locale: text("locale").notNull().default("id"),
     customerName: text("customer_name").notNull(),
     phone: text("phone").notNull(),
@@ -133,6 +135,79 @@ export const admins = sqliteTable("admins", {
   createdAt: integer("created_at").default(sql`(unixepoch())`),
 });
 
+/**
+ * Transport / vehicle rental products (docs/15-transport-product.md).
+ *
+ * Unlike `packages` (flat single price), a transport product carries multiple
+ * pricing packages (HOURLY / ONE_WAY) and optional extra charges. Pricing and
+ * extras live in child tables with a cascade FK so a deleted product cleans up
+ * after itself.
+ */
+export const transportProducts = sqliteTable(
+  "transport_products",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    code: text("code").notNull().unique(),
+    title: text("title", { mode: "json" }).$type<LocalizedString>().notNull(),
+    slug: text("slug").notNull().unique(),
+    category: text("category").notNull(),
+    capacity: integer("capacity").notNull().default(0),
+    capacityUnit: text("capacity_unit").notNull().default("Seaters"),
+    description: text("description", { mode: "json" }).$type<LocalizedString>(),
+    featuredImage: text("featured_image"),
+    images: text("images", { mode: "json" }).$type<string[]>().notNull().default([]),
+    includedServices: text("included_services", { mode: "json" })
+      .$type<TransportServiceType[]>()
+      .notNull()
+      .default([]),
+    isActive: integer("is_active").notNull().default(1),
+    createdAt: integer("created_at").default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at").default(sql`(unixepoch())`),
+  },
+  (t) => [index("idx_transport_products_active").on(t.isActive)]
+);
+
+export const transportPricingPackages = sqliteTable(
+  "transport_pricing_packages",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    productId: integer("product_id")
+      .notNull()
+      .references(() => transportProducts.id, { onDelete: "cascade" }),
+    name: text("name", { mode: "json" }).$type<LocalizedString>().notNull(),
+    type: text("type").notNull(),
+    durationHours: integer("duration_hours"),
+    coveredAreas: text("covered_areas", { mode: "json" })
+      .$type<string[]>()
+      .notNull()
+      .default([]),
+    price: integer("price").notNull(),
+    currency: text("currency").notNull().default("SGD"),
+    sortOrder: integer("sort_order").notNull().default(0),
+  },
+  (t) => [
+    index("idx_transport_pricing_product").on(t.productId),
+    index("idx_transport_pricing_price").on(t.productId, t.price),
+  ]
+);
+
+export const transportExtraCharges = sqliteTable(
+  "transport_extra_charges",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    productId: integer("product_id")
+      .notNull()
+      .references(() => transportProducts.id, { onDelete: "cascade" }),
+    name: text("name", { mode: "json" }).$type<LocalizedString>().notNull(),
+    type: text("type").notNull(),
+    price: integer("price").notNull(),
+    currency: text("currency").notNull().default("SGD"),
+    unit: text("unit"),
+    sortOrder: integer("sort_order").notNull().default(0),
+  },
+  (t) => [index("idx_transport_extra_product").on(t.productId)]
+);
+
 export type Package = typeof packages.$inferSelect;
 export type Booking = typeof bookings.$inferSelect;
 export type GalleryItem = typeof galleryItems.$inferSelect;
@@ -140,3 +215,58 @@ export type GalleryReaction = typeof galleryReactions.$inferSelect;
 export type Testimonial = typeof testimonials.$inferSelect;
 export type Admin = typeof admins.$inferSelect;
 export type RateLimit = typeof rateLimits.$inferSelect;
+export type TransportProduct = typeof transportProducts.$inferSelect;
+export type TransportPricingPackage = typeof transportPricingPackages.$inferSelect;
+export type TransportExtraCharge = typeof transportExtraCharges.$inferSelect;
+
+export const CURRENCIES = ["SGD", "IDR", "USD"] as const;
+export type Currency = (typeof CURRENCIES)[number];
+
+export const TRANSPORT_CATEGORIES = [
+  "MPV",
+  "MINI_VAN",
+  "MINI_BUS",
+  "SUV",
+  "SEDAN",
+  "VAN",
+  "BUS",
+] as const;
+export type TransportCategory = (typeof TRANSPORT_CATEGORIES)[number];
+
+export const TRANSPORT_SERVICE_TYPES = [
+  "DRIVER_ONLY",
+  "DRIVER_AND_GUIDE",
+  "SELF_DRIVE",
+] as const;
+export type TransportServiceType = (typeof TRANSPORT_SERVICE_TYPES)[number];
+
+export const PRICING_PACKAGE_TYPES = ["HOURLY", "ONE_WAY"] as const;
+export type PricingPackageType = (typeof PRICING_PACKAGE_TYPES)[number];
+
+export const EXTRA_CHARGE_TYPES = ["LOCATION_SURCHARGE", "EXTRA_HOUR"] as const;
+export type ExtraChargeType = (typeof EXTRA_CHARGE_TYPES)[number];
+
+export type BookingItemType = "tour" | "transport" | "hotel";
+
+/** Type-specific options stored on a transport booking (docs/15-transport-product.md §15.6). */
+export type TransportBookingOptions = {
+  pricingPackageId: number;
+  pricingPackageName: string;
+  price: number;
+  currency: Currency;
+  extraCharges: {
+    id: number;
+    name: string;
+    price: number;
+    currency: Currency;
+    unit?: string;
+  }[];
+  extraTotal: number;
+  vehicleQty: number;
+  pickupLocation: string;
+  pickupDate: string;
+  pickupTime: string;
+  dropoffLocation?: string;
+};
+
+export type BookingOptions = TransportBookingOptions;

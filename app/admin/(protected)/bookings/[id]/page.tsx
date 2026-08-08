@@ -94,20 +94,30 @@ export default async function AdminBookingDetailPage({
           <h2 className="text-lg font-semibold">Detail Booking</h2>
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
+          <DetailRow
+            label="Tipe"
+            value={booking.itemType === "transport" ? "Transport" : "Paket Tour"}
+          />
           <DetailRow label="Paket" value={booking.packageName} />
           <DetailRow label="Kode Paket" value={booking.packageCode} />
-          <DetailRow
-            label="Tanggal Berangkat"
-            value={formatDate(booking.departureDate)}
-          />
-          <DetailRow
-            label="Tanggal Pulang"
-            value={formatDate(booking.returnDate)}
-          />
-          <DetailRow
-            label="Jumlah Peserta"
-            value={`${booking.participants} orang`}
-          />
+          {booking.itemType === "transport" && booking.bookingOptions ? (
+            <TransportOptions booking={booking} />
+          ) : (
+            <>
+              <DetailRow
+                label="Tanggal Berangkat"
+                value={formatDate(booking.departureDate)}
+              />
+              <DetailRow
+                label="Tanggal Pulang"
+                value={formatDate(booking.returnDate)}
+              />
+              <DetailRow
+                label="Jumlah Peserta"
+                value={`${booking.participants} orang`}
+              />
+            </>
+          )}
           {booking.notes && (
             <DetailRow label="Catatan Customer" value={booking.notes} />
           )}
@@ -132,5 +142,40 @@ function DetailRow({ label, value }: { label: string; value: string }) {
       <span className="text-muted-foreground">{label}</span>
       <span className="text-right font-medium">{value}</span>
     </div>
+  );
+}
+
+function TransportOptions({ booking }: { booking: import("@/lib/db/schema").Booking }) {
+  const o = booking.bookingOptions;
+  if (!o) return null;
+  const unitTotal = o.price + o.extraTotal;
+  const grandTotal = unitTotal * o.vehicleQty;
+  return (
+    <>
+      <DetailRow
+        label="Lokasi Jemput"
+        value={`${o.pickupLocation} — ${o.pickupDate} ${o.pickupTime}`}
+      />
+      {o.dropoffLocation && (
+        <DetailRow label="Lokasi Antar" value={o.dropoffLocation} />
+      )}
+      <DetailRow label="Jumlah Kendaraan" value={`${o.vehicleQty} unit`} />
+      <DetailRow
+        label="Paket Harga"
+        value={`${o.pricingPackageName} — ${o.price} ${o.currency}`}
+      />
+      {o.extraCharges.length > 0 && (
+        <DetailRow
+          label="Biaya Tambahan"
+          value={o.extraCharges
+            .map((e) => `${e.name} (+${e.price} ${e.currency})`)
+            .join("; ")}
+        />
+      )}
+      <DetailRow
+        label="Estimasi Total"
+        value={`${grandTotal} ${o.currency}`}
+      />
+    </>
   );
 }

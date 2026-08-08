@@ -15,13 +15,10 @@ export default async function PackagesPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
-  const selected =
-    category && ["tour", "transport", "hotel"].includes(category)
-      ? category
-      : "all";
+  const selected = category === "tour" ? "tour" : "all";
 
   const { items } = await listPackages({
-    category: selected as "all" | "tour" | "transport" | "hotel",
+    category: selected as "all" | "tour",
   });
   const packages = items.map(serializePackage);
 

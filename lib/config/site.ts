@@ -70,6 +70,20 @@ export const siteConfig = {
         zh: "选择适合您巴淡岛之旅的旅游、交通或酒店套餐。",
       },
     },
+    transport: {
+      title: {
+        id: "Rental Transport Batam - Destitour",
+        en: "Batam Transport Rental - Destitour",
+        ms: "Sewa Pengangkutan Batam - Destitour",
+        zh: "巴淡岛交通租赁 - 巴淡之旅",
+      },
+      description: {
+        id: "Sewa kendaraan di Batam dengan paket per jam atau transfer: MPV, Mini Van, Mini Bus, lengkap dengan biaya tambahan yang transparan.",
+        en: "Rent a vehicle in Batam with hourly or transfer packages: MPV, Mini Van, Mini Bus, with transparent extra charges.",
+        ms: "Sewa kenderaan di Batam dengan pakej setiap jam atau pemindahan: MPV, Mini Van, Mini Bus, lengkap dengan caj tambahan yang telus.",
+        zh: "在巴淡岛租车，按小时或接送套餐：MPV、小型面包车、小型巴士，附加费用透明。",
+      },
+    },
     gallery: {
       title: {
         id: "Galeri - Destitour",
@@ -125,17 +139,17 @@ export const siteConfig = {
   links: {
     nav: [
       { href: "/packages", labelKey: "nav.packages" },
+      { href: "/transport", labelKey: "common.transport" },
       { href: "/gallery", labelKey: "nav.gallery" },
       { href: "/about", labelKey: "nav.about" },
       { href: "/#contact", labelKey: "nav.contact" },
-      { href: "/#faq", labelKey: "nav.faq" },
     ] satisfies SiteLink[],
     footer: [
       {
         titleKey: "footer.packages",
         links: [
           { labelKey: "footer.tour", href: "/packages?category=tour" },
-          { labelKey: "footer.transport", href: "/packages?category=transport" },
+          { labelKey: "footer.transport", href: "/transport" },
           { labelKey: "footer.hotel", href: "/packages?category=hotel" },
         ],
       },
