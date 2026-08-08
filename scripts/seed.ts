@@ -8,9 +8,9 @@
  */
 
 import { getDb } from "../lib/db/client";
-import { packages, admins, bookings } from "../lib/db/schema";
+import { packages, admins, bookings, galleryItems } from "../lib/db/schema";
 import { eq, sql } from "drizzle-orm";
-import { seedPackages } from "../lib/db/seed";
+import { seedPackages, seedGalleryItems } from "../lib/db/seed";
 import { hashPassword } from "../lib/auth/password";
 import { env } from "../lib/env";
 
@@ -108,6 +108,20 @@ async function seed() {
       );
       console.log(`✅ Inserted ${sample.length} sample bookings`);
     }
+  }
+
+  // --- Gallery ---
+  const existingGallery = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(galleryItems);
+  if (Number(existingGallery[0]?.count ?? 0) === 0) {
+    const now = Math.floor(Date.now() / 1000);
+    await db.insert(galleryItems).values(
+      seedGalleryItems.map((item) => ({ ...item, createdAt: now, updatedAt: now }))
+    );
+    console.log(`✅ Inserted ${seedGalleryItems.length} gallery items`);
+  } else {
+    console.log("ℹ️  Gallery items already present, skipping");
   }
 
   console.log("🎉 Seed complete!");

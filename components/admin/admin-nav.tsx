@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarCheck, LayoutDashboard, Package, type LucideIcon } from "lucide-react";
+import {
+  CalendarCheck,
+  Images,
+  LayoutDashboard,
+  Package,
+  type LucideIcon,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -16,6 +22,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/bookings", label: "Booking", icon: CalendarCheck },
   { href: "/admin/packages", label: "Paket & Produk", icon: Package },
+  { href: "/admin/gallery", label: "Galeri", icon: Images },
 ] as const;
 
 export function AdminNav() {

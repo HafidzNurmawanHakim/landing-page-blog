@@ -98,7 +98,37 @@ CREATE INDEX idx_bookings_package_code ON bookings(package_code);
 - `idx_bookings_created_at` → mempercepat sort "terbaru dulu"
 - `idx_bookings_package_code` → mempercepat lookup per paket
 
-## 3.3 Tabel `admins` (opsional)
+## 3.3 Tabel `gallery_items`
+
+```sql
+CREATE TABLE gallery_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  image_url TEXT NOT NULL,           -- URL gambar (R2 public / /uploads di local dev)
+  caption TEXT,                      -- JSON object { id, ms, en, zh } — caption per bahasa
+  created_at INTEGER DEFAULT (unixepoch()),
+  updated_at INTEGER DEFAULT (unixepoch())
+);
+
+CREATE INDEX idx_gallery_created_at ON gallery_items(created_at);
+```
+
+### Deskripsi Kolom
+
+| Kolom       | Tipe    | Keterangan                                                                               |
+| ----------- | ------- | ---------------------------------------------------------------------------------------- |
+| `id`        | INTEGER | Primary key auto-increment                                                               |
+| `image_url` | TEXT    | URL gambar galeri. Disimpan **di DB hanya URL-nya** — binary di R2 (atau `/public/uploads` di local dev). |
+| `caption`   | TEXT    | JSON object `{ id, ms, en, zh }` — caption per bahasa. Minimal `id` terisi (fallback).    |
+| `created_at` | INTEGER | Unix timestamp (detik), dipakai untuk urutan grid (terbaru dulu)                         |
+| `updated_at` | INTEGER | Unix timestamp (detik)                                                                  |
+
+### Catatan
+
+- Galeri hanya dikelola admin (lihat [05-api-server-actions.md](./05-api-server-actions.md)).
+- Halaman publik `/gallery` menampilkan grid persegi (Instagram-style): `image_url` + `caption` (di-resolve via `pickLocale`).
+- `idx_gallery_created_at` → mempercepat sort "terbaru dulu" di grid publik.
+
+## 3.4 Tabel `admins` (opsional)
 
 ```sql
 CREATE TABLE admins (

@@ -2,6 +2,7 @@
   "nav": {
     "home": "首页",
     "packages": "套餐",
+    "gallery": "画廊",
     "pricing": "价格",
     "contact": "联系",
     "faq": "常见问题",
@@ -51,6 +52,12 @@
     "priceFrom": "起价",
     "bookNow": "立即预订",
     "waNote": "通过 WhatsApp 快速确认。无预订费。"
+  },
+  "gallery": {
+    "title": "画廊",
+    "subtitle": "我们的团队和客户记录下的巴淡岛旅行瞬间。",
+    "emptyTitle": "暂无照片",
+    "emptyDesc": "画廊内容正在添加，请稍后再来查看。"
   },
   "booking": {
     "title": "预订表格",
@@ -278,6 +285,7 @@
     "contact": "联系我们",
     "faq": "常见问题",
     "about": "关于我们",
+    "gallery": "画廊",
     "admin": "管理",
     "rights": "版权所有"
   },

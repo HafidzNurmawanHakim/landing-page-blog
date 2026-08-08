@@ -34,6 +34,11 @@ export async function createBooking(data: {
 | `getBookings({ status, page, limit })`         | List booking dengan filter + pagination |
 | `getBookingById(id)`                           | Detail satu booking                     |
 | `updateBookingStatus(id, status, adminNotes?)` | Ubah status booking                     |
+| `createGalleryItemAction(input)`               | Tambah foto galeri (admin session)      |
+| `updateGalleryItemAction(id, input)`           | Edit foto galeri (admin session)        |
+| `deleteGalleryItemAction(id)`                  | Hapus foto galeri (admin session)       |
+
+Public page reads gallery via repository `listGalleryItems` (server component), no public write endpoint.
 
 ## 5.3 Daftar Endpoint Publik (Route Handlers)
 

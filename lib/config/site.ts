@@ -70,6 +70,20 @@ export const siteConfig = {
         zh: "选择适合您巴淡岛之旅的旅游、交通或酒店套餐。",
       },
     },
+    gallery: {
+      title: {
+        id: "Galeri - Destitour",
+        en: "Gallery - Destitour",
+        ms: "Galeri - Destitour",
+        zh: "画廊 - 巴淡之旅",
+      },
+      description: {
+        id: "Lihat momen wisata di Batam lewat foto pilihan Destitour: pantai, Jembatan Barelang, kuliner, dan destinasi favorit.",
+        en: "See Batam travel moments through Destitour's curated photos: beaches, Barelang Bridge, food, and favorite spots.",
+        ms: "Lihat momen pelancongan di Batam melalui foto pilihan Destitour: pantai, Jambatan Barelang, makanan, dan destinasi kegemaran.",
+        zh: "通过巴淡之旅精选照片欣赏巴淡岛的旅行瞬间：海滩、巴兰桥、美食和热门景点。",
+      },
+    },
   },
 
   contact: {
@@ -111,6 +125,7 @@ export const siteConfig = {
   links: {
     nav: [
       { href: "/packages", labelKey: "nav.packages" },
+      { href: "/gallery", labelKey: "nav.gallery" },
       { href: "/about", labelKey: "nav.about" },
       { href: "/#contact", labelKey: "nav.contact" },
       { href: "/#faq", labelKey: "nav.faq" },
@@ -136,6 +151,7 @@ export const siteConfig = {
         titleKey: "footer.info",
         links: [
           { labelKey: "footer.about", href: "/about" },
+          { labelKey: "footer.gallery", href: "/gallery" },
           { labelKey: "footer.admin", href: "/admin" },
         ],
       },

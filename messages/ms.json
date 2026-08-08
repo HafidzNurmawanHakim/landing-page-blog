@@ -2,6 +2,7 @@
   "nav": {
     "home": "Utama",
     "packages": "Pakej",
+    "gallery": "Galeri",
     "pricing": "Harga",
     "contact": "Hubungi",
     "faq": "FAQ",
@@ -51,6 +52,12 @@
     "priceFrom": "Harga bermula",
     "bookNow": "Tempah Sekarang",
     "waNote": "Pengesahan pantas melalui WhatsApp. Tiada yuran tempahan."
+  },
+  "gallery": {
+    "title": "Galeri",
+    "subtitle": "Detik-detik perjalanan ke Batam yang dirakam oleh pasukan dan pelanggan kami.",
+    "emptyTitle": "Belum ada foto",
+    "emptyDesc": "Galeri sedang diisi. Sila semak semula kemudian."
   },
   "booking": {
     "title": "Borang Tempahan",
@@ -278,6 +285,7 @@
     "contact": "Hubungi Kami",
     "faq": "FAQ",
     "about": "Tentang Kami",
+    "gallery": "Galeri",
     "admin": "Admin",
     "rights": "Hak cipta terpelihara"
   },

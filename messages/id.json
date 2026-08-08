@@ -2,6 +2,7 @@
   "nav": {
     "home": "Beranda",
     "packages": "Paket",
+    "gallery": "Galeri",
     "pricing": "Harga",
     "contact": "Kontak",
     "faq": "FAQ",
@@ -51,6 +52,12 @@
     "priceFrom": "Harga mulai",
     "bookNow": "Booking Sekarang",
     "waNote": "Konfirmasi cepat via WhatsApp. Tanpa biaya pemesanan."
+  },
+  "gallery": {
+    "title": "Galeri",
+    "subtitle": "Momen perjalanan ke Batam yang diabadikan oleh tim dan pelanggan kami.",
+    "emptyTitle": "Belum ada foto",
+    "emptyDesc": "Galeri sedang diisi. Cek kembali nanti."
   },
   "booking": {
     "title": "Form Booking",
@@ -278,6 +285,7 @@
     "contact": "Hubungi Kami",
     "faq": "FAQ",
     "about": "Tentang Kami",
+    "gallery": "Galeri",
     "admin": "Admin",
     "rights": "Semua hak dilindungi"
   },

@@ -57,6 +57,18 @@ export const rateLimits = sqliteTable("rate_limits", {
   updatedAt: integer("updated_at").notNull(),
 });
 
+export const galleryItems = sqliteTable(
+  "gallery_items",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    imageUrl: text("image_url").notNull(),
+    caption: text("caption", { mode: "json" }).$type<LocalizedString>(),
+    createdAt: integer("created_at").default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at").default(sql`(unixepoch())`),
+  },
+  (t) => [index("idx_gallery_created_at").on(t.createdAt)]
+);
+
 export const admins = sqliteTable("admins", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   email: text("email").notNull().unique(),
@@ -67,5 +79,6 @@ export const admins = sqliteTable("admins", {
 
 export type Package = typeof packages.$inferSelect;
 export type Booking = typeof bookings.$inferSelect;
+export type GalleryItem = typeof galleryItems.$inferSelect;
 export type Admin = typeof admins.$inferSelect;
 export type RateLimit = typeof rateLimits.$inferSelect;

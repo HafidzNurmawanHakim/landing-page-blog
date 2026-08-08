@@ -2,6 +2,7 @@
   "nav": {
     "home": "Home",
     "packages": "Packages",
+    "gallery": "Gallery",
     "pricing": "Pricing",
     "contact": "Contact",
     "faq": "FAQ",
@@ -51,6 +52,12 @@
     "priceFrom": "Starting from",
     "bookNow": "Book Now",
     "waNote": "Fast confirmation via WhatsApp. No booking fees."
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Trip moments in Batam captured by our team and customers.",
+    "emptyTitle": "No photos yet",
+    "emptyDesc": "The gallery is being filled. Check back soon."
   },
   "booking": {
     "title": "Booking Form",
@@ -278,6 +285,7 @@
     "contact": "Contact Us",
     "faq": "FAQ",
     "about": "About Us",
+    "gallery": "Gallery",
     "admin": "Admin",
     "rights": "All rights reserved"
   },

@@ -2,8 +2,8 @@
 
 **Dokumentasi Utama**
 
-**Versi:** 1.0
-**Tanggal:** 5 Agustus 2026
+**Versi:** 1.1
+**Tanggal:** 8 Agustus 2026
 **Tech Stack:** Next.js 15 + Cloudflare Workers (OpenNext) + Cloudflare D1 + Drizzle ORM
 **Target Scale:** 1.000.000 request / bulan
 **Bahasa dokumen:** Bahasa Indonesia
@@ -31,6 +31,7 @@ Platform marketplace paket tour Batam. Customer bisa memilih paket (Tour, Transp
 | Landing page template    | ✅ Ada (14 section + shadcn/ui)                                                                          |
 | Boilerplate per docs     | ✅ Route katalog, booking, admin, actions, DB layer                                                      |
 | Booking platform (fitur) | ✅ MVP: katalog+filter, booking real (D1/SQLite), notif fire-and-forget, admin auth + dashboard + status |
+| Gallery (fitur)          | ✅ Grid Instagram-style `/gallery`, caption per bahasa, CRUD admin (upload via image-uploadr)            |
 
 Repo berisi **shadcn landing page template** (14 section) + **platform booking MVP** yang dibangun di atasnya mengikuti dokumen ini.
 
@@ -47,13 +48,19 @@ destitour/
 │   ├── loading.tsx           # Loading state global
 │   ├── actions/booking.ts    # Server Action createBooking (zod + rate limit + D1 + notif)
 │   ├── actions/admin.ts      # login/logout/updateBookingStatus (auth session)
+│   ├── actions/packages.ts   # create/update/delete/toggle paket (auth session)
+│   ├── actions/gallery.ts    # create/update/delete foto galeri (auth session)
 │   ├── (marketing)/packages/ # Katalog paket (filter kategori) + detail [slug] (real data)
 │   │   └── [slug]/           # Detail paket + BookingDialog modal (form + sukses)
+│   ├── (marketing)/gallery/  # Grid galeri publik (Instagram-style, caption per bahasa)
+│   ├── (marketing)/about/    # Halaman tentang kami
 │   ├── admin/
 │   │   ├── layout.tsx        # Guard auth admin (redirect kalau belum login)
 │   │   ├── login/            # Login admin (real auth, rate limited)
-│   │   └── bookings/         # Dashboard booking (real data, filter, pagination, search)
-│   │       └── [id]/         # Detail booking + ubah status + admin notes
+│   │   ├── bookings/         # Dashboard booking (real data, filter, pagination, search)
+│   │   │   └── [id]/         # Detail booking + ubah status + admin notes
+│   │   ├── packages/         # CRUD paket (list, new, [id]/edit)
+│   │   └── gallery/          # CRUD galeri (list, new, [id]/edit)
 │   └── api/
 │       ├── packages/         # GET /api/packages (+ filter category)
 │       ├── packages/[slug]/  # GET /api/packages/[slug]
@@ -66,13 +73,14 @@ destitour/
 ├── lib/
 │   ├── auth/                 # password.ts (PBKDF2 WebCrypto), session.ts (HMAC cookie)
 │   ├── db/
-│   │   ├── schema.ts         # Drizzle: packages, bookings, admins
+│   │   ├── schema.ts         # Drizzle: packages, bookings, admins, gallery_items
 │   │   ├── client.ts         # D1 (production) + better-sqlite3 (local dev), auto-migrate
-│   │   ├── seed.ts           # Data paket awal
-│   │   └── repositories/     # packages.ts, bookings.ts, admins.ts
+│   │   ├── seed.ts           # Data paket + galeri awal
+│   │   └── repositories/     # packages.ts, bookings.ts, admins.ts, gallery.ts
 │   ├── services/
 │   │   ├── booking-code.ts   # Generator kode booking BT-YYYYMMDD-NNN
 │   │   └── notifications.ts  # WA admin + Resend email (fire-and-forget, never block)
+│   ├── validations/          # booking.ts, packages.ts, gallery.ts (zod schema)
 │   ├── security/rate-limit.ts# In-memory sliding window per IP
 │   ├── i18n/provider.tsx     # Lightweight i18n (id/ms/en/zh) via messages/
 │   ├── env.ts                # Validasi env (zod)
@@ -141,6 +149,8 @@ npm run db:studio
 | 10  | [10-acceptance-criteria.md](./10-acceptance-criteria.md) | Kriteria MVP + checklist QA manual                                                     |
 | 11  | [11-appendix.md](./11-appendix.md)                       | Contoh data, status booking, format kode, glosarium                                    |
 | 12  | [12-design-rules.md](./12-design-rules.md)               | Design rules: Google Material, rounded full, flat, modern, simple                      |
+| 13  | [13-blog.md](./13-blog.md)                               | PRD Blog: TipTap JSON, R2, SEO, roadmap                                                |
+| 14  | [14-deployment.md](./14-deployment.md)                   | Panduan deploy ke Cloudflare: env, migration, verifikasi, rollback                     |
 
 ---
 
@@ -162,11 +172,12 @@ Detail lengkap: [02-technical-spec.md](./02-technical-spec.md)
 
 ### Database
 
-| Tabel      | Fungsi                               | Status |
-| ---------- | ------------------------------------ | ------ |
-| `packages` | Katalog paket (tour/transport/hotel) | ⬜     |
-| `bookings` | Semua data booking customer          | ⬜     |
-| `admins`   | Kredensial admin (opsional)          | ⬜     |
+| Tabel          | Fungsi                                     | Status |
+| -------------- | ------------------------------------------ | ------ |
+| `packages`     | Katalog paket (tour/transport/hotel)       | ✅     |
+| `bookings`     | Semua data booking customer                | ✅     |
+| `gallery_items`| Foto galeri publik (image_url + caption)   | ✅     |
+| `admins`       | Kredensial admin (opsional)                | ✅     |
 
 Detail lengkap: [03-database-schema.md](./03-database-schema.md)
 
@@ -210,6 +221,9 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 5 Agustus 2026 | Upgrade Next.js 14 → 15.1.11 (React 19); siapkan boilerplate per docs (routes, actions, DB layer, messages); tambah 12-design-rules.md + terapkan design rules ke UI                                                                                                                                                                              |
 | 5 Agustus 2026 | Perbaikan deps: install tanpa `--legacy-peer-deps`, hilangkan warning `element.ref` React 19, upgrade next → 15.5.22 (fix CVE critical) + drizzle-orm → 0.45.2 + drizzle-kit → 0.31.10 (fix CVE high)                                                                                                                                             |
 | 5 Agustus 2026 | **MVP production-ready**: DB dual-mode (D1 + SQLite lokal), seed + migration otomatis, createBooking real (rate limit + zod + booking code + notif fire-and-forget), admin auth (PBKDF2 + HMAC session), dashboard real (filter/pagination/search/status), API routes, error boundaries, i18n lightweight, design rules borderless + font Poppins |
+| 8 Agustus 2026 | **Fitur Galeri**: tabel `gallery_items` + migration, CRUD admin `/admin/gallery` (upload via image-uploadr, crop 1:1), grid publik `/gallery` Instagram-style (square tile + caption per bahasa), seed sample, i18n + SEO 4 bahasa |
+| 8 Agustus 2026 | **Deploy staging**: sync env R2 ke staging, apply migration 0002–0004 + seed galeri ke D1 remote, fix `NEXT_PUBLIC_SITE_URL`, verifikasi guard/upload/canonical. Tambah [14-deployment.md](./14-deployment.md) (panduan + best practices deploy) |
+| 8 Agustus 2026 | Docs: [12-design-rules.md](./12-design-rules.md) — aturan wajib pakai `ModalImageUploader` untuk semua upload gambar (pola, rasio crop per konteks, larangan) |
 
 ---
 

@@ -170,3 +170,52 @@ export const seedPackages: SeedPackage[] = [
     isActive: 1,
   },
 ];
+
+/**
+ * Initial gallery photos seeded on first run. Square crops fit the
+ * Instagram-style grid best.
+ */
+export const seedGalleryItems = [
+  {
+    imageUrl: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop",
+    caption: {
+      id: "Pantai tropis favorit untuk relaksasi",
+      en: "Favorite tropical beach for relaxing",
+    },
+  },
+  {
+    imageUrl: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=800&auto=format&fit=crop",
+    caption: {
+      id: "Skyline kota saat matahari terbenam",
+      en: "City skyline at sunset",
+    },
+  },
+  {
+    imageUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=800&auto=format&fit=crop",
+    caption: {
+      id: "Perjalanan darat seru",
+      en: "Scenic road trip",
+    },
+  },
+  {
+    imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop",
+    caption: {
+      id: "Penginapan resort dengan nuansa alam",
+      en: "Nature-themed resort stay",
+    },
+  },
+  {
+    imageUrl: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?q=80&w=800&auto=format&fit=crop",
+    caption: {
+      id: "Kuliner lokal yang wajib dicoba",
+      en: "Must-try local cuisine",
+    },
+  },
+  {
+    imageUrl: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop",
+    caption: {
+      id: "Spot foto ikonik",
+      en: "Iconic photo spot",
+    },
+  },
+];

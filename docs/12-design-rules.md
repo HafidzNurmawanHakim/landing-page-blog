@@ -170,7 +170,76 @@ Contoh:
 
 ---
 
-## 12.11 Checklist Review Desain
+## 12.11 Image Uploader (Aturan Wajib)
+
+**Setiap upload gambar** (paket, galeri, blog, logo, dsb.) **WAJIB** memakai
+`ModalImageUploader` (`components/ui/image-uploader/index.tsx`).
+Dilarang bikin uploader sendiri atau `<input type="file">` mentah di halaman admin.
+
+### Kenapa
+
+- Satu jalur upload → konsisten, mudah dimaintain, minim bug.
+- **Kompresi otomatis ke WebP** (target ±500 KB) → hemat bandwidth, storage, dan waktu load.
+- **Crop sebelum upload** → rasio selalu pas dengan tempat tampil.
+- Validasi tipe & ukuran di client (toast) + server (magic-byte check).
+- Upload lewat endpoint `POST /api/admin/media/upload` yang dijaga session admin.
+
+### Pola Baku
+
+```tsx
+const uploaderRef = useRef<ImageUploadModalRef>(null);
+
+// Tombol trigger (rounded-full, ikon lucide)
+<Button type="button" variant="secondary" className="rounded-full" onClick={() => uploaderRef.current?.open()}>
+  <ImageUp className="mr-2 h-4 w-4" />
+  Pilih / Upload Gambar
+</Button>
+
+<ModalImageUploader
+  ref={uploaderRef}
+  title="Upload Gambar"
+  description="Pilih gambar. Dikompres otomatis ke WebP dan bisa dipotong."
+  config={{
+    maxFiles: 1,
+    maxFileSize: 5,
+    acceptedTypes: ["image/jpeg", "image/png", "image/webp", "image/avif", "image/gif"],
+    enableCrop: true,
+    cropAspectRatio: 16 / 9, // sesuaikan konteks (lihat tabel)
+    enableCompression: true,
+    compressionOptions: { targetMaxSizeKB: 500, maxWidth: 1600, initialWebPQuality: 0.9 },
+    enableMultiple: false,
+  }}
+  onUploadComplete={(images) => setValue("imageUrl", images[0]?.url, { shouldValidate: true })}
+/>
+```
+
+### Rasio Crop per Konteks
+
+| Konteks      | `cropAspectRatio` | Alasan                                 |
+| ------------ | ----------------- | -------------------------------------- |
+| Gambar paket | `16 / 9`          | Kartu produk & detail lebar            |
+| Galeri       | `1` (persegi)     | Grid Instagram-style (`aspect-square`) |
+| Featured blog | `16 / 9` atau `1200:630` | OG image & header artikel       |
+
+### Alur Upload (jangan dipersingkat)
+
+1. Client: pilih file → crop → kompres (WebP) → `POST /api/admin/media/upload` (multipart, admin session).
+2. Server (`lib/media/upload.ts`): validasi session + magic-byte → simpan ke **R2** (prod) / `public/uploads` (dev) → return `{ data: { url } }`.
+3. Client: simpan **URL** ke form → submit ke DB.
+4. DB menyimpan **URL saja** — binary gambar **tidak pernah masuk DB**.
+
+### Larangan
+
+| Larangan                                                     | Alasan                                   |
+| ------------------------------------------------------------ | ---------------------------------------- |
+| `<input type="file">` mentah di admin                        | Bypass kompresi/crop/validasi            |
+| Base64 gambar masuk DB / state                               | Boros storage, SSR tak terpakai          |
+| Upload client langsung ke R2 tanpa session admin             | Bocor kredensial, tanpa kontrol          |
+| `dangerouslySetInnerHTML` untuk gambar/alt                   | XSS                                      |
+
+---
+
+## 12.12 Checklist Review Desain
 
 - [ ] Semua button & input `rounded-full`?
 - [ ] Tidak ada `shadow-sm/lg/xl` di card/button utama?
@@ -180,6 +249,8 @@ Contoh:
 - [ ] Responsive: cek breakpoint mobile & desktop?
 - [ ] Ikon konsisten lucide outline, tidak ada yang beda style?
 - [ ] Semua teks masih terbaca di dark mode?
+- [ ] Semua upload gambar pakai `ModalImageUploader` (bukan input file mentah)?
+- [ ] Gambar tampil sebagai **URL** di DB (bukan base64), rasio crop sesuai konteks?
 
 ---
 
