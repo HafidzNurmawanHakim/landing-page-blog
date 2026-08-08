@@ -31,17 +31,17 @@ CREATE TABLE packages (
 | ------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `id`          | INTEGER | Primary key auto-increment                                                                                                                          |
 | `code`        | TEXT    | Kode unik paket, contoh `BATAM-3D2N`                                                                                                                |
-| `name`        | TEXT    | Nama tampilan paket                                                                                                                                 |
+| `name`        | TEXT    | JSON object `{ id, ms, en, zh }` — nama tampilan per bahasa. Minimal `id` terisi.                                                                     |
 | `slug`        | TEXT    | Slug URL, contoh `batam-3d2n`                                                                                                                       |
 | `category`    | TEXT    | Salah satu: `tour` \| `transport` \| `hotel`                                                                                                        |
 | `duration`    | TEXT    | Durasi, contoh `3D2N`                                                                                                                               |
 | `price`       | INTEGER | Harga dalam Rupiah (integer, hindari float)                                                                                                         |
-| `description` | TEXT    | Deskripsi panjang paket                                                                                                                             |
+| `description` | TEXT    | JSON object `{ id, ms, en, zh }` — deskripsi panjang paket per bahasa.                                                                               |
 | `image_url`   | TEXT    | URL gambar paket. Disimpan **di DB hanya URL-nya** — binary di Cloudflare R2 (atau `/public/uploads` di local dev). Kosong = tampilkan placeholder. |
-| `image_alt`   | TEXT    | Teks alternatif gambar untuk SEO/aksesibilitas                                                                                                      |
-| `itinerary`   | TEXT    | JSON string: array langkah itinerary                                                                                                                |
-| `includes`    | TEXT    | JSON string: array item yang termasuk                                                                                                               |
-| `excludes`    | TEXT    | JSON string: array item yang tidak termasuk                                                                                                         |
+| `image_alt`   | TEXT    | JSON object `{ id, ms, en, zh }` — teks alternatif gambar per bahasa (SEO/aksesibilitas).                                                            |
+| `itinerary`   | TEXT    | JSON object `{ id, ms, en, zh }` — tiap locale berisi array langkah itinerary.                                                                        |
+| `includes`    | TEXT    | JSON object `{ id, ms, en, zh }` — tiap locale berisi array item yang termasuk.                                                                       |
+| `excludes`    | TEXT    | JSON object `{ id, ms, en, zh }` — tiap locale berisi array item yang tidak termasuk.                                                                 |
 | `is_active`   | INTEGER | `1` tampil di publik, `0` hidden                                                                                                                    |
 | `created_at`  | INTEGER | Unix timestamp (detik)                                                                                                                              |
 | `updated_at`  | INTEGER | Unix timestamp (detik)                                                                                                                              |

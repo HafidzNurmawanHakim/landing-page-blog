@@ -1,54 +1,79 @@
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { getDb } from "../db/client";
+import { rateLimits } from "../db/schema";
 import { env } from "../env";
 
 /**
- * Simple in-memory sliding-window rate limiter.
+ * Sliding-window rate limiter backed by D1 (table `rate_limits`).
  *
- * Suitable for a single-instance deployment (OpenNext on Cloudflare Workers,
- * local dev). For multi-region/multi-instance scale, swap the backing store
- * for Cloudflare KV/Durable Object counters — the interface stays the same.
+ * Persisting counters in the database (instead of in-memory) keeps the limit
+ * effective across serverless instances — see docs/09-non-functional.md.
  *
- * NOTE: per docs/09-non-functional.md, `createBooking` is limited to
- * max 10/min per IP. Configurable via env RATE_LIMIT_MAX / RATE_LIMIT_WINDOW_MS.
+ * NOTE: `createBooking` is limited to max 10/min per IP, and `loginAdmin` to
+ * 5/min. Configurable via env RATE_LIMIT_MAX / RATE_LIMIT_WINDOW_MS.
  */
-
-type Bucket = { timestamps: number[] };
-
-const store = new Map<string, Bucket>();
 
 export type RateLimitResult =
   | { ok: true; remaining: number }
   | { ok: false; retryAfterSeconds: number };
 
-export function checkRateLimit(
+async function persist(
+  key: string,
+  timestamps: number[],
+  now: number
+): Promise<void> {
+  const db = getDb();
+  const updatedAt = Math.floor(now / 1000);
+  await db
+    .insert(rateLimits)
+    .values({ key, timestamps, updatedAt })
+    .onConflictDoUpdate({
+      target: rateLimits.key,
+      set: { timestamps, updatedAt },
+    });
+}
+
+export async function checkRateLimit(
   key: string,
   max = env.RATE_LIMIT_MAX,
   windowMs = env.RATE_LIMIT_WINDOW_MS
-): RateLimitResult {
+): Promise<RateLimitResult> {
+  const db = getDb();
   const now = Date.now();
-  const bucket = store.get(key) ?? { timestamps: [] };
 
-  // Drop expired timestamps
-  bucket.timestamps = bucket.timestamps.filter((t) => now - t < windowMs);
+  const rows = await db
+    .select({ timestamps: rateLimits.timestamps })
+    .from(rateLimits)
+    .where(eq(rateLimits.key, key))
+    .limit(1);
 
-  if (bucket.timestamps.length >= max) {
-    const oldest = bucket.timestamps[0];
-    const retryAfterSeconds = Math.max(1, Math.ceil((oldest + windowMs - now) / 1000));
-    store.set(key, bucket);
-    return { ok: false, retryAfterSeconds };
+  let timestamps = rows[0]?.timestamps ?? [];
+  timestamps = timestamps.filter((t) => now - t < windowMs);
+
+  if (timestamps.length >= max) {
+    const oldest = timestamps[0] ?? now;
+    await persist(key, timestamps, now);
+    return {
+      ok: false,
+      retryAfterSeconds: Math.max(1, Math.ceil((oldest + windowMs - now) / 1000)),
+    };
   }
 
-  bucket.timestamps.push(now);
-  store.set(key, bucket);
-  return { ok: true, remaining: max - bucket.timestamps.length };
+  timestamps.push(now);
+  await persist(key, timestamps, now);
+  return { ok: true, remaining: max - timestamps.length };
 }
 
-/** Reads the client IP from headers; falls back to "unknown". */
+/**
+ * Reads the client IP. `cf-connecting-ip` is set by Cloudflare and cannot be
+ * spoofed by clients; other headers fall back for local development.
+ */
 export async function getClientIp(): Promise<string> {
   const headerStore = await headers();
-  return (
-    headerStore.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    headerStore.get("x-real-ip") ||
-    "unknown"
-  );
+  const cf = headerStore.get("cf-connecting-ip");
+  if (cf) return cf;
+  const forwarded = headerStore.get("x-forwarded-for")?.split(",")[0]?.trim();
+  if (forwarded) return forwarded;
+  return headerStore.get("x-real-ip") || "unknown";
 }

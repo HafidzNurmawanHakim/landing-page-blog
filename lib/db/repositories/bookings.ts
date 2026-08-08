@@ -109,6 +109,7 @@ export async function createBookingRecord(data: {
   bookingCode: string;
   packageCode: string;
   packageName: string;
+  locale?: string;
   customerName: string;
   phone: string;
   email?: string;
@@ -122,6 +123,7 @@ export async function createBookingRecord(data: {
     .insert(bookings)
     .values({
       ...data,
+      locale: data.locale ?? "id",
       status: "pending",
     })
     .returning();

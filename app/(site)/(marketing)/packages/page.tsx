@@ -1,11 +1,13 @@
 import { listPackages, serializePackage } from "@/lib/db/repositories/packages";
+import { getServerLocale } from "@/lib/i18n/server";
+import { getSeo } from "@/lib/config/site";
 import { PackagesView } from "./packages-view";
 
-export const metadata = {
-  title: "Paket Kami - Destitour",
-  description:
-    "Pilih paket Tour, Transport, atau Hotel sesuai kebutuhan liburanmu ke Batam.",
-};
+export async function generateMetadata() {
+  const locale = await getServerLocale();
+  const seo = getSeo("packages", locale);
+  return { title: seo.title, description: seo.description };
+}
 
 export default async function PackagesPage({
   searchParams,

@@ -11,12 +11,10 @@ import idMessages from "@/messages/id.json";
 import msMessages from "@/messages/ms.json";
 import enMessages from "@/messages/en.json";
 import zhMessages from "@/messages/zh.json";
+import { DEFAULT_LOCALE, LOCALE_COOKIE, LOCALES, type Locale } from "./locales";
 
-export const LOCALES = ["id", "ms", "en", "zh"] as const;
-export type Locale = (typeof LOCALES)[number];
+export { DEFAULT_LOCALE, LOCALES, type Locale };
 export type Messages = Record<string, unknown>;
-
-export const DEFAULT_LOCALE: Locale = "id";
 
 const messagesMap: Record<Locale, Messages> = {
   id: idMessages,
@@ -38,22 +36,18 @@ type I18nContextValue = {
 
 const I18nContext = createContext<I18nContextValue | null>(null);
 
-function getInitialLocale(): Locale {
-  if (typeof window === "undefined") return DEFAULT_LOCALE;
-  try {
-    const stored = window.localStorage.getItem("locale");
-    return (LOCALES as readonly string[]).includes(stored ?? "")
-      ? (stored as Locale)
-      : DEFAULT_LOCALE;
-  } catch {
-    return DEFAULT_LOCALE;
-  }
-}
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(DEFAULT_LOCALE);
+export function I18nProvider({
+  children,
+  initialLocale = DEFAULT_LOCALE,
+}: {
+  children: React.ReactNode;
+  initialLocale?: Locale;
+}) {
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
   const [messages, setMessages] = useState<Messages>(() =>
-    loadMessages(DEFAULT_LOCALE)
+    loadMessages(initialLocale)
   );
 
   useEffect(() => {
@@ -61,18 +55,12 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
     setMessages(loadMessages(locale));
   }, [locale]);
 
-  useEffect(() => {
-    const stored = getInitialLocale();
-    if (stored !== DEFAULT_LOCALE) {
-      setLocaleState(stored);
-    }
-  }, []);
-
   const setLocale = useCallback((next: Locale) => {
     try {
       window.localStorage.setItem("locale", next);
+      document.cookie = `${LOCALE_COOKIE}=${next}; path=/; max-age=${COOKIE_MAX_AGE}; samesite=lax`;
     } catch {
-      // ignore: storage unavailable, still switch in-memory
+      // ignore: storage/cookie unavailable, still switch in-memory
     }
     setLocaleState(next);
   }, []);

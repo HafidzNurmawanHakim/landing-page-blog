@@ -1,7 +1,9 @@
 import { z } from "zod";
+import { LOCALES } from "@/lib/i18n/locales";
 
 export const bookingBaseSchema = z.object({
   packageCode: z.string().min(1, "Kode paket wajib"),
+  locale: z.enum(LOCALES).optional(),
   customerName: z.string().min(3, "Nama minimal 3 karakter"),
   phone: z.string().regex(/^[0-9+]{9,15}$/, "Nomor HP tidak valid"),
   email: z.string().email("Email tidak valid").optional().or(z.literal("")),

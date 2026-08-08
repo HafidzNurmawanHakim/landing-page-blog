@@ -20,6 +20,46 @@ const ALLOWED_MIME = new Set([
   "image/gif",
 ]);
 
+/**
+ * Detect the real image type from magic bytes. The client-supplied MIME is
+ * untrusted, so the extension/content-type are always derived from here.
+ */
+export function detectImageMime(bytes: Uint8Array): string | null {
+  if (bytes.length < 12) return null;
+
+  if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) {
+    return "image/jpeg";
+  }
+  if (
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47
+  ) {
+    return "image/png";
+  }
+  if (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46) {
+    return "image/gif";
+  }
+  if (
+    bytes[0] === 0x52 &&
+    bytes[1] === 0x49 &&
+    bytes[2] === 0x46 &&
+    bytes[3] === 0x46 &&
+    bytes[8] === 0x57 &&
+    bytes[9] === 0x45 &&
+    bytes[10] === 0x42 &&
+    bytes[11] === 0x50
+  ) {
+    return "image/webp";
+  }
+  if (bytes[4] === 0x66 && bytes[5] === 0x74 && bytes[6] === 0x79 && bytes[7] === 0x70) {
+    const brand = String.fromCharCode(bytes[8], bytes[9], bytes[10], bytes[11]);
+    if (brand === "avif" || brand === "avis") return "image/avif";
+  }
+  return null;
+}
+
 export type MediaInput = {
   name: string;
   type: string;
@@ -81,23 +121,25 @@ function publicObjectUrl(key: string): string {
 export async function storeMedia(
   file: MediaInput
 ): Promise<StoredMedia> {
-  if (!ALLOWED_MIME.has(file.type)) {
-    throw new Error("Tipe file tidak didukung. Gunakan JPG, PNG, WebP, AVIF, atau GIF.");
-  }
   if (file.size > MAX_MEDIA_BYTES) {
     throw new Error("Ukuran file maksimal 5 MB.");
   }
 
   const bytes = new Uint8Array(await file.arrayBuffer());
+  const detected = detectImageMime(bytes);
+  if (!detected || !ALLOWED_MIME.has(detected)) {
+    throw new Error("Tipe file tidak didukung. Gunakan JPG, PNG, WebP, AVIF, atau GIF.");
+  }
+  const mime = detected;
 
   if (isR2Configured()) {
-    const key = `packages/${crypto.randomUUID()}.${extForMime(file.type)}`;
+    const key = `packages/${crypto.randomUUID()}.${extForMime(mime)}`;
     await r2Client().send(
       new PutObjectCommand({
         Bucket: env.R2_BUCKET_NAME,
         Key: key,
         Body: bytes,
-        ContentType: file.type,
+        ContentType: mime,
         CacheControl: "public, max-age=31536000, immutable",
       })
     );
@@ -106,7 +148,7 @@ export async function storeMedia(
       key,
       filename: file.name,
       size: file.size,
-      mimeType: file.type,
+      mimeType: mime,
     };
   }
 
@@ -115,14 +157,14 @@ export async function storeMedia(
     const path = await import("node:path");
     const dir = path.join(process.cwd(), "public", "uploads");
     fs.mkdirSync(dir, { recursive: true });
-    const filename = `${crypto.randomUUID()}.${extForMime(file.type)}`;
+    const filename = `${crypto.randomUUID()}.${extForMime(mime)}`;
     fs.writeFileSync(path.join(dir, filename), bytes);
     return {
       url: `/uploads/${filename}`,
       key: filename,
       filename: file.name,
       size: file.size,
-      mimeType: file.type,
+      mimeType: mime,
     };
   }
 

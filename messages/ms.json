@@ -5,6 +5,7 @@
     "pricing": "Harga",
     "contact": "Hubungi",
     "faq": "FAQ",
+    "about": "Tentang Kami",
     "admin": "Admin",
     "bookNow": "Tempah Sekarang",
     "openMenu": "Buka menu",
@@ -105,6 +106,58 @@
     "message": "Mesej",
     "messagePh": "Tulis mesej anda...",
     "send": "Hantar Mesej"
+  },
+  "about": {
+    "title": "Tentang Kami",
+    "heading": "Tentang Destitour",
+    "badge": "Kisah Kami",
+    "intro": "Destitour ialah pasaran pelancongan tempatan di Batam yang menggabungkan Tour, Pengangkutan, dan Hotel dalam satu platform. Kami lahir daripada keperluan untuk menjadikan perjalanan ke Batam semudah memesan menu melalui telefon.",
+    "storyTitle": "Kenapa Destitour?",
+    "story1": "Sebagai penduduk tempatan, kami faham pelancong perlukan kepastian: harga jelas, pengesahan pantas, dan itinerari yang benar-benar berjalan. Sebab itu setiap pakej kami kurasi sendiri, harga telus tanpa yuran tersembunyi, dan pengesahan dihantar dalam beberapa minit melalui WhatsApp.",
+    "story2": "Dari city tour, Jambatan Barelang, island hopping, hingga perkhidmatan pengangkutan dan hotel — semuanya boleh diurus dari satu tempat. Pasukan kami sedia membantu bila-bila masa, dari perancangan hingga perjalanan selesai.",
+    "missionTitle": "Misi Kami",
+    "mission": "Memberikan pengalaman tempahan pelancongan yang mudah, telus, dan dipercayai bagi setiap orang yang ingin menjelajah Batam.",
+    "visionTitle": "Visi Kami",
+    "vision": "Menjadi platform pelancongan tempatan yang dipercayai di Batam dan Kepulauan Riau, dikenali melalui perkhidmatan pantas dan harga jujur.",
+    "values": {
+      "title": "Nilai Kami",
+      "heading": "Prinsip yang Kami Pegang",
+      "v1": {
+        "title": "Telus",
+        "desc": "Harga akhir tanpa yuran tersembunyi. Semua persetujuan jelas sejak awal."
+      },
+      "v2": {
+        "title": "Cepat Tanggap",
+        "desc": "Pengesahan dan balasan admin dalam beberapa minit, bila-bila masa diperlukan."
+      },
+      "v3": {
+        "title": "Lokal & Dipercayai",
+        "desc": "Pemandu dan rakan kongsi tempatan berpengalaman yang kenal Batam dari hati."
+      },
+      "v4": {
+        "title": "Fleksibel",
+        "desc": "Jadual mudah diubah, pembatalan diproses terus oleh admin."
+      }
+    },
+    "stats": {
+      "title": "Destitour dalam Angka",
+      "y1": {
+        "value": "5+",
+        "label": "Tahun Berkhidmat"
+      },
+      "y2": {
+        "value": "1000+",
+        "label": "Pelanggan Puas"
+      },
+      "y3": {
+        "value": "50+",
+        "label": "Pakej Tersedia"
+      },
+      "y4": {
+        "value": "4.9/5",
+        "label": "Penilaian Kepuasan"
+      }
+    }
   },
   "faq": {
     "title": "FAQS",
@@ -227,6 +280,10 @@
     "about": "Tentang Kami",
     "admin": "Admin",
     "rights": "Hak cipta terpelihara"
+  },
+  "wa": {
+    "chat": "Chat WhatsApp",
+    "chatWithAdmin": "Chat dengan admin"
   },
   "admin": {
     "loginTitle": "Login Admin",

@@ -1,6 +1,13 @@
 import { and, asc, eq, sql } from "drizzle-orm";
 import { getDb } from "../client";
 import { packages, type Package } from "../schema";
+import {
+  type LocalizedList,
+  type LocalizedString,
+} from "@/lib/i18n/locales";
+
+export { localizePackage, type LocalizedFields } from "@/lib/i18n/localize";
+export type { LocalizedPackage } from "@/lib/i18n/localize";
 
 export const PACKAGE_CATEGORIES = ["tour", "transport", "hotel"] as const;
 
@@ -29,13 +36,20 @@ export type PackageFilters = {
 export function serializePackage(row: Package) {
   return {
     ...row,
-    itinerary: row.itinerary ?? [],
-    includes: row.includes ?? [],
-    excludes: row.excludes ?? [],
+    itinerary: row.itinerary ?? {},
+    includes: row.includes ?? {},
+    excludes: row.excludes ?? {},
   };
 }
 
-export type SerializedPackage = ReturnType<typeof serializePackage>;
+export type SerializedPackage = Omit<
+  Package,
+  "itinerary" | "includes" | "excludes"
+> & {
+  itinerary: LocalizedList;
+  includes: LocalizedList;
+  excludes: LocalizedList;
+};
 
 export async function listPackages(
   filters: PackageFilters = {}
@@ -127,17 +141,17 @@ export async function getPackageById(id: number): Promise<Package | null> {
 
 export type PackageInput = {
   code: string;
-  name: string;
+  name: LocalizedString;
   slug: string;
   category: PackageCategory;
   duration?: string | null;
   price: number;
-  description?: string | null;
+  description?: LocalizedString | null;
   imageUrl?: string | null;
-  imageAlt?: string | null;
-  itinerary?: string[];
-  includes?: string[];
-  excludes?: string[];
+  imageAlt?: LocalizedString | null;
+  itinerary?: LocalizedList;
+  includes?: LocalizedList;
+  excludes?: LocalizedList;
   isActive?: number;
 };
 
@@ -151,9 +165,9 @@ export async function createPackage(data: PackageInput): Promise<Package> {
       description: data.description || null,
       imageUrl: data.imageUrl || null,
       imageAlt: data.imageAlt || null,
-      itinerary: data.itinerary ?? [],
-      includes: data.includes ?? [],
-      excludes: data.excludes ?? [],
+      itinerary: data.itinerary ?? {},
+      includes: data.includes ?? {},
+      excludes: data.excludes ?? {},
       isActive: data.isActive ?? 1,
       createdAt: Math.floor(Date.now() / 1000),
       updatedAt: Math.floor(Date.now() / 1000),
@@ -179,9 +193,9 @@ export async function updatePackage(
       description: data.description || null,
       imageUrl: data.imageUrl || null,
       imageAlt: data.imageAlt || null,
-      itinerary: data.itinerary ?? [],
-      includes: data.includes ?? [],
-      excludes: data.excludes ?? [],
+      itinerary: data.itinerary ?? {},
+      includes: data.includes ?? {},
+      excludes: data.excludes ?? {},
       isActive: data.isActive ?? existing.isActive,
       updatedAt: Math.floor(Date.now() / 1000),
     })

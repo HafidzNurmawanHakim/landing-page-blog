@@ -3,6 +3,8 @@ import {
   getPackageBySlug,
   serializePackage,
 } from "@/lib/db/repositories/packages";
+import { pickLocale } from "@/lib/i18n/locales";
+import { getServerLocale } from "@/lib/i18n/server";
 import { PackageDetailView } from "./package-detail-view";
 
 export async function generateMetadata({
@@ -11,11 +13,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const pkg = await getPackageBySlug(slug);
+  const [pkg, locale] = await Promise.all([getPackageBySlug(slug), getServerLocale()]);
   if (!pkg) return { title: "Paket Tidak Ditemukan" };
   return {
-    title: `${pkg.name} - Destitour`,
-    description: pkg.description,
+    title: `${pickLocale(pkg.name, locale)} - Destitour`,
+    description: pickLocale(pkg.description, locale),
   };
 }
 

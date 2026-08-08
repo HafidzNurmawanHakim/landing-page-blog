@@ -10,6 +10,7 @@ import {
 import { generateUniqueBookingCode } from "@/lib/services/booking-code";
 import { dispatchBookingNotifications } from "@/lib/services/notifications";
 import { checkRateLimit, getClientIp } from "@/lib/security/rate-limit";
+import { DEFAULT_LOCALE, pickLocale } from "@/lib/i18n/locales";
 
 export type CreateBookingResult =
   | { success: true; bookingCode: string }
@@ -27,7 +28,7 @@ export async function createBooking(
 ): Promise<CreateBookingResult> {
   // 1. Rate limiting per IP (docs/09-non-functional.md: spam protection)
   const ip = await getClientIp();
-  const limit = checkRateLimit(`booking:${ip}`);
+  const limit = await checkRateLimit(`booking:${ip}`);
   if (!limit.ok) {
     return {
       success: false,
@@ -64,11 +65,13 @@ export async function createBooking(
   // 4. Persist booking (status pending)
   let bookingCode: string;
   try {
+    const locale = data.locale ?? DEFAULT_LOCALE;
     bookingCode = await generateUniqueBookingCode();
     await createBookingRecord({
       bookingCode,
       packageCode: pkg.code,
-      packageName: pkg.name,
+      packageName: pickLocale(pkg.name, locale),
+      locale,
       customerName: data.customerName,
       phone: data.phone,
       email: data.email || undefined,

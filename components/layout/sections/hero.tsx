@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 
 import { useI18n } from "@/lib/i18n/provider";
 import { cn } from "@/lib/utils";
+import ClientOnly from "@/components/ui/client-only";
 
 const CARD_HEIGHT = 320;
 
@@ -173,33 +174,35 @@ export function HeroSection() {
       </div>
 
       <div className="relative z-10 mt-16 overflow-hidden md:mt-24">
-        <div
-          className="group flex w-max animate-marquee gap-6 py-8 hover:[animation-play-state:paused]"
-          style={{
-            maskImage:
-              "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
-          }}
-        >
-          {[...slides, ...slides].map((image, i) => (
-            <div
-              key={`${image.src}-${i}`}
-              className="group/card relative overflow-hidden rounded-3xl shadow-lg transition-transform duration-300 hover:scale-[1.03]"
-              style={{
-                width: image.width,
-                height: CARD_HEIGHT,
-                transform: `translateY(${image.offsetY}px)`,
-              }}
-            >
-              <Image
-                fill
-                src={image.src}
-                alt={image.alt}
-                className="object-cover transition-transform duration-500 group-hover/card:scale-105"
-                sizes={`${image.width}px`}
-              />
-            </div>
-          ))}
-        </div>
+        <ClientOnly>
+          <div
+            className="group flex w-max animate-marquee gap-6 py-8 hover:[animation-play-state:paused]"
+            style={{
+              maskImage:
+                "linear-gradient(to right, transparent, black 10%, black 90%, transparent)",
+            }}
+          >
+            {[...slides, ...slides].map((image, i) => (
+              <div
+                key={`${image.src}-${i}`}
+                className="group/card relative overflow-hidden rounded-3xl shadow-lg transition-transform duration-300 hover:scale-[1.03]"
+                style={{
+                  width: image.width,
+                  height: CARD_HEIGHT,
+                  transform: `translateY(${image.offsetY}px)`,
+                }}
+              >
+                <Image
+                  fill
+                  src={image.src}
+                  alt={image.alt}
+                  className="object-cover transition-transform duration-500 group-hover/card:scale-105"
+                  sizes={`${image.width}px`}
+                />
+              </div>
+            ))}
+          </div>
+        </ClientOnly>
       </div>
     </section>
   );

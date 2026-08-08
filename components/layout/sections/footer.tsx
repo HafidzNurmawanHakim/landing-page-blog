@@ -1,37 +1,15 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
 import { Logo } from "@/components/layout/logo";
+import { siteConfig, pickSiteText } from "@/lib/config/site";
 
 export const FooterSection = () => {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
 
-  const footerLinks: {
-    titleKey: string;
-    links: { labelKey: string; href: string }[];
-  }[] = [
-    {
-      titleKey: "footer.packages",
-      links: [
-        { labelKey: "footer.tour", href: "/packages?category=tour" },
-        { labelKey: "footer.transport", href: "/packages?category=transport" },
-        { labelKey: "footer.hotel", href: "/packages?category=hotel" },
-      ],
-    },
-    {
-      titleKey: "footer.help",
-      links: [
-        { labelKey: "footer.howToBook", href: "/#faq" },
-        { labelKey: "footer.contact", href: "/#contact" },
-        { labelKey: "footer.faq", href: "/#faq" },
-      ],
-    },
-    {
-      titleKey: "footer.info",
-      links: [{ labelKey: "footer.about", href: "/#about" }],
-    },
-  ];
+  const footerLinks = siteConfig.links.footer;
 
   return (
     <footer id="footer" className="container py-24 sm:py-32">
@@ -42,6 +20,27 @@ export const FooterSection = () => {
             <p className="mt-4 text-sm text-muted-foreground">
               {t("footer.tagline")}
             </p>
+
+            <div className="mt-6 flex flex-col gap-3 text-sm text-muted-foreground">
+              <div className="flex items-start gap-2">
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                {pickSiteText(siteConfig.contact.address, locale)}
+              </div>
+              <a
+                href={`tel:${siteConfig.contact.phone}`}
+                className="flex items-center gap-2 transition-colors hover:text-primary"
+              >
+                <Phone className="h-4 w-4 shrink-0 text-primary" />
+                {siteConfig.contact.phoneDisplay}
+              </a>
+              <a
+                href={`mailto:${siteConfig.contact.email}`}
+                className="flex items-center gap-2 transition-colors hover:text-primary"
+              >
+                <Mail className="h-4 w-4 shrink-0 text-primary" />
+                {siteConfig.contact.email}
+              </a>
+            </div>
           </div>
 
           {footerLinks.map((col) => (
@@ -64,7 +63,8 @@ export const FooterSection = () => {
 
         <Separator className="my-8" />
         <div className="text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Destitour. {t("footer.rights")}.
+          &copy; {new Date().getFullYear()} {siteConfig.name}.{" "}
+          {t("footer.rights")}.
         </div>
       </div>
     </footer>

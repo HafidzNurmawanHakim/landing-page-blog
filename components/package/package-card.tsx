@@ -6,8 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PackageImage } from "@/components/package/package-image";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
+import { localizePackage } from "@/lib/i18n/localize";
 import { formatIDR } from "@/lib/utils/format";
 import { useI18n } from "@/lib/i18n/provider";
+import ClientOnly from "../ui/client-only";
+import { Spinner } from "../ui/spinner";
 
 const categoryColor: Record<string, string> = {
   tour: "bg-primary text-primary-foreground",
@@ -20,14 +23,15 @@ interface PackageCardProps {
 }
 
 export function PackageCard({ pkg }: PackageCardProps) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
+  const localized = localizePackage(pkg, locale);
 
   return (
     <div className="group relative flex h-[420px] w-full flex-col overflow-hidden rounded-3xl border-0 bg-muted shadow-none">
       {/* Full Background Image */}
       <PackageImage
-        src={pkg.imageUrl}
-        alt={pkg.imageAlt}
+        src={localized.imageUrl}
+        alt={localized.imageAlt}
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
       />
 
@@ -55,17 +59,19 @@ export function PackageCard({ pkg }: PackageCardProps) {
         <div className="flex flex-col gap-3 transition-all duration-300">
           <div>
             <h3 className="text-xl font-bold leading-tight text-white drop-shadow-sm">
-              {pkg.name}
+              {localized.name}
             </h3>
-            <p className="mt-1 text-2xl font-extrabold text-white">
-              {formatIDR(pkg.price)}
-            </p>
+            <ClientOnly fallback={<Spinner />}>
+              <p className="mt-1 text-2xl font-extrabold text-white">
+                {formatIDR(localized.price)}
+              </p>
+            </ClientOnly>
           </div>
 
           {/* Description Overlay: Ringkasan saat normal (2 baris), Tampil Penuh saat Hover */}
-          {pkg.description && (
+          {localized.description && (
             <p className="text-sm text-white/80 line-clamp-2 transition-all duration-300 group-hover:line-clamp-none group-hover:text-white">
-              {pkg.description}
+              {localized.description}
             </p>
           )}
 

@@ -12,7 +12,23 @@ import {
   togglePackageActive,
   updatePackage,
 } from "@/lib/db/repositories/packages";
-import { packageFormSchema } from "@/lib/validations/packages";
+import { packageFormSchema, localizedName } from "@/lib/validations/packages";
+import type { Locale, LocalizedString } from "@/lib/i18n/locales";
+
+/**
+ * Drop empty locales so stored objects only carry real values. Keeps the DB
+ * tidy and lets `pickLocale` fall back cleanly.
+ */
+function cleanLocalized(
+  obj: Record<string, string | undefined> | undefined
+): LocalizedString {
+  const out: LocalizedString = {};
+  if (!obj) return out;
+  for (const [key, value] of Object.entries(obj)) {
+    if (value && value.trim()) out[key as Locale] = value.trim();
+  }
+  return out;
+}
 
 export type PackageActionResult =
   | { success: true; id: number }
@@ -43,7 +59,7 @@ export async function createPackageAction(
   }
 
   const data = parsed.data;
-  const slug = data.slug?.trim() || slugify(data.name);
+  const slug = data.slug?.trim() || slugify(localizedName(data));
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     return { success: false, message: "Slug tidak valid." };
   }
@@ -57,17 +73,17 @@ export async function createPackageAction(
 
   const pkg = await createPackage({
     code: data.code,
-    name: data.name,
+    name: cleanLocalized(data.name),
     slug,
     category: data.category,
     duration: data.duration || null,
     price: data.price,
-    description: data.description || null,
+    description: cleanLocalized(data.description),
     imageUrl: data.imageUrl || null,
-    imageAlt: data.imageAlt || null,
-    itinerary: data.itinerary ?? [],
-    includes: data.includes ?? [],
-    excludes: data.excludes ?? [],
+    imageAlt: cleanLocalized(data.imageAlt),
+    itinerary: data.itinerary ?? {},
+    includes: data.includes ?? {},
+    excludes: data.excludes ?? {},
     isActive: data.isActive ?? 1,
   });
 
@@ -97,7 +113,7 @@ export async function updatePackageAction(
   if (!existing) return { success: false, message: "Paket tidak ditemukan." };
 
   const data = parsed.data;
-  const slug = data.slug?.trim() || slugify(data.name);
+  const slug = data.slug?.trim() || slugify(localizedName(data));
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     return { success: false, message: "Slug tidak valid." };
   }
@@ -113,17 +129,17 @@ export async function updatePackageAction(
 
   const updated = await updatePackage(id, {
     code: data.code,
-    name: data.name,
+    name: cleanLocalized(data.name),
     slug,
     category: data.category,
     duration: data.duration || null,
     price: data.price,
-    description: data.description || null,
+    description: cleanLocalized(data.description),
     imageUrl: data.imageUrl || null,
-    imageAlt: data.imageAlt || null,
-    itinerary: data.itinerary ?? [],
-    includes: data.includes ?? [],
-    excludes: data.excludes ?? [],
+    imageAlt: cleanLocalized(data.imageAlt),
+    itinerary: data.itinerary ?? {},
+    includes: data.includes ?? {},
+    excludes: data.excludes ?? {},
     isActive: data.isActive ?? existing.isActive,
   });
   if (!updated) return { success: false, message: "Paket tidak ditemukan." };

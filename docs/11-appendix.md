@@ -7,11 +7,11 @@
 ```json
 {
   "code": "BATAM-3D2N",
-  "name": "Batam 3 Hari 2 Malam",
+  "name": { "id": "Batam 3 Hari 2 Malam", "ms": "Batam 3 Hari 2 Malam", "en": "Batam 3 Days 2 Nights", "zh": "巴淡 3 天 2 夜" },
   "category": "tour",
   "duration": "3D2N",
   "price": 1850000,
-  "description": "Paket lengkap wisata Batam..."
+  "description": { "id": "Paket lengkap wisata Batam...", "en": "Complete Batam tour package..." }
 }
 ```
 

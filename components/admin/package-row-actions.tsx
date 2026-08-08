@@ -10,11 +10,13 @@ import {
   togglePackageActiveAction,
 } from "@/app/actions/packages";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
+import { pickLocale } from "@/lib/i18n/locales";
 
 export function PackageRowActions({ pkg }: { pkg: SerializedPackage }) {
   const router = useRouter();
   const [busy, setBusy] = useState<"toggle" | "delete" | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const displayName = pickLocale(pkg.name);
 
   async function handleToggle() {
     setBusy("toggle");
@@ -34,7 +36,7 @@ export function PackageRowActions({ pkg }: { pkg: SerializedPackage }) {
   }
 
   async function handleDelete() {
-    if (!window.confirm(`Hapus paket "${pkg.name}"? Tindakan ini tidak bisa dibatalkan.`)) {
+    if (!window.confirm(`Hapus paket "${displayName}"? Tindakan ini tidak bisa dibatalkan.`)) {
       return;
     }
     setBusy("delete");
@@ -87,7 +89,7 @@ export function PackageRowActions({ pkg }: { pkg: SerializedPackage }) {
         className="rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
         onClick={() => void handleDelete()}
         disabled={busy === "delete"}
-        aria-label={`Hapus ${pkg.name}`}
+        aria-label={`Hapus `}
       >
         {busy === "delete" ? (
           <Loader2 className="h-4 w-4 animate-spin" />

@@ -36,7 +36,7 @@ export async function loginAdmin(input: {
   password: string;
 }): Promise<LoginResult> {
   const ip = await getClientIp();
-  const limit = checkRateLimit(`admin-login:${ip}`, 5, 60_000);
+  const limit = await checkRateLimit(`admin-login:${ip}`, 5, 60_000);
   if (!limit.ok) {
     return {
       success: false,

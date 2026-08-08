@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { listPackages, serializePackage } from "@/lib/db/repositories/packages";
+import { pickLocale } from "@/lib/i18n/locales";
 import { formatIDR } from "@/lib/utils/format";
 import { PackageImage } from "@/components/package/package-image";
 import { PackageRowActions } from "@/components/admin/package-row-actions";
@@ -21,7 +22,6 @@ const categoryLabels: Record<string, string> = {
 export default async function AdminPackagesPage() {
   const { items } = await listPackages({ activeOnly: false });
   const packages = items.map(serializePackage);
-  console.log({ packages });
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -71,11 +71,13 @@ export default async function AdminPackagesPage() {
                       <div className="flex items-center gap-3">
                         <PackageImage
                           src={pkg.imageUrl}
-                          alt={pkg.imageAlt}
+                          alt={pickLocale(pkg.imageAlt)}
                           className="h-12 w-16 shrink-0 rounded-xl"
                         />
                         <div className="min-w-0">
-                          <p className="truncate font-medium">{pkg.name}</p>
+                          <p className="truncate font-medium">
+                            {pickLocale(pkg.name)}
+                          </p>
                           <p className="truncate text-xs text-muted-foreground">
                             /{pkg.slug}
                           </p>

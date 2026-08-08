@@ -10,17 +10,18 @@ import { PackageImage } from "@/components/package/package-image";
 import { BookingDialog } from "@/components/booking/booking-dialog";
 import type { ReusableModalRef } from "@/components/ui/modal-drawer";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
+import { localizePackage } from "@/lib/i18n/localize";
 import { formatIDR } from "@/lib/utils/format";
 import { useI18n } from "@/lib/i18n/provider";
 
 export function PackageDetailView({ pkg }: { pkg: SerializedPackage }) {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const bookingRef = useRef<ReusableModalRef>(null);
+  const localized = localizePackage(pkg, locale);
 
-  // Defensive fallback untuk tipe data nullable
-  const itinerary = pkg.itinerary ?? [];
-  const includes = pkg.includes ?? [];
-  const excludes = pkg.excludes ?? [];
+  const itinerary = localized.itinerary;
+  const includes = localized.includes;
+  const excludes = localized.excludes;
 
   return (
     <main className="container max-w-7xl mx-auto px-4 py-8 sm:py-12">
@@ -41,8 +42,8 @@ export function PackageDetailView({ pkg }: { pkg: SerializedPackage }) {
           {/* Hero Image Container */}
           <div className="relative overflow-hidden rounded-3xl shadow-sm">
             <PackageImage
-              src={pkg.imageUrl}
-              alt={pkg.imageAlt ?? pkg.name}
+              src={localized.imageUrl}
+              alt={localized.imageAlt}
               className="h-72 w-full object-cover transition-transform duration-500 hover:scale-105 md:h-[420px]"
             />
           </div>
@@ -69,12 +70,12 @@ export function PackageDetailView({ pkg }: { pkg: SerializedPackage }) {
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              {pkg.name}
+              {localized.name}
             </h1>
 
-            {pkg.description && (
+            {localized.description && (
               <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
-                {pkg.description}
+                {localized.description}
               </p>
             )}
           </header>
@@ -163,7 +164,7 @@ export function PackageDetailView({ pkg }: { pkg: SerializedPackage }) {
               </span>
               <div className="mt-1 flex items-baseline gap-1">
                 <p className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                  {formatIDR(pkg.price)}
+                  {formatIDR(localized.price)}
                 </p>
               </div>
 
@@ -185,7 +186,7 @@ export function PackageDetailView({ pkg }: { pkg: SerializedPackage }) {
         </aside>
       </div>
 
-      <BookingDialog ref={bookingRef} pkg={{ code: pkg.code, name: pkg.name, price: pkg.price }} />
+      <BookingDialog ref={bookingRef} pkg={{ code: localized.code, name: localized.name, price: localized.price }} />
     </main>
   );
 }

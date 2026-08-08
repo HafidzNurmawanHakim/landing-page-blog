@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { listPackages, serializePackage } from "@/lib/db/repositories/packages";
+import {
+  listPackages,
+  localizePackage,
+  serializePackage,
+} from "@/lib/db/repositories/packages";
+import { LOCALES, type Locale } from "@/lib/i18n/locales";
 
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/packages?category=tour&page=1&limit=10
+ * GET /api/packages?category=tour&page=1&limit=10&locale=en
  *
  * Response contract (docs/05-api-server-actions.md):
  *   { data: Package[], meta: { page, limit, total, totalPages } }
+ * Localized fields are resolved when a valid `locale` is provided.
  */
 export async function GET(req: NextRequest) {
   const category = req.nextUrl.searchParams.get("category");
@@ -16,6 +22,10 @@ export async function GET(req: NextRequest) {
     100,
     Math.max(1, Number(req.nextUrl.searchParams.get("limit")) || 10)
   );
+  const localeParam = req.nextUrl.searchParams.get("locale");
+  const locale = (LOCALES as readonly string[]).includes(localeParam ?? "")
+    ? (localeParam as Locale)
+    : null;
 
   try {
     const valid = ["tour", "transport", "hotel", "all"];
@@ -27,8 +37,13 @@ export async function GET(req: NextRequest) {
       limit,
     });
 
+    const data = items.map((pkg) => {
+      const serialized = serializePackage(pkg);
+      return locale ? localizePackage(serialized, locale) : serialized;
+    });
+
     return NextResponse.json({
-      data: items.map(serializePackage),
+      data,
       meta: { page, limit, total, totalPages },
     });
   } catch (err) {

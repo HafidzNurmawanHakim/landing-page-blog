@@ -95,7 +95,11 @@ export const BookingDialog = forwardRef<ReusableModalRef, BookingDialogProps>(
       setFormError(null);
 
       try {
-        const result = await createBooking({ ...values, packageCode: pkg.code });
+        const result = await createBooking({
+          ...values,
+          packageCode: pkg.code,
+          locale,
+        });
 
         if (!result.success) {
           if ("errors" in result) {

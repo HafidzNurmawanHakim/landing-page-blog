@@ -6,26 +6,29 @@ import { HeroSection } from "@/components/layout/sections/hero";
 import { FeaturedPackages } from "@/components/layout/sections/featured-packages";
 import { TestimonialSection } from "@/components/layout/sections/testimonial";
 import { listPackages, serializePackage } from "@/lib/db/repositories/packages";
+import { getServerLocale } from "@/lib/i18n/server";
+import { getSeo } from "@/lib/config/site";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Destitour - Booking Paket Wisata",
-  description:
-    "Marketplace paket tour Batam: Tour, Transport, Hotel. Booking online dengan konfirmasi cepat via WhatsApp.",
-  openGraph: {
-    type: "website",
-    title: "Destitour - Booking Paket Wisata",
-    description:
-      "Marketplace paket tour Batam: Tour, Transport, Hotel. Booking online dengan konfirmasi cepat via WhatsApp.",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Destitour - Booking Paket Wisata",
-    description:
-      "Marketplace paket tour Batam: Tour, Transport, Hotel. Booking online dengan konfirmasi cepat via WhatsApp.",
-  },
-};
+export async function generateMetadata() {
+  const locale = await getServerLocale();
+  const seo = getSeo("home", locale);
+  return {
+    title: seo.title,
+    description: seo.description,
+    openGraph: {
+      type: "website",
+      title: seo.title,
+      description: seo.description,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+    },
+  };
+}
 
 export default async function Home() {
   const { items } = await listPackages({ activeOnly: true, limit: 4 });

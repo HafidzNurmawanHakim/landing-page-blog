@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +8,7 @@ import { z } from "zod";
 import {
   AlertCircle,
   ImageUp,
+  Languages,
   Loader2,
   Plus,
   Trash2,
@@ -18,6 +19,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { PackageImage } from "@/components/package/package-image";
+import ModalImageUploader from "@/components/ui/image-uploader";
+import type { ImageUploadModalRef } from "@/components/ui/image-uploader/_types";
 import {
   Select,
   SelectContent,
@@ -34,6 +37,12 @@ import {
   updatePackageAction,
 } from "@/app/actions/packages";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
+import {
+  LOCALE_LABELS,
+  LOCALES,
+  type Locale,
+  type LocalizedList,
+} from "@/lib/i18n/locales";
 import { cn } from "@/lib/utils";
 
 type StringList = { value: string }[];
@@ -48,6 +57,23 @@ function fromList(list: StringList): string[] {
     .filter((value) => value.length > 0);
 }
 
+function toLocaleLists(items?: LocalizedList): Record<Locale, StringList> {
+  const out = {} as Record<Locale, StringList>;
+  for (const code of LOCALES) out[code] = toList(items?.[code]);
+  return out;
+}
+
+function toLocalizedList(
+  map: Record<Locale, StringList>
+): LocalizedList {
+  const out: LocalizedList = {};
+  for (const code of LOCALES) {
+    const cleaned = fromList(map[code]);
+    if (cleaned.length > 0) out[code] = cleaned;
+  }
+  return out;
+}
+
 export function PackageForm({
   pkg,
   mode,
@@ -57,18 +83,18 @@ export function PackageForm({
 }) {
   const router = useRouter();
   const isEdit = mode === "edit";
+  const uploaderRef = useRef<ImageUploadModalRef>(null);
+  const [activeLocale, setActiveLocale] = useState<Locale>("id");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [itinerary, setItinerary] = useState<StringList>(() =>
-    toList(pkg?.itinerary)
+  const [itinerary, setItinerary] = useState<Record<Locale, StringList>>(() =>
+    toLocaleLists(pkg?.itinerary)
   );
-  const [includes, setIncludes] = useState<StringList>(() =>
-    toList(pkg?.includes)
+  const [includes, setIncludes] = useState<Record<Locale, StringList>>(() =>
+    toLocaleLists(pkg?.includes)
   );
-  const [excludes, setExcludes] = useState<StringList>(() =>
-    toList(pkg?.excludes)
+  const [excludes, setExcludes] = useState<Record<Locale, StringList>>(() =>
+    toLocaleLists(pkg?.excludes)
   );
   const [slugTouched, setSlugTouched] = useState(false);
 
@@ -82,20 +108,20 @@ export function PackageForm({
     resolver: zodResolver(packageFormSchema),
     defaultValues: {
       code: pkg?.code ?? "",
-      name: pkg?.name ?? "",
+      name: pkg?.name ?? {},
       slug: pkg?.slug ?? "",
       category: (pkg?.category as PackageFormValues["category"]) ?? "tour",
       duration: pkg?.duration ?? "",
       price: pkg?.price ?? 0,
-      description: pkg?.description ?? "",
+      description: pkg?.description ?? {},
       imageUrl: pkg?.imageUrl ?? "",
-      imageAlt: pkg?.imageAlt ?? "",
+      imageAlt: pkg?.imageAlt ?? {},
       isActive: pkg?.isActive ?? 1,
     },
   });
 
   const slugValue = watch("slug") ?? "";
-  const nameValue = watch("name") ?? "";
+  const nameValue = watch("name.id") ?? "";
 
   function autoSlug() {
     if (slugTouched) return;
@@ -111,35 +137,33 @@ export function PackageForm({
   }
 
   function updateList(
-    setter: React.Dispatch<React.SetStateAction<StringList>>,
+    setter: React.Dispatch<React.SetStateAction<Record<Locale, StringList>>>,
+    locale: Locale,
     index: number,
     value: string
   ) {
-    setter((prev) => prev.map((item, i) => (i === index ? { value } : item)));
+    setter((prev) => ({
+      ...prev,
+      [locale]: prev[locale].map((item, i) => (i === index ? { value } : item)),
+    }));
   }
 
-  async function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setIsUploading(true);
-    setUploadError(null);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/admin/media/upload", { method: "POST", body: fd });
-      const json = (await res.json()) as { data?: { url?: string }; error?: string };
-      if (!res.ok || !json.data?.url) {
-        throw new Error(json.error ?? "Gagal upload gambar.");
-      }
-      setValue("imageUrl", json.data.url, { shouldValidate: true });
-    } catch (err) {
-      setUploadError(
-        err instanceof Error ? err.message : "Gagal upload gambar."
-      );
-    } finally {
-      setIsUploading(false);
-      e.target.value = "";
-    }
+  function removeList(
+    setter: React.Dispatch<React.SetStateAction<Record<Locale, StringList>>>,
+    locale: Locale,
+    index: number
+  ) {
+    setter((prev) => ({
+      ...prev,
+      [locale]: prev[locale].filter((_, i) => i !== index),
+    }));
+  }
+
+  function addList(
+    setter: React.Dispatch<React.SetStateAction<Record<Locale, StringList>>>,
+    locale: Locale
+  ) {
+    setter((prev) => ({ ...prev, [locale]: [...prev[locale], { value: "" }] }));
   }
 
   async function onSubmit(values: z.output<typeof packageFormSchema>) {
@@ -148,9 +172,9 @@ export function PackageForm({
 
     const payload: PackageFormValues = {
       ...values,
-      itinerary: fromList(itinerary),
-      includes: fromList(includes),
-      excludes: fromList(excludes),
+      itinerary: toLocalizedList(itinerary),
+      includes: toLocalizedList(includes),
+      excludes: toLocalizedList(excludes),
     };
 
     try {
@@ -185,6 +209,34 @@ export function PackageForm({
             {formError}
           </div>
         )}
+
+        {/* Locale tabs for translated content */}
+        <div className="mb-6">
+          <div className="mb-2 flex items-center gap-2 text-sm font-medium">
+            <Languages className="h-4 w-4 text-muted-foreground" />
+            Bahasa konten
+            <span className="font-normal text-muted-foreground">
+              — mengedit: {LOCALE_LABELS[activeLocale]}
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {LOCALES.map((code) => (
+              <button
+                key={code}
+                type="button"
+                onClick={() => setActiveLocale(code)}
+                className={cn(
+                  "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+                  activeLocale === code
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-secondary-foreground hover:bg-accent"
+                )}
+              >
+                {LOCALE_LABELS[code]}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
           <div className="grid gap-5 sm:grid-cols-2">
@@ -224,20 +276,25 @@ export function PackageForm({
             </Field>
           </div>
 
-          <Field id="name" label="Nama Paket" error={errors.name?.message}>
+          <Field
+            id="name"
+            label="Nama Paket"
+            hint="Wajib diisi setidaknya bahasa Indonesia (ID). Bahasa lain opsional."
+            error={errors.name?.id?.message}
+          >
             <Input
               id="name"
               placeholder="Batam 3 Hari 2 Malam"
               aria-invalid={!!errors.name}
               className={cn("rounded-full", errors.name && "border-destructive")}
-              {...register("name", { onBlur: autoSlug })}
+              {...register(`name.${activeLocale}`, { onBlur: activeLocale === "id" ? autoSlug : undefined })}
             />
           </Field>
 
           <Field
             id="slug"
             label="Slug URL"
-            hint="Kosongkan untuk membuat otomatis dari nama"
+            hint="Kosongkan untuk membuat otomatis dari nama (ID)"
             error={errors.slug?.message}
           >
             <Input
@@ -310,7 +367,7 @@ export function PackageForm({
                 "rounded-3xl",
                 errors.description && "border-destructive"
               )}
-              {...register("description")}
+              {...register(`description.${activeLocale}`)}
             />
           </Field>
 
@@ -318,43 +375,73 @@ export function PackageForm({
             <div>
               <Label>Gambar Paket</Label>
               <p className="mt-1 text-xs text-muted-foreground">
-                Upload dari perangkat atau tempel URL gambar (max 5 MB, JPG/PNG/WebP/AVIF/GIF).
+                Upload dari perangkat atau tempel URL gambar. Gambar dikompres
+                otomatis ke WebP (maks ±500 KB) dan bisa dipotong sebelum upload.
               </p>
             </div>
-            {uploadError && (
-              <p className="text-sm text-destructive">{uploadError}</p>
-            )}
             <div className="flex flex-wrap items-center gap-4">
               <PackageImage
                 src={watch("imageUrl")}
-                alt={watch("imageAlt")}
+                alt=""
                 className="h-28 w-40 rounded-2xl"
               />
               <div className="flex flex-wrap items-center gap-2">
-                <label className="inline-flex cursor-pointer items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-medium transition-colors hover:bg-accent">
-                  <ImageUp className="h-4 w-4" />
-                  {isUploading ? "Mengupload..." : "Upload Gambar"}
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
-                    className="sr-only"
-                    disabled={isUploading}
-                    onChange={(e) => void handleUpload(e)}
-                  />
-                </label>
                 <Button
                   type="button"
-                  variant="ghost"
-                  size="sm"
+                  variant="secondary"
                   className="rounded-full"
-                  onClick={() =>
-                    setValue("imageUrl", "", { shouldValidate: true })
-                  }
+                  onClick={() => uploaderRef.current?.open()}
                 >
-                  Hapus
+                  <ImageUp className="mr-2 h-4 w-4" />
+                  Pilih / Upload Gambar
                 </Button>
+                {watch("imageUrl") && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-full"
+                    onClick={() =>
+                      setValue("imageUrl", "", { shouldValidate: true })
+                    }
+                  >
+                    Hapus
+                  </Button>
+                )}
               </div>
             </div>
+
+            <ModalImageUploader
+              ref={uploaderRef}
+              title="Upload Gambar Paket"
+              description="Pilih gambar untuk paket. Gambar otomatis dikompres ke WebP dan bisa dipotong."
+              config={{
+                maxFiles: 1,
+                maxFileSize: 5,
+                acceptedTypes: [
+                  "image/jpeg",
+                  "image/png",
+                  "image/webp",
+                  "image/avif",
+                  "image/gif",
+                ],
+                enableCrop: true,
+                cropAspectRatio: 16 / 9,
+                enableCompression: true,
+                compressionOptions: {
+                  targetMaxSizeKB: 500,
+                  maxWidth: 1600,
+                  initialWebPQuality: 0.9,
+                },
+                enableMultiple: false,
+              }}
+              onUploadComplete={(images) => {
+                const first = images[0];
+                if (first) {
+                  setValue("imageUrl", first.url, { shouldValidate: true });
+                }
+              }}
+            />
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2">
@@ -374,12 +461,17 @@ export function PackageForm({
                 {...register("imageUrl")}
               />
             </Field>
-            <Field id="imageAlt" label="Teks Alt" error={errors.imageAlt?.message}>
+            <Field
+              id="imageAlt"
+              label="Teks Alt"
+              hint="Per-locale, untuk aksesibilitas & SEO"
+              error={errors.imageAlt?.message}
+            >
               <Input
                 id="imageAlt"
                 placeholder="Deskripsi singkat gambar"
                 className={cn("rounded-full", errors.imageAlt && "border-destructive")}
-                {...register("imageAlt")}
+                {...register(`imageAlt.${activeLocale}`)}
               />
             </Field>
           </div>
@@ -387,32 +479,26 @@ export function PackageForm({
           <StringListEditor
             title="Itinerary"
             hint="Langkah per hari perjalanan"
-            items={itinerary}
-            onChange={(index, value) => updateList(setItinerary, index, value)}
-            onAdd={() => setItinerary((prev) => [...prev, { value: "" }])}
-            onRemove={(index) =>
-              setItinerary((prev) => prev.filter((_, i) => i !== index))
-            }
+            items={itinerary[activeLocale]}
+            onChange={(index, value) => updateList(setItinerary, activeLocale, index, value)}
+            onAdd={() => addList(setItinerary, activeLocale)}
+            onRemove={(index) => removeList(setItinerary, activeLocale, index)}
           />
           <StringListEditor
             title="Termasuk (Includes)"
             hint="Fasilitas yang termasuk"
-            items={includes}
-            onChange={(index, value) => updateList(setIncludes, index, value)}
-            onAdd={() => setIncludes((prev) => [...prev, { value: "" }])}
-            onRemove={(index) =>
-              setIncludes((prev) => prev.filter((_, i) => i !== index))
-            }
+            items={includes[activeLocale]}
+            onChange={(index, value) => updateList(setIncludes, activeLocale, index, value)}
+            onAdd={() => addList(setIncludes, activeLocale)}
+            onRemove={(index) => removeList(setIncludes, activeLocale, index)}
           />
           <StringListEditor
             title="Tidak Termasuk (Excludes)"
             hint="Yang tidak termasuk"
-            items={excludes}
-            onChange={(index, value) => updateList(setExcludes, index, value)}
-            onAdd={() => setExcludes((prev) => [...prev, { value: "" }])}
-            onRemove={(index) =>
-              setExcludes((prev) => prev.filter((_, i) => i !== index))
-            }
+            items={excludes[activeLocale]}
+            onChange={(index, value) => updateList(setExcludes, activeLocale, index, value)}
+            onAdd={() => addList(setExcludes, activeLocale)}
+            onRemove={(index) => removeList(setExcludes, activeLocale, index)}
           />
 
           <div className="flex flex-wrap gap-3 pt-2">
@@ -424,7 +510,7 @@ export function PackageForm({
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  <Loader2 className="mr-4 h-4 w-4 animate-spin" />
                   Menyimpan...
                 </>
               ) : isEdit ? (

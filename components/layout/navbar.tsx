@@ -16,6 +16,7 @@ import { ToggleTheme } from "./toogle-theme";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
 import { useI18n } from "@/lib/i18n/provider";
+import { siteConfig } from "@/lib/config/site";
 
 interface RouteProps {
   href: string;
@@ -26,20 +27,7 @@ export const Navbar = () => {
   const { t } = useI18n();
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const routeList: RouteProps[] = [
-    {
-      href: "/packages",
-      labelKey: "nav.packages",
-    },
-    {
-      href: "/#contact",
-      labelKey: "nav.contact",
-    },
-    {
-      href: "/#faq",
-      labelKey: "nav.faq",
-    },
-  ];
+  const routeList: RouteProps[] = siteConfig.links.nav;
 
   return (
     <header className="bg-card/80 backdrop-blur w-[94%] md:w-[80%] lg:max-w-screen-xl top-5 mx-auto sticky z-40 rounded-2xl flex justify-between items-center p-2">

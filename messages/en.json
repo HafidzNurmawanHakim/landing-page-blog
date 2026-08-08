@@ -5,6 +5,7 @@
     "pricing": "Pricing",
     "contact": "Contact",
     "faq": "FAQ",
+    "about": "About Us",
     "admin": "Admin",
     "bookNow": "Book Now",
     "openMenu": "Open menu",
@@ -105,6 +106,58 @@
     "message": "Message",
     "messagePh": "Write your message...",
     "send": "Send Message"
+  },
+  "about": {
+    "title": "About Us",
+    "heading": "About Destitour",
+    "badge": "Our Story",
+    "intro": "Destitour is a local travel marketplace in Batam that brings Tour, Transport, and Hotel together in one platform. We were born from the need to make traveling to Batam as easy as ordering a meal from your phone.",
+    "storyTitle": "Why Destitour?",
+    "story1": "As locals, we know travelers need certainty: clear pricing, fast confirmation, and itineraries that actually work. That is why every package is hand-curated, prices are transparent with no hidden fees, and confirmations are sent within minutes via WhatsApp.",
+    "story2": "From city tours, Barelang Bridge, and island hopping to transport and hotel services — everything can be arranged in one place. Our team is ready to help anytime, from planning to the end of your trip.",
+    "missionTitle": "Our Mission",
+    "mission": "To provide an easy, transparent, and trustworthy travel booking experience for everyone who wants to explore Batam.",
+    "visionTitle": "Our Vision",
+    "vision": "To be the most trusted local travel platform in Batam and the Riau Islands, known for fast service and honest pricing.",
+    "values": {
+      "title": "Our Values",
+      "heading": "Principles We Stand For",
+      "v1": {
+        "title": "Transparent",
+        "desc": "Final prices with no hidden fees. Everything is clear from the start."
+      },
+      "v2": {
+        "title": "Responsive",
+        "desc": "Admin confirmation and replies within minutes, whenever you need them."
+      },
+      "v3": {
+        "title": "Local & Trusted",
+        "desc": "Experienced local guides and partners who know Batam inside out."
+      },
+      "v4": {
+        "title": "Flexible",
+        "desc": "Easy date changes and cancellations handled directly by our admin."
+      }
+    },
+    "stats": {
+      "title": "Destitour in Numbers",
+      "y1": {
+        "value": "5+",
+        "label": "Years Serving"
+      },
+      "y2": {
+        "value": "1000+",
+        "label": "Happy Clients"
+      },
+      "y3": {
+        "value": "50+",
+        "label": "Available Packages"
+      },
+      "y4": {
+        "value": "4.9/5",
+        "label": "Satisfaction Rating"
+      }
+    }
   },
   "faq": {
     "title": "FAQS",
@@ -227,6 +280,10 @@
     "about": "About Us",
     "admin": "Admin",
     "rights": "All rights reserved"
+  },
+  "wa": {
+    "chat": "Chat on WhatsApp",
+    "chatWithAdmin": "Chat with our admin"
   },
   "admin": {
     "loginTitle": "Admin Login",
