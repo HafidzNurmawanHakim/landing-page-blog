@@ -1,0 +1,246 @@
+{
+  "nav": {
+    "home": "Home",
+    "packages": "Packages",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "admin": "Admin",
+    "bookNow": "Book Now",
+    "openMenu": "Open menu",
+    "mainNav": "Main navigation",
+    "chooseLang": "Choose language"
+  },
+  "common": {
+    "all": "All",
+    "tour": "Tour",
+    "transport": "Transport",
+    "hotel": "Hotel",
+    "price": "Price",
+    "duration": "Duration",
+    "participants": "Guests",
+    "back": "Back",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
+    "completed": "Completed"
+  },
+  "hero": {
+    "badge": "Batam, Riau Islands",
+    "title1": "Trip to Batam,",
+    "title2": "as easy as booking",
+    "subtitle": "Choose a Tour, Transport, or Hotel package. Book online in minutes with fast WhatsApp confirmation.",
+    "bookNow": "Book Now",
+    "seePackages": "See Packages",
+    "imageAlt": "Batam tour"
+  },
+  "packages": {
+    "title": "Our Packages",
+    "subtitle": "Choose a Tour, Transport, or Hotel package for your trip to Batam.",
+    "emptyTitle": "No packages yet",
+    "emptyDesc": "No packages available for this category. Try another category.",
+    "seeDetail": "View Details",
+    "back": "Back to package list",
+    "itinerary": "Itinerary",
+    "itineraryEmpty": "Itinerary not available yet.",
+    "includes": "Includes",
+    "excludes": "Not Included",
+    "priceFrom": "Starting from",
+    "bookNow": "Book Now",
+    "waNote": "Fast confirmation via WhatsApp. No booking fees."
+  },
+  "booking": {
+    "title": "Booking Form",
+    "subtitle": "Fill in the details below to book package",
+    "package": "Package",
+    "datePicker": "Pick a date",
+    "customerName": "Full Name",
+    "customerNamePh": "Budi Santoso",
+    "phone": "WhatsApp / Phone Number",
+    "email": "Email (optional)",
+    "emailPh": "budi@email.com",
+    "departureDate": "Departure Date",
+    "returnDate": "Return Date",
+    "participants": "Number of Guests",
+    "notes": "Notes (optional)",
+    "notesPh": "e.g. request a hotel near the city center",
+    "submit": "Submit Booking",
+    "processing": "Processing...",
+    "invalid": "The submitted data is invalid.",
+    "genericError": "Something went wrong. Please try again."
+  },
+  "success": {
+    "title": "Booking Successful!",
+    "desc": "We have received your booking. Wait for admin confirmation via WhatsApp.",
+    "bookingCode": "Booking Code",
+    "package": "Package",
+    "date": "Date",
+    "participants": "Guests",
+    "people": "people",
+    "saveNote": "Keep this booking code to check your status.",
+    "morePackages": "See Other Packages"
+  },
+  "contact": {
+    "title": "Contact",
+    "heading": "Get In Touch",
+    "desc": "Have questions about our packages or need a special offer? Contact us, our admin is ready to help.",
+    "findUs": "Location",
+    "callUs": "Phone",
+    "mailUs": "Email",
+    "visitUs": "Opening Hours",
+    "address": "Batam Center, Batam, Riau Islands",
+    "hoursWeekday": "Monday - Friday",
+    "hoursTime": "08:00 - 16:00",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "subject": "Subject",
+    "subjectPlaceholder": "Select a subject",
+    "subjectGeneral": "General Inquiry",
+    "subjectGroup": "Group Booking",
+    "subjectCorporate": "Partnership / Corporate",
+    "subjectOther": "Other",
+    "message": "Message",
+    "messagePh": "Write your message...",
+    "send": "Send Message"
+  },
+  "faq": {
+    "title": "FAQS",
+    "heading": "Common Questions",
+    "q1": "How do I book a package?",
+    "a1": "Choose your package, click Book Now, fill in the form (name, phone, dates, number of guests), then submit. You will get a booking code and wait for admin confirmation via WhatsApp.",
+    "q2": "Can I book without an email?",
+    "a2": "Yes. Email is optional. Confirmation is sent via WhatsApp to the number you registered.",
+    "q3": "How do I cancel or change a booking?",
+    "a3": "Contact the admin via WhatsApp with your booking code. Cancellation is confirmed directly by the admin.",
+    "q4": "Are there booking fees?",
+    "a4": "No extra booking fees. The displayed price is the final package price; payment is discussed directly with the admin.",
+    "q5": "Are group bookings available?",
+    "a5": "Yes, we accept group bookings. Write the number of guests and your needs in the notes field when booking, or contact us via WhatsApp."
+  },
+  "testimonial": {
+    "title": "Testimonials",
+    "heading": "Hear What Our 1000+ Clients Say",
+    "t1": "Booking was super easy, admin confirmation fast via WhatsApp. Complete package, friendly guide!",
+    "t2": "One-day city tour is perfect for those with limited time. Comfortable fleet and clear itinerary.",
+    "t3": "Airport pickup on time, friendly driver. Recommended for those needing transport in Batam.",
+    "t4": "Calm resort atmosphere, perfect for relaxing. The booking process is safe and clear.",
+    "t5": "Barelang Bridge sunrise view is the best. The guide knows the best photo spots.",
+    "t6": "Everything handled: hotel, meals, transport. Just show up. WhatsApp confirmation super fast."
+  },
+  "benefits": {
+    "title": "Benefits",
+    "heading": "Why Choose Destitour?",
+    "desc": "We handle everything for your trip — packages, transport, and hotels — so you just enjoy the journey hassle-free.",
+    "imageAlt": "Travelers enjoying a tropical beach in Batam",
+    "b1": {
+      "title": "Best Price",
+      "desc": "Competitive pricing on every package with no hidden booking fees."
+    },
+    "b2": {
+      "title": "Fast WhatsApp Confirmation",
+      "desc": "Bookings confirmed by our admin via WhatsApp within minutes."
+    },
+    "b3": {
+      "title": "Experienced Local Guides",
+      "desc": "Tours led by locals who know the best photo spots and most efficient routes."
+    },
+    "b4": {
+      "title": "Safe & Flexible Booking",
+      "desc": "Reschedule or cancel easily through admin. Your data is encrypted and secure."
+    }
+  },
+  "features": {
+    "title": "Features",
+    "heading": "Everything You Need for a Smooth Trip",
+    "desc": "From tour packages and transport to hotels — everything arranged in one place, fast and easy.",
+    "f1": {
+      "title": "Complete Tour Packages",
+      "desc": "City tours, Barelang Bridge, and island hopping with clear itineraries."
+    },
+    "f2": {
+      "title": "Reliable Transport",
+      "desc": "Airport & ferry pickup, private cars, and group vans with comfortable fleets."
+    },
+    "f3": {
+      "title": "Curated Hotels & Resorts",
+      "desc": "A wide range of hotels and resorts at competitive prices in strategic locations."
+    },
+    "f4": {
+      "title": "Group & Corporate Booking",
+      "desc": "Gatherings, team building, and corporate trips with special offers."
+    },
+    "f5": {
+      "title": "Flexible Dates",
+      "desc": "Pick your departure date — easily rescheduled through admin."
+    },
+    "f6": {
+      "title": "Fast WhatsApp Support",
+      "desc": "Our team is ready to help anytime, from planning to the end of your trip."
+    }
+  },
+  "services": {
+    "title": "Services",
+    "heading": "Tour, Transport & Hotel in One Platform",
+    "desc": "Pick the services you need for your trip or bundle them into one money-saving package.",
+    "s1": {
+      "title": "Tour Packages",
+      "desc": "City tours, Barelang Bridge, kuliang, and island hopping with local guides."
+    },
+    "s2": {
+      "title": "Transport",
+      "desc": "Airport/ferry pickup, private car rental, up to group vans."
+    },
+    "s3": {
+      "title": "Hotel & Resort",
+      "desc": "Book curated hotels and resorts at the best rates."
+    },
+    "s4": {
+      "title": "Group & Corporate",
+      "desc": "Special rates for gatherings, team building, and group trips."
+    }
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "desc": "The page you are looking for does not exist or has been moved.",
+    "home": "Back to Home"
+  },
+  "error": {
+    "title": "Something Went Wrong",
+    "desc": "Sorry, there is a technical issue. Please try again.",
+    "retry": "Try Again",
+    "home": "Home"
+  },
+  "footer": {
+    "tagline": "Batam tour package marketplace: Tour, Transport, Hotel.",
+    "packages": "Packages",
+    "help": "Help",
+    "info": "Information",
+    "tour": "Tour Packages",
+    "transport": "Transport",
+    "hotel": "Hotel",
+    "howToBook": "How to Book",
+    "contact": "Contact Us",
+    "faq": "FAQ",
+    "about": "About Us",
+    "admin": "Admin",
+    "rights": "All rights reserved"
+  },
+  "admin": {
+    "loginTitle": "Admin Login",
+    "email": "Email",
+    "password": "Password",
+    "loginBtn": "Sign In",
+    "dashboard": "Bookings Dashboard",
+    "bookingCode": "Booking Code",
+    "package": "Package",
+    "customer": "Customer",
+    "date": "Date",
+    "status": "Status"
+  },
+  "featured": {
+    "viewAll": "View All Packages"
+  }
+}

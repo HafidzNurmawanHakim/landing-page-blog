@@ -1,0 +1,246 @@
+{
+  "nav": {
+    "home": "Utama",
+    "packages": "Pakej",
+    "pricing": "Harga",
+    "contact": "Hubungi",
+    "faq": "FAQ",
+    "admin": "Admin",
+    "bookNow": "Tempah Sekarang",
+    "openMenu": "Buka menu",
+    "mainNav": "Navigasi utama",
+    "chooseLang": "Pilih bahasa"
+  },
+  "common": {
+    "all": "Semua",
+    "tour": "Tour",
+    "transport": "Pengangkutan",
+    "hotel": "Hotel",
+    "price": "Harga",
+    "duration": "Tempoh",
+    "participants": "Peserta",
+    "back": "Kembali",
+    "cancel": "Batal",
+    "confirm": "Sahkan",
+    "pending": "Menunggu",
+    "confirmed": "Disahkan",
+    "cancelled": "Dibatalkan",
+    "completed": "Selesai"
+  },
+  "hero": {
+    "badge": "Batam, Kepulauan Riau",
+    "title1": "Percutian ke Batam,",
+    "title2": "semudah menempah",
+    "subtitle": "Pilih pakej Tour, Pengangkutan, atau Hotel. Tempah dalam talian dalam beberapa minit, pengesahan pantas melalui WhatsApp.",
+    "bookNow": "Tempah Sekarang",
+    "seePackages": "Lihat Pakej",
+    "imageAlt": "Percutian Batam"
+  },
+  "packages": {
+    "title": "Pakej Kami",
+    "subtitle": "Pilih pakej Tour, Pengangkutan, atau Hotel mengikut keperluan percutian anda ke Batam.",
+    "emptyTitle": "Tiada pakej lagi",
+    "emptyDesc": "Tiada pakej tersedia untuk kategori ini. Cuba kategori lain.",
+    "seeDetail": "Lihat Butiran",
+    "back": "Kembali ke senarai pakej",
+    "itinerary": "Itinerari",
+    "itineraryEmpty": "Itinerari belum tersedia.",
+    "includes": "Termasuk",
+    "excludes": "Tidak Termasuk",
+    "priceFrom": "Harga bermula",
+    "bookNow": "Tempah Sekarang",
+    "waNote": "Pengesahan pantas melalui WhatsApp. Tiada yuran tempahan."
+  },
+  "booking": {
+    "title": "Borang Tempahan",
+    "subtitle": "Isi maklumat di bawah untuk menempah pakej",
+    "package": "Pakej",
+    "datePicker": "Pilih tarikh",
+    "customerName": "Nama Penuh",
+    "customerNamePh": "Budi Santoso",
+    "phone": "Nombor WhatsApp / HP",
+    "email": "Emel (pilihan)",
+    "emailPh": "budi@email.com",
+    "departureDate": "Tarikh Berlepas",
+    "returnDate": "Tarikh Pulang",
+    "participants": "Bilangan Peserta",
+    "notes": "Catatan (pilihan)",
+    "notesPh": "Contoh: minta hotel berdekatan pusat bandar",
+    "submit": "Hantar Tempahan",
+    "processing": "Memproses...",
+    "invalid": "Data yang dihantar tidak sah.",
+    "genericError": "Berlaku ralat. Sila cuba lagi."
+  },
+  "success": {
+    "title": "Tempahan Berjaya!",
+    "desc": "Kami telah menerima tempahan anda. Tunggu pengesahan admin melalui WhatsApp.",
+    "bookingCode": "Kod Tempahan",
+    "package": "Pakej",
+    "date": "Tarikh",
+    "participants": "Peserta",
+    "people": "orang",
+    "saveNote": "Simpan kod tempahan ini untuk menyemak status.",
+    "morePackages": "Lihat Pakej Lain"
+  },
+  "contact": {
+    "title": "Hubungi",
+    "heading": "Hubungi Kami",
+    "desc": "Ada soalan tentang pakej atau perlukan tawaran khas? Hubungi kami, admin sedia membantu.",
+    "findUs": "Lokasi",
+    "callUs": "Telefon",
+    "mailUs": "Emel",
+    "visitUs": "Waktu Operasi",
+    "address": "Batam Center, Batam, Kepulauan Riau",
+    "hoursWeekday": "Isnin - Jumaat",
+    "hoursTime": "08:00 - 16:00",
+    "firstName": "Nama Pertama",
+    "lastName": "Nama Akhir",
+    "email": "Emel",
+    "subject": "Subjek",
+    "subjectPlaceholder": "Pilih subjek",
+    "subjectGeneral": "Soalan Umum",
+    "subjectGroup": "Tempahan Kumpulan",
+    "subjectCorporate": "Kerjasama / Korporat",
+    "subjectOther": "Lain-lain",
+    "message": "Mesej",
+    "messagePh": "Tulis mesej anda...",
+    "send": "Hantar Mesej"
+  },
+  "faq": {
+    "title": "FAQS",
+    "heading": "Soalan Lazim",
+    "q1": "Bagaimana cara menempah pakej?",
+    "a1": "Pilih pakej yang anda mahu, klik Tempah Sekarang, isi borang (nama, no. HP, tarikh, bilangan peserta), kemudian hantar. Anda akan mendapat kod tempahan dan menunggu pengesahan admin melalui WhatsApp.",
+    "q2": "Bolehkah menempah tanpa emel?",
+    "a2": "Boleh. Emel adalah pilihan. Pengesahan utama dihantar melalui WhatsApp ke nombor yang anda daftarkan.",
+    "q3": "Bagaimana cara membatalkan atau mengubah tempahan?",
+    "a3": "Hubungi admin melalui WhatsApp dengan menyebut kod tempahan anda. Pembatalan disahkan terus oleh admin.",
+    "q4": "Adakah terdapat caj tempahan?",
+    "a4": "Tiada caj tambahan untuk tempahan. Harga yang dipaparkan adalah harga akhir pakej; pembayaran dibincangkan terus dengan admin.",
+    "q5": "Adakah tersedia pakej untuk rombongan / kumpulan?",
+    "a5": "Ya, kami menerima tempahan kumpulan. Tuliskan bilangan peserta dan keperluan di ruang catatan semasa menempah, atau hubungi kami melalui WhatsApp."
+  },
+  "testimonial": {
+    "title": "Testimoni",
+    "heading": "Apa Kata 1000+ Pelanggan Kami",
+    "t1": "Tempahan senang sangat, pengesahan admin cepat melalui WhatsApp. Pakej lengkap, pemandu mesra!",
+    "t2": "City tour sehari sesuai untuk masa terhad. Kenderaan selesa dan itinerari jelas.",
+    "t3": "Jemputan lapangan terbang tepat masa, pemandu mesra. Disyorkan untuk yang perlukan pengangkutan di Batam.",
+    "t4": "Suasana resort tenang, sesuai untuk relaksasi. Proses tempahan selamat dan jelas.",
+    "t5": "Pemandangan matahari terbit Jambatan Barelang terbaik. Pemandu tahu lokasi foto terbaik.",
+    "t6": "Semua beres: hotel, makan, pengangkutan. Tinggal jalan sahaja. Pengesahan WA sangat cepat."
+  },
+  "benefits": {
+    "title": "Kelebihan",
+    "heading": "Kenapa Pilih Destitour?",
+    "desc": "Kami urus semua keperluan percutian anda — pakej, pengangkutan, dan hotel — jadi anda tinggal nikmati perjalanan tanpa susah.",
+    "imageAlt": "Pelancong menikmati pantai tropika di Batam",
+    "b1": {
+      "title": "Harga Terbaik",
+      "desc": "Harga kompetitif untuk setiap pakej tanpa yuran tempahan tersembunyi."
+    },
+    "b2": {
+      "title": "Pengesahan WhatsApp Pantas",
+      "desc": "Tempahan disahkan admin melalui WhatsApp dalam beberapa minit."
+    },
+    "b3": {
+      "title": "Pemandu Tempatan Berpengalaman",
+      "desc": "Lawatan dipandu penduduk tempatan yang tahu spot foto terbaik dan laluan paling efisien."
+    },
+    "b4": {
+      "title": "Tempahan Selamat & Fleksibel",
+      "desc": "Tukar tarikh atau batalkan dengan mudah melalui admin. Data anda disulitkan dan selamat."
+    }
+  },
+  "features": {
+    "title": "Fitur",
+    "heading": "Semua yang Anda Perlukan untuk Perjalanan Selesa",
+    "desc": "Dari pakej tour, pengangkutan, hingga hotel — semuanya diurus di satu tempat, cepat dan mudah.",
+    "f1": {
+      "title": "Pakej Tour Lengkap",
+      "desc": "City tour, Jambatan Barelang, hingga island hopping dengan itinerari yang jelas."
+    },
+    "f2": {
+      "title": "Pengangkutan Dipercayai",
+      "desc": "Jemputan lapangan terbang & feri, kereta persendirian, dan van rombongan dengan armada selesa."
+    },
+    "f3": {
+      "title": "Hotel & Resort Pilihan",
+      "desc": "Pelbagai pilihan hotel dan resort dengan harga kompetitif di lokasi strategik."
+    },
+    "f4": {
+      "title": "Tempahan Kumpulan & Korporat",
+      "desc": "Rombongan, perhimpunan, atau perjalanan korporat dengan tawaran khas."
+    },
+    "f5": {
+      "title": "Tarikh Fleksibel",
+      "desc": "Pilih tarikh berlepas mengikut kehendak anda, mudah diubah melalui admin."
+    },
+    "f6": {
+      "title": "Bantuan Pantas WhatsApp",
+      "desc": "Pasukan kami sedia membantu bila-bila masa, dari perancangan hingga perjalanan selesai."
+    }
+  },
+  "services": {
+    "title": "Perkhidmatan",
+    "heading": "Tour, Pengangkutan & Hotel dalam Satu Platform",
+    "desc": "Pilih perkhidmatan yang anda perlukan untuk percutian atau gabungkan semuanya dalam satu pakej jimat.",
+    "s1": {
+      "title": "Pakej Tour",
+      "desc": "City tour, Jambatan Barelang, kulinari, dan island hopping dengan pemandu tempatan."
+    },
+    "s2": {
+      "title": "Pengangkutan",
+      "desc": "Jemputan lapangan terbang/feri, sewa kereta persendirian, hingga van rombongan."
+    },
+    "s3": {
+      "title": "Hotel & Resort",
+      "desc": "Tempah hotel dan resort pilihan pada kadar terbaik."
+    },
+    "s4": {
+      "title": "Kumpulan & Korporat",
+      "desc": "Kadar khas untuk perhimpunan, team building, dan rombongan."
+    }
+  },
+  "notFound": {
+    "title": "Halaman Tidak Ditemui",
+    "desc": "Halaman yang anda cari tidak wujud atau telah dipindahkan.",
+    "home": "Kembali ke Utama"
+  },
+  "error": {
+    "title": "Berlaku Ralat",
+    "desc": "Maaf, terdapat masalah teknikal. Sila cuba lagi.",
+    "retry": "Cuba Lagi",
+    "home": "Utama"
+  },
+  "footer": {
+    "tagline": "Pasaran pakej pelancongan Batam: Tour, Pengangkutan, Hotel.",
+    "packages": "Pakej",
+    "help": "Bantuan",
+    "info": "Maklumat",
+    "tour": "Pakej Tour",
+    "transport": "Pengangkutan",
+    "hotel": "Hotel",
+    "howToBook": "Cara Tempah",
+    "contact": "Hubungi Kami",
+    "faq": "FAQ",
+    "about": "Tentang Kami",
+    "admin": "Admin",
+    "rights": "Hak cipta terpelihara"
+  },
+  "admin": {
+    "loginTitle": "Login Admin",
+    "email": "Emel",
+    "password": "Kata Laluan",
+    "loginBtn": "Masuk",
+    "dashboard": "Dashboard Tempahan",
+    "bookingCode": "Kod Tempahan",
+    "package": "Pakej",
+    "customer": "Pelanggan",
+    "date": "Tarikh",
+    "status": "Status"
+  },
+  "featured": {
+    "viewAll": "Lihat Semua Pakej"
+  }
+}

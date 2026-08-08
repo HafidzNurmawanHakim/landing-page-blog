@@ -1,0 +1,246 @@
+{
+  "nav": {
+    "home": "首页",
+    "packages": "套餐",
+    "pricing": "价格",
+    "contact": "联系",
+    "faq": "常见问题",
+    "admin": "管理",
+    "bookNow": "立即预订",
+    "openMenu": "打开菜单",
+    "mainNav": "主导航",
+    "chooseLang": "选择语言"
+  },
+  "common": {
+    "all": "全部",
+    "tour": "旅游",
+    "transport": "交通",
+    "hotel": "酒店",
+    "price": "价格",
+    "duration": "时长",
+    "participants": "人数",
+    "back": "返回",
+    "cancel": "取消",
+    "confirm": "确认",
+    "pending": "待处理",
+    "confirmed": "已确认",
+    "cancelled": "已取消",
+    "completed": "已完成"
+  },
+  "hero": {
+    "badge": "巴淡岛，廖内群岛",
+    "title1": "巴淡岛之旅，",
+    "title2": "预订如此简单",
+    "subtitle": "选择旅游、交通或酒店套餐。在线预订只需几分钟，通过 WhatsApp 快速确认。",
+    "bookNow": "立即预订",
+    "seePackages": "查看套餐",
+    "imageAlt": "巴淡岛之旅"
+  },
+  "packages": {
+    "title": "我们的套餐",
+    "subtitle": "选择适合您巴淡岛之旅的旅游、交通或酒店套餐。",
+    "emptyTitle": "暂无套餐",
+    "emptyDesc": "此类别暂无可用套餐。请尝试其他类别。",
+    "seeDetail": "查看详情",
+    "back": "返回套餐列表",
+    "itinerary": "行程",
+    "itineraryEmpty": "行程暂未提供。",
+    "includes": "包含",
+    "excludes": "不包含",
+    "priceFrom": "起价",
+    "bookNow": "立即预订",
+    "waNote": "通过 WhatsApp 快速确认。无预订费。"
+  },
+  "booking": {
+    "title": "预订表格",
+    "subtitle": "填写以下信息以预订套餐",
+    "package": "套餐",
+    "datePicker": "选择日期",
+    "customerName": "姓名",
+    "customerNamePh": "布迪",
+    "phone": "WhatsApp / 手机号码",
+    "email": "电子邮件（可选）",
+    "emailPh": "budi@email.com",
+    "departureDate": "出发日期",
+    "returnDate": "返回日期",
+    "participants": "参与人数",
+    "notes": "备注（可选）",
+    "notesPh": "例如：要求靠近市中心的酒店",
+    "submit": "提交预订",
+    "processing": "处理中...",
+    "invalid": "提交的数据无效。",
+    "genericError": "出现问题，请重试。"
+  },
+  "success": {
+    "title": "预订成功！",
+    "desc": "我们已收到您的预订。请等待管理员通过 WhatsApp 确认。",
+    "bookingCode": "预订编号",
+    "package": "套餐",
+    "date": "日期",
+    "participants": "人数",
+    "people": "人",
+    "saveNote": "请保存此预订编号以查询状态。",
+    "morePackages": "查看其他套餐"
+  },
+  "contact": {
+    "title": "联系",
+    "heading": "联系我们",
+    "desc": "对套餐有疑问或需要特别优惠？联系我们，管理员随时为您服务。",
+    "findUs": "位置",
+    "callUs": "电话",
+    "mailUs": "邮箱",
+    "visitUs": "营业时间",
+    "address": "巴淡中心，巴淡，廖内群岛",
+    "hoursWeekday": "周一至周五",
+    "hoursTime": "08:00 - 16:00",
+    "firstName": "名字",
+    "lastName": "姓氏",
+    "email": "邮箱",
+    "subject": "主题",
+    "subjectPlaceholder": "选择主题",
+    "subjectGeneral": "一般咨询",
+    "subjectGroup": "团体预订",
+    "subjectCorporate": "合作 / 企业",
+    "subjectOther": "其他",
+    "message": "留言",
+    "messagePh": "写下您的留言...",
+    "send": "发送留言"
+  },
+  "faq": {
+    "title": "常见问题",
+    "heading": "常见问题",
+    "q1": "如何预订套餐？",
+    "a1": "选择您想要的套餐，点击立即预订，填写表格（姓名、手机号、日期、人数），然后提交。您将获得预订编号，并等待管理员通过 WhatsApp 确认。",
+    "q2": "没有邮箱可以预订吗？",
+    "a2": "可以。邮箱是选填的。主要确认将通过 WhatsApp 发送到您注册的手机号码。",
+    "q3": "如何取消或更改预订？",
+    "a3": "通过 WhatsApp 联系管理员并告知您的预订编号。取消由管理员直接确认。",
+    "q4": "预订需要费用吗？",
+    "a4": "预订不收取额外费用。显示的价格是套餐的最终价格，付款直接与管理员协商。",
+    "q5": "有团队/团体套餐吗？",
+    "a5": "是的，我们接受团体预订。预订时请在备注栏中填写人数和需求，或通过 WhatsApp 联系我们。"
+  },
+  "testimonial": {
+    "title": "客户评价",
+    "heading": "听听我们1000+客户怎么说",
+    "t1": "预订非常简单，管理员通过 WhatsApp 快速确认。套餐齐全，导游友好！",
+    "t2": "一日城市观光适合时间有限的游客。车辆舒适，行程清晰。",
+    "t3": "机场接机准时，司机友好。推荐给需要在巴淡岛交通的人。",
+    "t4": "度假村氛围宁静，非常适合放松。预订流程安全清晰。",
+    "t5": "巴淡大桥日出景色一流。导游知道最佳拍照地点。",
+    "t6": "一切都安排妥当：酒店、餐饮、交通。只管出发。WhatsApp 确认非常快。"
+  },
+  "benefits": {
+    "title": "服务优势",
+    "heading": "为什么选择巴淡之旅？",
+    "desc": "我们为您打点一切——行程、交通和酒店——让您无忧享受旅程。",
+    "imageAlt": "游客在巴淡岛的热带海滩享受假期",
+    "b1": {
+      "title": "最优惠价格",
+      "desc": "所有套餐价格透明，无隐藏预订费用。"
+    },
+    "b2": {
+      "title": "WhatsApp 快速确认",
+      "desc": "预订后数分钟内由管理员通过 WhatsApp 确认。"
+    },
+    "b3": {
+      "title": "经验丰富的本地导游",
+      "desc": "由熟悉最佳拍照点和最便捷路线的本地导游带领。"
+    },
+    "b4": {
+      "title": "安全灵活的预订",
+      "desc": "轻松更改日期或取消，您的数据已加密且安全。"
+    }
+  },
+  "features": {
+    "title": "功能特色",
+    "heading": "畅享无忧旅程所需的一切",
+    "desc": "从行程、交通到酒店——一站式安排，快速便捷。",
+    "f1": {
+      "title": "完整行程配套",
+      "desc": "城市观光、巴淡大桥、跳岛游，行程清晰明确。"
+    },
+    "f2": {
+      "title": "可靠交通服务",
+      "desc": "机场与渡轮接送、私家车和团体面包车，车队舒适。"
+    },
+    "f3": {
+      "title": "精选酒店度假村",
+      "desc": "位于黄金地段的各式酒店和度假村，价格优惠。"
+    },
+    "f4": {
+      "title": "团体与企业预订",
+      "desc": "团队、聚会或企业出游，享特别优惠。"
+    },
+    "f5": {
+      "title": "灵活日期",
+      "desc": "自选出发日期，可轻松通过管理员更改。"
+    },
+    "f6": {
+      "title": "WhatsApp 快速支持",
+      "desc": "从规划到行程结束，我们的团队随时为您服务。"
+    }
+  },
+  "services": {
+    "title": "服务项目",
+    "heading": "行程、交通与酒店一站式平台",
+    "desc": "按需选择服务，或将所有项目打包成超值配套。",
+    "s1": {
+      "title": "行程配套",
+      "desc": "城市观光、巴淡大桥、美食与跳岛游，本地导游陪同。"
+    },
+    "s2": {
+      "title": "交通服务",
+      "desc": "机场/渡轮接送、私家车租赁，直至团体面包车。"
+    },
+    "s3": {
+      "title": "酒店与度假村",
+      "desc": "以最优价格预订精选酒店与度假村。"
+    },
+    "s4": {
+      "title": "团体与企业",
+      "desc": "聚会、团队建设与团体出游的特别优惠。"
+    }
+  },
+  "notFound": {
+    "title": "页面未找到",
+    "desc": "您查找的页面不存在或已被移动。",
+    "home": "返回首页"
+  },
+  "error": {
+    "title": "出现错误",
+    "desc": "抱歉，出现技术问题。请重试。",
+    "retry": "重试",
+    "home": "首页"
+  },
+  "footer": {
+    "tagline": "巴淡岛旅游套餐平台：旅游、交通、酒店。",
+    "packages": "套餐",
+    "help": "帮助",
+    "info": "信息",
+    "tour": "旅游套餐",
+    "transport": "交通",
+    "hotel": "酒店",
+    "howToBook": "如何预订",
+    "contact": "联系我们",
+    "faq": "常见问题",
+    "about": "关于我们",
+    "admin": "管理",
+    "rights": "版权所有"
+  },
+  "admin": {
+    "loginTitle": "管理员登录",
+    "email": "电子邮件",
+    "password": "密码",
+    "loginBtn": "登录",
+    "dashboard": "预订管理",
+    "bookingCode": "预订编号",
+    "package": "套餐",
+    "customer": "客户",
+    "date": "日期",
+    "status": "状态"
+  },
+  "featured": {
+    "viewAll": "查看所有套餐"
+  }
+}

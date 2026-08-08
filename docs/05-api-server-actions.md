@@ -1,0 +1,152 @@
+# 5. API & Server Actions
+
+> Bagian dari dokumentasi [Destitour Booking Platform](./index.md).
+
+## 5.1 Server Action: Create Booking
+
+```ts
+// src/app/actions/booking.ts
+"use server";
+
+export async function createBooking(data: {
+  packageCode: string;
+  customerName: string;
+  phone: string;
+  email?: string;
+  departureDate: string;
+  returnDate: string;
+  participants: number;
+  notes?: string;
+}) {
+  // 1. Validasi (zod schema)
+  // 2. Generate booking_code
+  // 3. Insert ke D1
+  // 4. Trigger WhatsApp
+  // 5. Trigger Email
+  // 6. Return { success: true, bookingCode }
+}
+```
+
+## 5.2 Admin Actions
+
+| Action                                         | Keterangan                              |
+| ---------------------------------------------- | --------------------------------------- |
+| `getBookings({ status, page, limit })`         | List booking dengan filter + pagination |
+| `getBookingById(id)`                           | Detail satu booking                     |
+| `updateBookingStatus(id, status, adminNotes?)` | Ubah status booking                     |
+
+## 5.3 Daftar Endpoint Publik (Route Handlers)
+
+| Method | Path                      | Deskripsi                                                                    |
+| ------ | ------------------------- | ---------------------------------------------------------------------------- |
+| GET    | `/api/packages`           | List paket aktif (+ filter kategori, **pagination**)                         |
+| GET    | `/api/packages/[slug]`    | Detail satu paket                                                            |
+| POST   | `/api/bookings`           | Buat booking baru (fallback tanpa JS)                                        |
+| POST   | `/api/admin/media/upload` | Upload gambar produk (admin session, multipart `file`) → `{ data: { url } }` |
+
+> Preferensi utama: pakai Server Actions (form action) daripada API route untuk alur booking, supaya aman dari CSRF dan terintegrasi dengan form state.
+
+## 5.4 Kontrak Response API
+
+Semua response memakai bentuk konsisten `{ data, meta }`.
+
+### Koleksi (list) — `GET /api/packages`
+
+```jsonc
+// 200 OK
+{
+  "data": [
+    {
+      "id": 1,
+      "code": "BATAM-3D2N",
+      "name": "Batam 3 Hari 2 Malam",
+      "slug": "batam-3d2n",
+      "category": "tour",
+      "duration": "3D2N",
+      "price": 1850000,
+      "description": "...",
+      "itinerary": ["Hari 1: ...", "Hari 2: ..."],
+      "includes": ["Hotel 2 malam", "..."],
+      "excludes": ["..."],
+      "is_active": 1,
+    },
+  ],
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 24,
+    "totalPages": 3,
+  },
+}
+```
+
+**Parameter query:**
+
+| Param      | Tipe    | Default | Keterangan                                |
+| ---------- | ------- | ------- | ----------------------------------------- |
+| `category` | string  | `all`   | `tour` \| `transport` \| `hotel` \| `all` |
+| `page`     | integer | `1`     | Halaman (mulai dari 1)                    |
+| `limit`    | integer | `10`    | Item per halaman, maksimal 100            |
+
+`meta` menjelaskan posisi & ukuran data:
+
+| Field        | Arti                                       |
+| ------------ | ------------------------------------------ |
+| `page`       | Halaman yang sedang diminta                |
+| `limit`      | Jumlah item per halaman yang diterapkan    |
+| `total`      | Total item (semua halaman)                 |
+| `totalPages` | Total halaman (`Math.ceil(total / limit)`) |
+
+### Single resource — `GET /api/packages/[slug]`
+
+```jsonc
+// 200 OK
+{ "data": { "id": 1, "code": "BATAM-3D2N", "...": "..." } }
+// 404 Not Found
+{ "error": "Paket tidak ditemukan." }
+```
+
+### Aksi — `POST /api/bookings`
+
+```jsonc
+// 201 Created
+{ "data": { "bookingCode": "BT-20260805-004" } }
+// 400 Bad Request (validasi zod)
+{ "errors": [{ "field": "phone", "message": "Nomor HP tidak valid" }] }
+```
+
+### Aturan Error
+
+- Selalu HTTP status yang sesuai (`400`, `404`, `500`).
+- Response error memakai `{ error: string }`, atau `{ errors: [...] }` untuk validasi per-field.
+- Error dari API tidak pernah memakai bentuk `{ data, meta }`.
+
+## 5.5 Validasi Input (Zod)
+
+Contoh schema booking:
+
+```ts
+import { z } from "zod";
+
+export const bookingSchema = z.object({
+  packageCode: z.string().min(1),
+  customerName: z.string().min(3, "Nama minimal 3 karakter"),
+  phone: z.string().regex(/^[0-9+]{9,15}$/, "Nomor HP tidak valid"),
+  email: z.string().email().optional().or(z.literal("")),
+  departureDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  returnDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  participants: z.number().int().min(1).max(50),
+  notes: z.string().max(1000).optional(),
+});
+```
+
+## 5.6 Keamanan
+
+- Semua input divalidasi zod sebelum masuk DB
+- Server Action `createBooking` dilindungi rate limiting (mis. max 10/menit per IP)
+- Admin routes butuh sesi Auth.js; cek sesi di setiap action
+- XSS dicegah: render data via React (auto-escape), jangan pakai `dangerouslySetInnerHTML`
+
+---
+
+**Lanjutkan ke:** [6. Multi Language (i18n)](./06-i18n.md)
