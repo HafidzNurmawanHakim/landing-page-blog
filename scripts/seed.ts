@@ -15,6 +15,8 @@ import {
   galleryItems,
   testimonials,
   transportProducts,
+  blogCategories,
+  blogPosts,
 } from "../lib/db/schema";
 import { eq, sql } from "drizzle-orm";
 import {
@@ -22,8 +24,11 @@ import {
   seedGalleryItems,
   seedTestimonials,
   seedTransportProducts,
+  seedBlogCategories,
+  seedBlogPosts,
 } from "../lib/db/seed";
 import { createTransportProduct } from "../lib/db/repositories/transport";
+import { estimateReadingTime } from "../lib/services/blog-content";
 import { hashPassword } from "../lib/auth/password";
 import { env } from "../lib/env";
 
@@ -194,6 +199,59 @@ async function seed() {
     console.log(`✅ Inserted ${seedTestimonials.length} testimonials`);
   } else {
     console.log("ℹ️  Testimonials already present, skipping");
+  }
+
+  // --- Blog categories & posts ---
+  const existingBlogCategories = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(blogCategories);
+  if (Number(existingBlogCategories[0]?.count ?? 0) === 0) {
+    const now = Math.floor(Date.now() / 1000);
+    const inserted = await db
+      .insert(blogCategories)
+      .values(
+        seedBlogCategories.map((c) => ({ ...c, createdAt: now, updatedAt: now }))
+      )
+      .returning();
+    console.log(`✅ Inserted ${inserted.length} blog categories`);
+  } else {
+    console.log("ℹ️  Blog categories already present, skipping");
+  }
+
+  const existingBlogPosts = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(blogPosts);
+  if (Number(existingBlogPosts[0]?.count ?? 0) === 0) {
+    const categories = await db
+      .select({ id: blogCategories.id, slug: blogCategories.slug })
+      .from(blogCategories);
+    const slugToId = new Map(categories.map((c) => [c.slug, c.id]));
+    const now = Math.floor(Date.now() / 1000);
+
+    await db.insert(blogPosts).values(
+      seedBlogPosts.map((post, index) => ({
+        title: post.title,
+        slug: post.slug,
+        excerpt: post.excerpt,
+        content: post.content,
+        contentType: post.contentType,
+        featuredImageUrl: post.featuredImageUrl,
+        featuredImageAlt: post.featuredImageAlt,
+        categoryId: slugToId.get(post.categorySlug) ?? null,
+        tags: post.tags,
+        status: post.status,
+        publishedAt: now - (seedBlogPosts.length - index) * 86400,
+        seoTitle: post.seoTitle ?? null,
+        seoDescription: post.seoDescription ?? null,
+        ogImageUrl: post.featuredImageUrl,
+        readingTime: estimateReadingTime(post.content.id, post.contentType),
+        createdAt: now - (seedBlogPosts.length - index) * 86400,
+        updatedAt: now - (seedBlogPosts.length - index) * 86400,
+      }))
+    );
+    console.log(`✅ Inserted ${seedBlogPosts.length} blog posts`);
+  } else {
+    console.log("ℹ️  Blog posts already present, skipping");
   }
 
   console.log("🎉 Seed complete!");

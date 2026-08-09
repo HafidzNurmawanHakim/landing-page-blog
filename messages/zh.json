@@ -3,6 +3,7 @@
     "home": "首页",
     "packages": "套餐",
     "gallery": "画廊",
+    "blog": "博客",
     "pricing": "价格",
     "contact": "联系",
     "faq": "常见问题",
@@ -100,7 +101,10 @@
     "copied": "链接已复制！",
     "rateLimit": "请求过于频繁，请稍后再试。",
     "notFound": "找不到照片。",
-    "error": "出错了，请重试。"
+    "error": "出错了，请重试。",
+    "viewDetail": "查看照片详情",
+    "previous": "上一张照片",
+    "next": "下一张照片"
   },
   "booking": {
     "title": "预订表格",
@@ -323,6 +327,7 @@
     "faq": "常见问题",
     "about": "关于我们",
     "gallery": "画廊",
+    "blog": "博客",
     "admin": "管理",
     "rights": "版权所有"
   },
@@ -344,5 +349,21 @@
   },
   "featured": {
     "viewAll": "查看所有套餐"
+  },
+  "blog": {
+    "title": "博客",
+    "heading": "巴淡岛贴士与故事",
+    "subtitle": "行程、旅行贴士和最佳目的地推荐——由巴淡之旅团队撰写。",
+    "emptyTitle": "暂无文章",
+    "emptyDesc": "博客文章正在准备中，请稍后再来。",
+    "viewAll": "查看所有文章",
+    "like": "点赞",
+    "liked": "已点赞",
+    "share": "分享",
+    "shared": "已分享",
+    "copied": "链接已复制！",
+    "rateLimit": "请求过于频繁，请稍后再试。",
+    "notFound": "文章未找到。",
+    "error": "出错了，请重试。"
   }
 }

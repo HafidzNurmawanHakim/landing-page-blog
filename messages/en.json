@@ -3,6 +3,7 @@
     "home": "Home",
     "packages": "Packages",
     "gallery": "Gallery",
+    "blog": "Blog",
     "pricing": "Pricing",
     "contact": "Contact",
     "faq": "FAQ",
@@ -100,7 +101,10 @@
     "copied": "Link copied!",
     "rateLimit": "Too many requests. Please try again later.",
     "notFound": "Photo not found.",
-    "error": "Something went wrong. Please try again."
+    "error": "Something went wrong. Please try again.",
+    "viewDetail": "View photo details",
+    "previous": "Previous photo",
+    "next": "Next photo"
   },
   "booking": {
     "title": "Booking Form",
@@ -323,6 +327,7 @@
     "faq": "FAQ",
     "about": "About Us",
     "gallery": "Gallery",
+    "blog": "Blog",
     "admin": "Admin",
     "rights": "All rights reserved"
   },
@@ -344,5 +349,21 @@
   },
   "featured": {
     "viewAll": "View All Packages"
+  },
+  "blog": {
+    "title": "Blog",
+    "heading": "Tips & Stories from Batam",
+    "subtitle": "Itineraries, travel tips, and the best destination picks — written by the Destitour team.",
+    "emptyTitle": "No articles yet",
+    "emptyDesc": "Blog articles are being prepared. Check back soon.",
+    "viewAll": "View All Articles",
+    "like": "Like",
+    "liked": "Liked",
+    "share": "Share",
+    "shared": "Shared",
+    "copied": "Link copied!",
+    "rateLimit": "Too many requests. Please try again later.",
+    "notFound": "Article not found.",
+    "error": "Something went wrong. Try again."
   }
 }

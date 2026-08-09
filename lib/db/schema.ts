@@ -136,6 +136,80 @@ export const admins = sqliteTable("admins", {
 });
 
 /**
+ * Blog feature (docs/13-blog.md). Content is stored as sanitized HTML
+ * (written via the TipTap editor, mirrored from podzy-manager). Categories are
+ * a flat table; tags are a JSON array on the post for MVP simplicity.
+ */
+export const blogCategories = sqliteTable("blog_categories", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name", { mode: "json" }).$type<LocalizedString>().notNull(),
+  slug: text("slug").notNull().unique(),
+  description: text("description", { mode: "json" }).$type<LocalizedString>(),
+  createdAt: integer("created_at").default(sql`(unixepoch())`),
+  updatedAt: integer("updated_at").default(sql`(unixepoch())`),
+});
+
+export const blogPosts = sqliteTable(
+  "blog_posts",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    title: text("title", { mode: "json" }).$type<LocalizedString>().notNull(),
+    slug: text("slug").notNull().unique(),
+    excerpt: text("excerpt", { mode: "json" }).$type<LocalizedString>(),
+    content: text("content", { mode: "json" }).$type<LocalizedString>().notNull(),
+    contentType: text("content_type").notNull().default("html"), // 'html' | 'markdown'
+    featuredImageUrl: text("featured_image_url"),
+    featuredImageAlt: text("featured_image_alt", { mode: "json" }).$type<LocalizedString>(),
+    categoryId: integer("category_id"),
+    tags: text("tags", { mode: "json" }).$type<string[]>().notNull().default([]),
+    status: text("status").notNull().default("draft"), // 'draft' | 'published' | 'archived'
+    publishedAt: integer("published_at"),
+    seoTitle: text("seo_title", { mode: "json" }).$type<LocalizedString>(),
+    seoDescription: text("seo_description", { mode: "json" }).$type<LocalizedString>(),
+    ogImageUrl: text("og_image_url"),
+    canonicalUrl: text("canonical_url"),
+    noindex: integer("noindex").notNull().default(0),
+    authorId: integer("author_id"),
+    readingTime: integer("reading_time").notNull().default(1),
+    viewCount: integer("view_count").notNull().default(0),
+    likeCount: integer("like_count").notNull().default(0),
+    shareCount: integer("share_count").notNull().default(0),
+    createdAt: integer("created_at").default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at").default(sql`(unixepoch())`),
+  },
+  (t) => [
+    index("idx_blog_posts_status_published").on(t.status, t.publishedAt),
+    index("idx_blog_posts_category").on(t.categoryId),
+    index("idx_blog_posts_created_at").on(t.createdAt),
+  ]
+);
+
+/**
+ * Per-IP reactions on blog posts (like / share). Same uniqueness model as
+ * `gallery_reactions` (docs/09-non-functional.md): a visitor can like / count
+ * a share at most once per post. `like_count` / `share_count` on `blog_posts`
+ * are denormalized counters for O(1) reads.
+ */
+export const blogPostReactions = sqliteTable(
+  "blog_post_reactions",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    postId: integer("post_id").notNull(),
+    ip: text("ip").notNull(),
+    type: text("type").notNull().default("like"), // 'like' | 'share'
+    createdAt: integer("created_at").default(sql`(unixepoch())`),
+  },
+  (t) => [
+    uniqueIndex("idx_blog_reactions_post_ip_type").on(
+      t.postId,
+      t.ip,
+      t.type
+    ),
+    index("idx_blog_reactions_post_type").on(t.postId, t.type),
+  ]
+);
+
+/**
  * Transport / vehicle rental products (docs/15-transport-product.md).
  *
  * Unlike `packages` (flat single price), a transport product carries multiple
@@ -215,6 +289,9 @@ export type GalleryReaction = typeof galleryReactions.$inferSelect;
 export type Testimonial = typeof testimonials.$inferSelect;
 export type Admin = typeof admins.$inferSelect;
 export type RateLimit = typeof rateLimits.$inferSelect;
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type BlogCategory = typeof blogCategories.$inferSelect;
+export type BlogPostReaction = typeof blogPostReactions.$inferSelect;
 export type TransportProduct = typeof transportProducts.$inferSelect;
 export type TransportPricingPackage = typeof transportPricingPackages.$inferSelect;
 export type TransportExtraCharge = typeof transportExtraCharges.$inferSelect;

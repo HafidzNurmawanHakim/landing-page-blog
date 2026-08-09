@@ -146,21 +146,24 @@ Pendekatan yang dipilih: **Database-driven CMS** (bukan file-based Markdown) kar
 
 ### 6.1 Tabel `posts`
 
+> **Lokalisasi (docs/06-i18n.md):** konten editorial disimpan sebagai **JSON object per field** — `{ id, ms, en, zh }` — pada kolom yang butuh terjemahan: `title`, `excerpt`, `content`, `featured_image_alt`, `seo_title`, `seo_description`. Field lain (`slug`, `content_type`, `category_id`, `status`, `published_at`, dst.) tetap tunggal. Fallback: locale diminta → `id` (default). Pola sama dengan `gallery_items.caption` & `packages.name`.
+
 ```sql
 CREATE TABLE posts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-  -- Core Content
-  title TEXT NOT NULL,
-  slug TEXT NOT NULL UNIQUE,
-  excerpt TEXT,                          -- max 300 chars recommended
-  content JSON NOT NULL,                 -- TipTap JSON document
-  content_html TEXT,                     -- optional pre-rendered HTML (cache)
-  content_text TEXT,                     -- plain text for search & reading time
+  -- Core Content (semua JSON { id, ms, en, zh })
+  title TEXT NOT NULL,                     -- LocalizedString
+  slug TEXT NOT NULL UNIQUE,               -- tunggal, dari judul ID
+  excerpt TEXT,                            -- LocalizedString | null
+  content JSON NOT NULL,                   -- LocalizedString (HTML/markdown per bahasa)
+  content_type TEXT NOT NULL DEFAULT 'html', -- TUNGGAL: 'html' | 'markdown' utk semua locale
+  content_html TEXT,                       -- optional pre-rendered HTML (cache)
+  content_text TEXT,                       -- plain text for search & reading time
 
   -- Media
   featured_image_url TEXT,
-  featured_image_alt TEXT,
+  featured_image_alt TEXT,                 -- LocalizedString | null
 
   -- Taxonomy
   category_id INTEGER REFERENCES categories(id),
@@ -170,7 +173,7 @@ CREATE TABLE posts (
   published_at INTEGER,                  -- unix timestamp
   scheduled_at INTEGER,                  -- untuk schedule publish
 
-  -- SEO
+  -- SEO (title/description LocalizedString; sisanya tunggal)
   seo_title TEXT,                        -- max 60 chars
   seo_description TEXT,                  -- max 160 chars
   og_image_url TEXT,
@@ -179,7 +182,7 @@ CREATE TABLE posts (
 
   -- Meta
   author_id INTEGER,                     -- reference ke admins
-  reading_time INTEGER,                  -- menit (auto-calculate)
+  reading_time INTEGER,                  -- menit (dihitung dari content.id)
   view_count INTEGER DEFAULT 0,
 
   created_at INTEGER DEFAULT (unixepoch()),
@@ -191,6 +194,8 @@ CREATE INDEX idx_posts_status_published ON posts(status, published_at);
 CREATE INDEX idx_posts_category ON posts(category_id);
 ```
 
+`CONTENT_TYPE` disimpan **tunggal** (keputusan implementasi 9 Agustus 2026) — editor visual memakai satu format untuk semua locale; konten per-bahasa disimpan dalam `content: { id, ms, en, zh }`. Migrasi `0010_blog_localization` membungkus nilai legacy `TEXT` menjadi `{ "id": <nilai> }` (data-only, kolom tetap TEXT).
+
 ````
 
 ### 6.2 Tabel `categories`
@@ -198,9 +203,9 @@ CREATE INDEX idx_posts_category ON posts(category_id);
 ```sql
 CREATE TABLE categories (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
+  name TEXT NOT NULL,                  -- LocalizedString { id, ms, en, zh }
   slug TEXT NOT NULL UNIQUE,
-  description TEXT,
+  description TEXT,                    -- LocalizedString | null
   created_at INTEGER DEFAULT (unixepoch())
 );
 ```

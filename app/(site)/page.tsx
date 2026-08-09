@@ -5,11 +5,13 @@ import { FeaturesSection } from "@/components/layout/sections/features";
 import { HeroSection } from "@/components/layout/sections/hero2";
 import { FeaturedPackages } from "@/components/layout/sections/featured-packages";
 import { TestimonialSection } from "@/components/layout/sections/testimonial";
+import { BlogSection } from "@/components/layout/sections/blog";
 import { listPackages, serializePackage } from "@/lib/db/repositories/packages";
 import {
   listTestimonials,
   serializeTestimonial,
 } from "@/lib/db/repositories/testimonials";
+import { listPublishedPostsWithCategory } from "@/lib/db/repositories/blog";
 import { getServerLocale } from "@/lib/i18n/server";
 import { getSeo } from "@/lib/config/site";
 
@@ -42,6 +44,7 @@ export default async function Home() {
     limit: 12,
   });
   const testimonials = testimonialRows.map(serializeTestimonial);
+  const { items: blogRows } = await listPublishedPostsWithCategory({ limit: 3 });
 
   return (
     <>
@@ -50,6 +53,7 @@ export default async function Home() {
       <FeaturesSection />
       <FeaturedPackages packages={packages} />
       <TestimonialSection testimonials={testimonials} />
+      <BlogSection posts={blogRows} />
       <ContactSection />
       <FAQSection />
     </>

@@ -98,6 +98,20 @@ export const siteConfig = {
         zh: "通过巴淡之旅精选照片欣赏巴淡岛的旅行瞬间：海滩、巴兰桥、美食和热门景点。",
       },
     },
+    blog: {
+      title: {
+        id: "Blog - Destitour",
+        en: "Blog - Destitour",
+        ms: "Blog - Destitour",
+        zh: "博客 - 巴淡之旅",
+      },
+      description: {
+        id: "Tips wisata, itinerary, dan cerita dari Batam. Artikel panduan liburan, transport, dan destinasi terbaik.",
+        en: "Travel tips, itineraries, and stories from Batam. Guides on tours, transport, and the best destinations.",
+        ms: "Tips pelancongan, itinerary, dan cerita dari Batam. Panduan percutian, pengangkutan, dan destinasi terbaik.",
+        zh: "来自巴淡岛的旅行贴士、行程和故事。旅游、交通和最佳目的地指南。",
+      },
+    },
   },
 
   contact: {
@@ -141,6 +155,7 @@ export const siteConfig = {
       { href: "/packages", labelKey: "nav.packages" },
       { href: "/transport", labelKey: "common.transport" },
       { href: "/gallery", labelKey: "nav.gallery" },
+      { href: "/blog", labelKey: "nav.blog" },
       { href: "/about", labelKey: "nav.about" },
       { href: "/#contact", labelKey: "nav.contact" },
     ] satisfies SiteLink[],
@@ -166,6 +181,7 @@ export const siteConfig = {
         links: [
           { labelKey: "footer.about", href: "/about" },
           { labelKey: "footer.gallery", href: "/gallery" },
+          { labelKey: "footer.blog", href: "/blog" },
         ],
       },
     ] satisfies FooterColumn[],

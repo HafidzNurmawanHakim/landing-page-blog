@@ -3,6 +3,7 @@
     "home": "Beranda",
     "packages": "Paket",
     "gallery": "Galeri",
+    "blog": "Blog",
     "pricing": "Harga",
     "contact": "Kontak",
     "faq": "FAQ",
@@ -100,7 +101,10 @@
     "copied": "Tautan disalin!",
     "rateLimit": "Terlalu banyak permintaan. Coba lagi nanti.",
     "notFound": "Foto tidak ditemukan.",
-    "error": "Terjadi kesalahan. Coba lagi."
+    "error": "Terjadi kesalahan. Coba lagi.",
+    "viewDetail": "Lihat detail foto",
+    "previous": "Foto sebelumnya",
+    "next": "Foto berikutnya"
   },
   "booking": {
     "title": "Form Booking",
@@ -323,6 +327,7 @@
     "faq": "FAQ",
     "about": "Tentang Kami",
     "gallery": "Galeri",
+    "blog": "Blog",
     "admin": "Admin",
     "rights": "Semua hak dilindungi"
   },
@@ -344,5 +349,21 @@
   },
   "featured": {
     "viewAll": "Lihat Semua Paket"
+  },
+  "blog": {
+    "title": "Blog",
+    "heading": "Tips & Cerita dari Batam",
+    "subtitle": "Itinerary, tips wisata, dan rekomendasi destinasi terbaik — ditulis oleh tim Destitour.",
+    "emptyTitle": "Belum ada artikel",
+    "emptyDesc": "Artikel blog sedang disiapkan. Cek kembali nanti.",
+    "viewAll": "Lihat Semua Artikel",
+    "like": "Suka",
+    "liked": "Disukai",
+    "share": "Bagikan",
+    "shared": "Dibagikan",
+    "copied": "Tautan disalin!",
+    "rateLimit": "Terlalu banyak permintaan. Coba lagi nanti.",
+    "notFound": "Artikel tidak ditemukan.",
+    "error": "Terjadi kesalahan. Coba lagi."
   }
 }

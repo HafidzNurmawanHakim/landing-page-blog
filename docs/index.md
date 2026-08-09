@@ -2,8 +2,8 @@
 
 **Dokumentasi Utama**
 
-**Versi:** 1.4
-**Tanggal:** 8 Agustus 2026
+**Versi:** 1.5
+**Tanggal:** 9 Agustus 2026
 **Tech Stack:** Next.js 15 + Cloudflare Workers (OpenNext) + Cloudflare D1 + Drizzle ORM
 **Target Scale:** 1.000.000 request / bulan
 **Bahasa dokumen:** Bahasa Indonesia
@@ -34,6 +34,7 @@ Platform marketplace paket tour Batam. Customer bisa memilih paket (Tour, Transp
 | Gallery (fitur)          | ✅ Grid Instagram-style `/gallery`, caption per bahasa, CRUD admin (upload via image-uploadr), like & share per IP (rate limited) |
 | Testimoni (fitur)        | ✅ Carousel beranda dinamis (DB), komentar/role per bahasa, rating 0–5, CRUD admin `/admin/testimonials` |
 | Transport (produk)       | ✅ Produk mandiri (`/transport` + `/admin/transport`): 3 tabel, paket harga + biaya tambahan, multi-currency, booking polymorphic (`item_type` + `booking_options`) |
+| Blog (fitur)             | ✅ Database-driven CMS: TipTap editor (diadaptasi dari podzy-manager), kategori + tag, draft/publish/archive, SEO fields + JSON-LD BlogPosting, like & share per IP, rekomendasi berbasis tag, halaman `/blog` + `/blog/[slug]`, section blog di landing, CRUD admin `/admin/blogs` (+ `/categories`) |
 
 Repo berisi **shadcn landing page template** (14 section) + **platform booking MVP** yang dibangun di atasnya mengikuti dokumen ini.
 
@@ -53,9 +54,12 @@ destitour/
 │   ├── actions/packages.ts   # create/update/delete/toggle paket (auth session)
 │   ├── actions/gallery.ts    # create/update/delete foto galeri (auth session)
 │   ├── actions/testimonials.ts # create/update/delete testimoni (auth session)
+│   ├── actions/blog.ts        # CRUD artikel + kategori blog (auth session, reading time auto)
 │   ├── (marketing)/packages/ # Katalog paket (filter kategori) + detail [slug] (real data)
 │   │   └── [slug]/           # Detail paket + BookingDialog modal (form + sukses)
 │   ├── (marketing)/gallery/  # Grid galeri publik (Instagram-style, caption per bahasa)
+│   ├── (marketing)/blog/     # Blog publik: daftar + filter kategori + pagination
+│   │   └── [slug]/           # Detail artikel (HTML sanitized + JSON-LD + related posts)
 │   ├── (marketing)/about/    # Halaman tentang kami
 │   ├── admin/
 │   │   ├── layout.tsx        # Guard auth admin (redirect kalau belum login)
@@ -64,7 +68,8 @@ destitour/
 │   │   │   └── [id]/         # Detail booking + ubah status + admin notes
 │   │   ├── packages/         # CRUD paket (list, new, [id]/edit)
 │   │   ├── gallery/          # CRUD galeri (list, new, [id]/edit)
-│   │   └── testimonials/     # CRUD testimoni (list, new, [id]/edit)
+│   │   ├── testimonials/     # CRUD testimoni (list, new, [id]/edit)
+│   │   └── blogs/            # CRUD blog (list, new, [id]/edit) + categories/
 │   └── api/
 │       ├── packages/         # GET /api/packages (+ filter category)
 │       ├── packages/[slug]/  # GET /api/packages/[slug]
@@ -77,14 +82,15 @@ destitour/
 ├── lib/
 │   ├── auth/                 # password.ts (PBKDF2 WebCrypto), session.ts (HMAC cookie)
 │   ├── db/
-│   │   ├── schema.ts         # Drizzle: packages, bookings, admins, gallery_items, testimonials
+│   │   ├── schema.ts         # Drizzle: packages, bookings, admins, gallery_items, testimonials, blog_posts, blog_categories
 │   │   ├── client.ts         # D1 (production) + better-sqlite3 (local dev), auto-migrate
-│   │   ├── seed.ts           # Data paket + galeri + testimoni awal
-│   │   └── repositories/     # packages.ts, bookings.ts, admins.ts, gallery.ts, testimonials.ts
+│   │   ├── seed.ts           # Data paket + galeri + testimoni + blog awal
+│   │   └── repositories/     # packages.ts, bookings.ts, admins.ts, gallery.ts, testimonials.ts, blog.ts, transport.ts
 │   ├── services/
 │   │   ├── booking-code.ts   # Generator kode booking BT-YYYYMMDD-NNN
-│   │   └── notifications.ts  # WA admin + Resend email (fire-and-forget, never block)
-│   ├── validations/          # booking.ts, packages.ts, gallery.ts, testimonials.ts (zod schema)
+│   │   ├── notifications.ts  # WA admin + Resend email (fire-and-forget, never block)
+│   │   └── blog-content.ts   # Sanitize HTML (server), Markdown→HTML, reading time
+│   ├── validations/          # booking.ts, packages.ts, gallery.ts, testimonials.ts, blog.ts (zod schema)
 │   ├── security/rate-limit.ts# In-memory sliding window per IP
 │   ├── i18n/provider.tsx     # Lightweight i18n (id/ms/en/zh) via messages/
 │   ├── env.ts                # Validasi env (zod)
@@ -187,6 +193,9 @@ Detail lengkap: [02-technical-spec.md](./02-technical-spec.md)
 | `gallery_items`| Foto galeri publik (image_url + caption)   | ✅     |
 | `gallery_reactions`| Like & share per IP (like_count/share_count denormalized) | ✅ |
 | `testimonials`| Testimoni beranda (komentar/role per bahasa) | ✅     |
+| `blog_posts`  | Artikel blog: konten HTML/Markdown, kategori, tag, status, SEO fields, reading time, view count, like/share count | ✅     |
+| `blog_categories` | Kategori artikel blog (name + slug)       | ✅     |
+| `blog_post_reactions` | Like & share per IP pada artikel (unique post+ip+type) | ✅     |
 | `admins`       | Kredensial admin (opsional)                | ✅     |
 
 Detail lengkap: [03-database-schema.md](./03-database-schema.md)
@@ -238,6 +247,9 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 8 Agustus 2026 | Docs: [12-design-rules.md](./12-design-rules.md) — aturan wajib pakai `ModalImageUploader` untuk semua upload gambar (pola, rasio crop per konteks, larangan) |
 | 8 Agustus 2026 | Docs: [15-transport-product.md](./15-transport-product.md) — produk transport/rental kendaraan jadi entitas mandiri (pisah dari `packages`): 3 tabel (produk + paket harga + biaya tambahan), multi-currency, integrasi booking polymorphic (`item_type` + `booking_options`), roadmap implementasi |
 | 8 Agustus 2026 | **Produk Transport**: migration `0007` (3 tabel + kolom `item_type`/`booking_options` di bookings), repository + zod, CRUD admin `/admin/transport/*`, katalog publik `/transport` + detail `[slug]` (pilih paket harga + extra, estimasi total live), booking transport (jemput/antar, jam, qty kendaraan, `createBooking` hitung ulang harga server-side), notif WA/email blok transport, API `/api/transport`, i18n 4 bahasa, seed 3 kendaraan; filter `/packages` tour-only + legacy transport/hotel non-aktif |
+| 9 Agustus 2026 | **Fitur Blog**: migration `0008` (`blog_posts` + `blog_categories`, content HTML/Markdown + sanitize server, kategori + tag, status draft/published/archived, SEO fields + noindex, reading time auto, view count), editor TipTap (diadaptasi dari podzy-manager, upload gambar via `ModalImageUploader`, mode HTML/Markdown + preview), CRUD admin `/admin/blogs` (+ `/categories`), halaman publik `/blog` (filter kategori + pagination) & `/blog/[slug]` (JSON-LD BlogPosting, share, related posts), section blog di landing page + nav/footer + SEO site config, i18n 4 bahasa, seed 3 kategori + 3 artikel |
+| 9 Agustus 2026 | **Blog reactions & rekomendasi**: migration `0009` (`blog_post_reactions` + kolom `like_count`/`share_count`), Server Actions `toggleBlogPostLikeAction`/`shareBlogPostAction` (rate limit per IP, `ON CONFLICT DO NOTHING`), tombol like/share di halaman baca (Web Share API + clipboard, state per IP di-preload), section **Rekomendasi Blog** (skor tag overlap → kategori → terbaru), i18n 4 bahasa |
+| 9 Agustus 2026 | **Blog i18n penuh**: migration `0010_blog_localization` (data-only backfill `TEXT` → JSON `{ id, ms, en, zh }`), `title`/`excerpt`/`content`/`featured_image_alt`/`seo_title`/`seo_description` di `blog_posts` + `name`/`description` di `blog_categories` jadi LocalizedString (pola `packages`/`gallery`), editor TipTap per-bahasa via locale tabs di admin (konten body per locale), helper `localizeBlogPost`/`localizeBlogCategory` + `pickLocale`, halaman publik `/blog` & `/blog/[slug]` render sesuai locale cookie (fallback ID), `generateMetadata` + JSON-LD terlokalisasi, landing blog section lokal, seed 3 artikel + 3 kategori 4 bahasa |
 
 ---
 

@@ -32,7 +32,7 @@ export const Navbar = () => {
   return (
     <header className="bg-card/80 backdrop-blur w-[94%] md:w-[80%] lg:max-w-screen-xl top-5 mx-auto sticky z-40 rounded-2xl flex justify-between items-center p-2">
       <div className="flex items-center gap-2">
-        <Logo />
+        <Logo size="lg" />
 
         {/* Desktop */}
         <nav

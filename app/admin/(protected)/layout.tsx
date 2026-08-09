@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/layout/logo";
 import { LogoutButton } from "./logout-button";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { ToggleTheme } from "@/components/layout/toogle-theme";
 import {
   Sheet,
   SheetContent,
@@ -49,7 +50,11 @@ export default async function AdminLayout({
                 <div className="lg:hidden">
                   <Sheet>
                     <SheetTrigger asChild>
-                      <Button variant="ghost" size="icon" className="rounded-full">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                      >
                         <Menu className="h-5 w-5" />
                         <span className="sr-only">Buka menu</span>
                       </Button>
@@ -76,16 +81,26 @@ export default async function AdminLayout({
                   Panel Admin
                 </span>
               </div>
-              <Button asChild variant="ghost" size="sm" className="rounded-full">
-                <Link href="/">
-                  <ExternalLink className="mr-2 h-4 w-4" />
-                  Lihat Situs
-                </Link>
-              </Button>
+              <div className="flex items-center gap-2">
+                <ToggleTheme compact />
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="sm"
+                  className="rounded-full"
+                >
+                  <Link href="/">
+                    <ExternalLink className="mr-2 h-4 w-4" />
+                    Lihat Situs
+                  </Link>
+                </Button>
+              </div>
             </div>
           </header>
 
-          <main className="px-4 py-8 sm:px-6 lg:px-8">{children}</main>
+          <main className="px-4 py-8 sm:px-6 lg:px-8 bg-background h-full">
+            {children}
+          </main>
         </div>
       </div>
     </div>
