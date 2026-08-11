@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Newspaper } from "lucide-react";
 import { getServerLocale } from "@/lib/i18n/server";
 import { getSeo, siteConfig } from "@/lib/config/site";
 import { pickLocale } from "@/lib/i18n/locales";
+import { defaultOgImage } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import { BlogCard } from "@/components/blog/blog-card";
 import { BlogCategoryFilter } from "./category-filter";
@@ -25,14 +26,17 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: url },
     openGraph: {
       type: "website",
+      siteName: siteConfig.name,
       title: seo.title,
       description: seo.description,
       url,
+      images: [defaultOgImage],
     },
     twitter: {
       card: "summary_large_image",
       title: seo.title,
       description: seo.description,
+      images: [defaultOgImage.url],
     },
   };
 }

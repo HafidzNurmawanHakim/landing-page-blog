@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getServerLocale } from "@/lib/i18n/server";
 import { getSeo, siteConfig } from "@/lib/config/site";
+import { defaultOgImage } from "@/lib/seo";
 import { GalleryGrid } from "@/components/gallery/gallery-grid";
 import {
   getGalleryReactionStates,
@@ -20,14 +21,17 @@ export async function generateMetadata(): Promise<Metadata> {
     alternates: { canonical: url },
     openGraph: {
       type: "website",
+      siteName: siteConfig.name,
       title: seo.title,
       description: seo.description,
       url,
+      images: [defaultOgImage],
     },
     twitter: {
       card: "summary_large_image",
       title: seo.title,
       description: seo.description,
+      images: [defaultOgImage.url],
     },
   };
 }

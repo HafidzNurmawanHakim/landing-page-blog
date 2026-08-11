@@ -5,6 +5,7 @@ import {
 } from "@/lib/db/repositories/packages";
 import { pickLocale } from "@/lib/i18n/locales";
 import { getServerLocale } from "@/lib/i18n/server";
+import { buildPageMetadata } from "@/lib/seo";
 import { PackageDetailView } from "./package-detail-view";
 
 export async function generateMetadata({
@@ -15,10 +16,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const [pkg, locale] = await Promise.all([getPackageBySlug(slug), getServerLocale()]);
   if (!pkg) return { title: "Paket Tidak Ditemukan" };
-  return {
-    title: `${pickLocale(pkg.name, locale)} - Destitour`,
+  const title = `${pickLocale(pkg.name, locale)} - Destitour`;
+  return buildPageMetadata({
+    title,
     description: pickLocale(pkg.description, locale),
-  };
+    path: `/packages/${pkg.slug}`,
+    images: pkg.imageUrl
+      ? [{ url: pkg.imageUrl }]
+      : undefined,
+  });
 }
 
 export default async function PackageDetailPage({

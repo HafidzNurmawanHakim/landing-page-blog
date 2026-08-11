@@ -8,6 +8,12 @@ const sizes = {
   lg: "h-10",
 } as const;
 
+const textSizes = {
+  sm: "text-md",
+  md: "text-lg",
+  lg: "text-xl",
+} as const;
+
 type LogoSize = keyof typeof sizes;
 
 export function Logo({
@@ -22,17 +28,20 @@ export function Logo({
   return (
     <Link
       href={href}
-      className={cn("flex items-center", className)}
+      className={cn("flex items-center gap-2", className)}
       aria-label="Destitour"
     >
       <Image
-        src="/img/logo/long.webp"
-        alt="Destitour"
-        width={2400}
-        height={695}
+        src="/img/logo/logo-destitour.webp"
+        alt=""
+        width={480}
+        height={480}
         className={cn("h-auto w-auto", sizes[size])}
         priority
       />
+      <span className={cn("font-medium tracking-tight", textSizes[size])}>
+        Destitour
+      </span>
     </Link>
   );
 }

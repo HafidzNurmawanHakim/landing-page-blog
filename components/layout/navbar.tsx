@@ -1,6 +1,12 @@
 "use client";
 import { ChevronDown, Menu, X } from "lucide-react";
-import React, { forwardRef, useCallback, useEffect, useRef, useState } from "react";
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
 import {
   Sheet,
@@ -12,11 +18,7 @@ import {
 } from "../ui/sheet";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ToggleTheme } from "./toogle-theme";
 import { LanguageSwitcher } from "./language-switcher";
 import { Logo } from "./logo";
@@ -50,7 +52,7 @@ const NavPopover = forwardRef<
   }
 >(function NavPopover(
   { routes, t, triggerLabel, icon = false, align = "start", className },
-  ref
+  ref,
 ) {
   return (
     <Popover>
@@ -61,7 +63,7 @@ const NavPopover = forwardRef<
           aria-label={triggerLabel}
           className={cn(
             "inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium transition-colors hover:bg-accent",
-            className
+            className,
           )}
         >
           {icon && <Menu className="h-4 w-4" />}
@@ -93,13 +95,7 @@ const NavPopover = forwardRef<
  * automatically moves the overflow into a "Lainnya" popover, so the bar never
  * overflows/breaks at any width (see components/layout/navbar.tsx).
  */
-function DesktopNav({
-  routes,
-  t,
-}: {
-  routes: RouteProps[];
-  t: TFunc;
-}) {
+function DesktopNav({ routes, t }: { routes: RouteProps[]; t: TFunc }) {
   const navRef = useRef<HTMLElement>(null);
   const measureRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const moreRef = useRef<HTMLButtonElement>(null);
@@ -156,7 +152,7 @@ function DesktopNav({
       aria-label={t("nav.mainNav")}
       className={cn(
         "hidden min-w-0 flex-1 items-center gap-1 lg:flex",
-        !ready && "invisible"
+        !ready && "invisible",
       )}
     >
       {routes.slice(0, visibleCount).map((route) => (

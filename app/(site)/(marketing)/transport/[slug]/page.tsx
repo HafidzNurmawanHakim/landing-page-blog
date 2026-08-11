@@ -5,6 +5,7 @@ import {
 } from "@/lib/db/repositories/transport";
 import { pickLocale } from "@/lib/i18n/locales";
 import { getServerLocale } from "@/lib/i18n/server";
+import { buildPageMetadata } from "@/lib/seo";
 import { TransportDetailView } from "./transport-detail-view";
 
 export async function generateMetadata({
@@ -18,10 +19,17 @@ export async function generateMetadata({
     getServerLocale(),
   ]);
   if (!product) return { title: "Produk Tidak Ditemukan" };
-  return {
-    title: `${pickLocale(product.title, locale)} - Destitour`,
+  const title = `${pickLocale(product.title, locale)} - Destitour`;
+  return buildPageMetadata({
+    title,
     description: pickLocale(product.description, locale),
-  };
+    path: `/transport/${product.slug}`,
+    images: product.featuredImage
+      ? [{ url: product.featuredImage }]
+      : product.images[0]
+        ? [{ url: product.images[0] }]
+        : undefined,
+  });
 }
 
 export default async function TransportDetailPage({

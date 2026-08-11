@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/layout/theme-provider";
 import { I18nProvider } from "@/lib/i18n/provider";
 import { getServerLocale } from "@/lib/i18n/server";
 import { getSeo, siteConfig } from "@/lib/config/site";
+import { defaultOgImage } from "@/lib/seo";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
@@ -33,13 +34,17 @@ export async function generateMetadata(): Promise<Metadata> {
     manifest: "/favicon/manifest.json",
     openGraph: {
       type: "website",
+      siteName: siteConfig.name,
       title: seo.title,
       description: seo.description,
+      url: "/",
+      images: [defaultOgImage],
     },
     twitter: {
       card: "summary_large_image",
       title: seo.title,
       description: seo.description,
+      images: [defaultOgImage.url],
     },
   };
 }

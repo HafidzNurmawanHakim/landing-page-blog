@@ -320,7 +320,7 @@ export async function dispatchBookingNotifications(
 // ---------------------------------------------------------------------------
 
 function logoUrl(): string {
-  return `${siteConfig.url}/img/logo/long.webp`;
+  return `${siteConfig.url}/img/logo/logo-destitour.webp`;
 }
 
 function shell(cfg: ResolvedSiteConfig, children: string): string {
@@ -339,9 +339,11 @@ function shell(cfg: ResolvedSiteConfig, children: string): string {
           <img
             src="${logoUrl()}"
             alt="${escapeHtml(siteConfig.name)}"
-            width="168"
-            style="width:168px; height:auto; display:inline-block;"
+            width="72"
+            height="72"
+            style="width:72px; height:auto; display:inline-block; border-radius:${C.radiusLg};"
           />
+          <p style="margin:8px 0 0; color:${C.fg}; font-size:20px; font-weight:700; letter-spacing:-0.02em;">${escapeHtml(siteConfig.name)}</p>
         </div>
         <div style="padding:8px 32px 16px;">${children}</div>
         <div style="background:${C.soft}; padding:20px 32px; text-align:center;">

@@ -5,6 +5,7 @@ import { ArrowLeft, CalendarDays, Clock, Sparkles } from "lucide-react";
 import { siteConfig } from "@/lib/config/site";
 import { getServerLocale } from "@/lib/i18n/server";
 import { pickLocale } from "@/lib/i18n/locales";
+import { defaultOgImage } from "@/lib/seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { BlogCard } from "@/components/blog/blog-card";
@@ -50,10 +51,11 @@ export async function generateMetadata({
     robots: post.noindex === 1 ? { index: false, follow: false } : undefined,
     openGraph: {
       type: "article",
+      siteName: siteConfig.name,
       title,
       description,
       url,
-      images: image ? [{ url: image }] : undefined,
+      images: image ? [{ url: image }] : [defaultOgImage],
       publishedTime: post.publishedAt
         ? new Date(post.publishedAt * 1000).toISOString()
         : undefined,
@@ -62,7 +64,7 @@ export async function generateMetadata({
       card: "summary_large_image",
       title,
       description,
-      images: image ? [image] : undefined,
+      images: image ? [image] : [defaultOgImage.url],
     },
   };
 }
@@ -132,7 +134,7 @@ export default async function BlogDetailPage({
       name: "Destitour",
       logo: {
         "@type": "ImageObject",
-        url: `${siteConfig.url}/logo.png`,
+        url: `${siteConfig.url}/img/logo/logo-destitour.webp`,
       },
     },
   };

@@ -13,7 +13,8 @@ import {
 } from "@/lib/db/repositories/testimonials";
 import { listPublishedPostsWithCategory } from "@/lib/db/repositories/blog";
 import { getServerLocale } from "@/lib/i18n/server";
-import { getSeo } from "@/lib/config/site";
+import { getSeo, siteConfig } from "@/lib/config/site";
+import { defaultOgImage } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -23,15 +24,20 @@ export async function generateMetadata() {
   return {
     title: seo.title,
     description: seo.description,
+    alternates: { canonical: "/" },
     openGraph: {
       type: "website",
+      siteName: siteConfig.name,
       title: seo.title,
       description: seo.description,
+      url: "/",
+      images: [defaultOgImage],
     },
     twitter: {
       card: "summary_large_image",
       title: seo.title,
       description: seo.description,
+      images: [defaultOgImage.url],
     },
   };
 }
