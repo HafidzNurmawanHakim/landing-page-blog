@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Plus, Search } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ import {
 import { localizedFirst } from "@/lib/validations/blog";
 import { formatDate } from "@/lib/utils/format";
 import { BlogRowActions } from "@/components/admin/blog-row-actions";
+import { ExportButton } from "@/components/ui/data-export";
+import { PaginationNav } from "@/components/ui/pagination-nav";
 import { cn } from "@/lib/utils";
 
 export const metadata = {
@@ -104,6 +106,12 @@ export default async function AdminBlogsPage({
               aria-label="Cari artikel"
             />
           </form>
+          <ExportButton
+            resource="blogs"
+            filename="artikel"
+            query={{ status, ...(search ? { search } : {}) }}
+            label="Export"
+          />
           <Button asChild size="lg" className="rounded-full">
             <Link href="/admin/blogs/new">
               <Plus className="mr-2 h-4 w-4" />
@@ -199,50 +207,11 @@ export default async function AdminBlogsPage({
         </CardContent>
       </Card>
 
-      {safeResult.totalPages > 1 && (
-        <nav
-          className="flex items-center justify-center gap-2"
-          aria-label="Pagination"
-        >
-          <Button
-            asChild={safePage > 1}
-            variant="ghost"
-            size="icon"
-            disabled={safePage <= 1}
-            className="rounded-full"
-          >
-            {safePage > 1 ? (
-              <Link href={pageHref(safePage - 1)} aria-label="Halaman sebelumnya">
-                <ChevronLeft className="h-4 w-4" />
-              </Link>
-            ) : (
-              <span>
-                <ChevronLeft className="h-4 w-4" />
-              </span>
-            )}
-          </Button>
-          <span className="px-3 text-sm text-muted-foreground">
-            Halaman {safeResult.page} / {safeResult.totalPages}
-          </span>
-          <Button
-            asChild={safePage < safeResult.totalPages}
-            variant="ghost"
-            size="icon"
-            disabled={safePage >= safeResult.totalPages}
-            className="rounded-full"
-          >
-            {safePage < safeResult.totalPages ? (
-              <Link href={pageHref(safePage + 1)} aria-label="Halaman berikutnya">
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            ) : (
-              <span>
-                <ChevronRight className="h-4 w-4" />
-              </span>
-            )}
-          </Button>
-        </nav>
-      )}
+      <PaginationNav
+        page={safeResult.page}
+        totalPages={safeResult.totalPages}
+        buildHref={pageHref}
+      />
     </div>
   );
 }

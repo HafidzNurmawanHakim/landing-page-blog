@@ -15,7 +15,9 @@
     "chooseLang": "选择语言",
     "themeDark": "深色",
     "themeLight": "浅色",
-    "switchTheme": "切换主题"
+    "switchTheme": "切换主题",
+    "menu": "菜单",
+    "more": "更多"
   },
   "common": {
     "all": "全部",

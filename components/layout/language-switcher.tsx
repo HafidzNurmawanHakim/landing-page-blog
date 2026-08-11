@@ -31,7 +31,7 @@ export function LanguageSwitcher() {
       </PopoverTrigger>
       <PopoverContent
         align="end"
-        className="w-52 p-1.5"
+        className="w-52 rounded-2xl border-0 p-1.5 shadow-md"
         role="group"
         aria-label={t("nav.chooseLang")}
       >
@@ -41,7 +41,7 @@ export function LanguageSwitcher() {
             type="button"
             onClick={() => setLocale(code)}
             className={cn(
-              "flex w-full items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors",
+              "flex w-full items-center justify-between rounded-full px-4 py-2 text-sm font-medium transition-colors",
               locale === code
                 ? "bg-accent text-accent-foreground"
                 : "text-foreground hover:bg-accent",

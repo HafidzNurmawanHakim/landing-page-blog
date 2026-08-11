@@ -8,6 +8,8 @@ import { pickLocale } from "@/lib/i18n/locales";
 import { formatIDR } from "@/lib/utils/format";
 import { PackageImage } from "@/components/package/package-image";
 import { PackageRowActions } from "@/components/admin/package-row-actions";
+import { ExportButton } from "@/components/ui/data-export";
+import { PaginationNav } from "@/components/ui/pagination-nav";
 
 export const metadata = {
   title: "Paket Tour - Admin Destitour",
@@ -19,9 +21,35 @@ const categoryLabels: Record<string, string> = {
   hotel: "Hotel (legacy)",
 };
 
-export default async function AdminPackagesPage() {
-  const { items } = await listPackages({ activeOnly: false });
-  const packages = items.map(serializePackage);
+export default async function AdminPackagesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
+  const page = Math.max(1, Number(sp.page) || 1);
+  const limit = 10;
+
+  const result = await listPackages({ activeOnly: false, page, limit });
+
+  // Clamp an out-of-range page (e.g. ?page=999) to the last available page.
+  const safePage =
+    result.totalPages > 0 ? Math.min(page, result.totalPages) : page;
+  const safeResult =
+    safePage !== page
+      ? await listPackages({ activeOnly: false, page: safePage, limit })
+      : result;
+
+  const packages = safeResult.items.map(serializePackage);
+
+  const activeTotal = (
+    await listPackages({ activeOnly: true, page: 1, limit: 1 })
+  ).total;
+
+  function pageHref(next: number) {
+    return `/admin/packages?page=${next}`;
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -30,16 +58,18 @@ export default async function AdminPackagesPage() {
             Paket Tour
           </h1>
           <p className="mt-2 text-muted-foreground">
-            {packages.length} paket terdaftar,{" "}
-            {items.filter((p) => p.isActive === 1).length} aktif
+            {safeResult.total} paket terdaftar, {activeTotal} aktif
           </p>
         </div>
-        <Button asChild size="lg" className="rounded-full">
-          <Link href="/admin/packages/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Paket
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportButton resource="packages" filename="paket" label="Export" />
+          <Button asChild size="lg" className="rounded-full">
+            <Link href="/admin/packages/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Tambah Paket
+            </Link>
+          </Button>
+        </div>
       </header>
 
       <Card className="rounded-3xl">
@@ -111,6 +141,12 @@ export default async function AdminPackagesPage() {
           )}
         </CardContent>
       </Card>
+
+      <PaginationNav
+        page={safeResult.page}
+        totalPages={safeResult.totalPages}
+        buildHref={pageHref}
+      />
     </div>
   );
 }

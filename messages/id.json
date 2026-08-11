@@ -15,7 +15,9 @@
     "chooseLang": "Pilih bahasa",
     "themeDark": "Gelap",
     "themeLight": "Terang",
-    "switchTheme": "Ganti tema"
+    "switchTheme": "Ganti tema",
+    "menu": "Menu",
+    "more": "Lainnya"
   },
   "common": {
     "all": "Semua",

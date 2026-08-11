@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { listBookings, normalizeStatus } from "@/lib/db/repositories/bookings";
 import { StatusBadge, statusOrder } from "@/components/booking/status-badge";
 import { formatDate } from "@/lib/utils/format";
+import { ExportButton } from "@/components/ui/data-export";
+import { PaginationNav } from "@/components/ui/pagination-nav";
 import { StatusFilter } from "./status-filter";
 import { SearchForm } from "./search-form";
 
@@ -47,7 +47,15 @@ export default async function AdminBookingsPage({
             {safeResult.total} pesanan ditemukan
           </p>
         </div>
-        <SearchForm initialValue={search ?? ""} />
+        <div className="flex flex-wrap items-center gap-2">
+          <SearchForm initialValue={search ?? ""} />
+          <ExportButton
+            resource="bookings"
+            filename="booking"
+            query={{ status, ...(search ? { search } : {}) }}
+            label="Export"
+          />
+        </div>
       </header>
 
       <StatusFilter selected={status} />
@@ -117,57 +125,12 @@ export default async function AdminBookingsPage({
         </CardContent>
       </Card>
 
-      {safeResult.totalPages > 1 && (
-        <nav
-          className="flex items-center justify-center gap-2"
-          aria-label="Pagination"
-        >
-          <PaginationLink
-            href={paginationHref(status, search, page - 1)}
-            disabled={page <= 1}
-            aria-label="Halaman sebelumnya"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </PaginationLink>
-          <span className="px-3 text-sm text-muted-foreground">
-            Halaman {safeResult.page} / {safeResult.totalPages}
-          </span>
-          <PaginationLink
-            href={paginationHref(status, search, page + 1)}
-            disabled={page >= safeResult.totalPages}
-            aria-label="Halaman berikutnya"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </PaginationLink>
-        </nav>
-      )}
+      <PaginationNav
+        page={safeResult.page}
+        totalPages={safeResult.totalPages}
+        buildHref={(next) => paginationHref(status, search, next)}
+      />
     </div>
-  );
-}
-
-function PaginationLink({
-  href,
-  disabled,
-  children,
-  ...props
-}: {
-  href: string;
-  disabled: boolean;
-  children: React.ReactNode;
-} & React.HTMLAttributes<HTMLAnchorElement>) {
-  if (disabled) {
-    return (
-      <Button variant="ghost" size="icon" disabled className="rounded-full">
-        {children}
-      </Button>
-    );
-  }
-  return (
-    <Button asChild variant="ghost" size="icon" className="rounded-full">
-      <Link href={href} {...props}>
-        {children}
-      </Link>
-    </Button>
   );
 }
 

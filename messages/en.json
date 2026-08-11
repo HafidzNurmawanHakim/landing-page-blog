@@ -15,7 +15,9 @@
     "chooseLang": "Choose language",
     "themeDark": "Dark",
     "themeLight": "Light",
-    "switchTheme": "Switch theme"
+    "switchTheme": "Switch theme",
+    "menu": "Menu",
+    "more": "More"
   },
   "common": {
     "all": "All",

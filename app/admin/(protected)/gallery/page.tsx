@@ -10,14 +10,37 @@ import { pickLocale } from "@/lib/i18n/locales";
 import { formatDate } from "@/lib/utils/format";
 import { PackageImage } from "@/components/package/package-image";
 import { GalleryRowActions } from "@/components/admin/gallery-row-actions";
+import { ExportButton } from "@/components/ui/data-export";
+import { PaginationNav } from "@/components/ui/pagination-nav";
 
 export const metadata = {
   title: "Galeri - Admin Destitour",
 };
 
-export default async function AdminGalleryPage() {
-  const { items, total } = await listGalleryItems({ limit: 100 });
-  const gallery = items.map(serializeGalleryItem);
+export default async function AdminGalleryPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
+  const page = Math.max(1, Number(sp.page) || 1);
+  const limit = 10;
+
+  const result = await listGalleryItems({ page, limit });
+
+  // Clamp an out-of-range page (e.g. ?page=999) to the last available page.
+  const safePage =
+    result.totalPages > 0 ? Math.min(page, result.totalPages) : page;
+  const safeResult =
+    safePage !== page
+      ? await listGalleryItems({ page: safePage, limit })
+      : result;
+
+  const gallery = safeResult.items.map(serializeGalleryItem);
+
+  function pageHref(next: number) {
+    return `/admin/gallery?page=${next}`;
+  }
 
   return (
     <div className="space-y-6">
@@ -25,15 +48,18 @@ export default async function AdminGalleryPage() {
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Galeri</h1>
           <p className="mt-2 text-muted-foreground">
-            {total} foto terpasang di halaman galeri publik
+            {safeResult.total} foto terpasang di halaman galeri publik
           </p>
         </div>
-        <Button asChild size="lg" className="rounded-full">
-          <Link href="/admin/gallery/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Foto
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportButton resource="gallery" filename="galeri" label="Export" />
+          <Button asChild size="lg" className="rounded-full">
+            <Link href="/admin/gallery/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Tambah Foto
+            </Link>
+          </Button>
+        </div>
       </header>
 
       <Card className="rounded-3xl">
@@ -96,6 +122,12 @@ export default async function AdminGalleryPage() {
           )}
         </CardContent>
       </Card>
+
+      <PaginationNav
+        page={safeResult.page}
+        totalPages={safeResult.totalPages}
+        buildHref={pageHref}
+      />
     </div>
   );
 }

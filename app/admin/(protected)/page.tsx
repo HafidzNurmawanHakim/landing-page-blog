@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getDashboardStats } from "@/lib/db/repositories/bookings";
 import { StatusBadge } from "@/components/booking/status-badge";
+import { ExportButton } from "@/components/ui/data-export";
 import { formatDate, formatIDR } from "@/lib/utils/format";
 
 export const metadata = {
@@ -31,12 +32,15 @@ export default async function AdminDashboardPage() {
             Ringkasan aktivitas platform Destitour.
           </p>
         </div>
-        <Button asChild size="lg" className="rounded-full">
-          <Link href="/admin/packages/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Paket
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportButton resource="bookings" filename="booking" label="Export" />
+          <Button asChild size="lg" className="rounded-full">
+            <Link href="/admin/packages/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Tambah Paket
+            </Link>
+          </Button>
+        </div>
       </header>
 
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">

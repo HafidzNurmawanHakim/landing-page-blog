@@ -12,14 +12,37 @@ import {
 import { pickLocale } from "@/lib/i18n/locales";
 import { formatDate } from "@/lib/utils/format";
 import { TestimonialRowActions } from "@/components/admin/testimonial-row-actions";
+import { ExportButton } from "@/components/ui/data-export";
+import { PaginationNav } from "@/components/ui/pagination-nav";
 
 export const metadata = {
   title: "Testimoni - Admin Destitour",
 };
 
-export default async function AdminTestimonialsPage() {
-  const { items, total } = await listTestimonials({ limit: 100 });
-  const testimonials = items.map(serializeTestimonial);
+export default async function AdminTestimonialsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const sp = await searchParams;
+  const page = Math.max(1, Number(sp.page) || 1);
+  const limit = 10;
+
+  const result = await listTestimonials({ page, limit });
+
+  // Clamp an out-of-range page (e.g. ?page=999) to the last available page.
+  const safePage =
+    result.totalPages > 0 ? Math.min(page, result.totalPages) : page;
+  const safeResult =
+    safePage !== page
+      ? await listTestimonials({ page: safePage, limit })
+      : result;
+
+  const testimonials = safeResult.items.map(serializeTestimonial);
+
+  function pageHref(next: number) {
+    return `/admin/testimonials?page=${next}`;
+  }
 
   return (
     <div className="space-y-6">
@@ -27,15 +50,22 @@ export default async function AdminTestimonialsPage() {
         <div>
           <h1 className="text-3xl font-semibold tracking-tight">Testimoni</h1>
           <p className="mt-2 text-muted-foreground">
-            {total} testimoni — yang aktif ditampilkan di halaman beranda
+            {safeResult.total} testimoni — yang aktif ditampilkan di halaman beranda
           </p>
         </div>
-        <Button asChild size="lg" className="rounded-full">
-          <Link href="/admin/testimonials/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah Testimoni
-          </Link>
-        </Button>
+        <div className="flex flex-wrap items-center gap-2">
+          <ExportButton
+            resource="testimonials"
+            filename="testimoni"
+            label="Export"
+          />
+          <Button asChild size="lg" className="rounded-full">
+            <Link href="/admin/testimonials/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Tambah Testimoni
+            </Link>
+          </Button>
+        </div>
       </header>
 
       <Card className="rounded-3xl">
@@ -124,6 +154,12 @@ export default async function AdminTestimonialsPage() {
           )}
         </CardContent>
       </Card>
+
+      <PaginationNav
+        page={safeResult.page}
+        totalPages={safeResult.totalPages}
+        buildHref={pageHref}
+      />
     </div>
   );
 }
