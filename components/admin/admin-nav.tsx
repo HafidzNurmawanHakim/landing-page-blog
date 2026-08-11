@@ -10,6 +10,7 @@ import {
   MessageSquareQuote,
   Newspaper,
   Package,
+  Settings,
   type LucideIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -29,6 +30,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/admin/gallery", label: "Galeri", icon: Images },
   { href: "/admin/testimonials", label: "Testimoni", icon: MessageSquareQuote },
   { href: "/admin/blogs", label: "Blog", icon: Newspaper },
+  { href: "/admin/config", label: "Konfigurasi", icon: Settings },
 ] as const;
 
 export function AdminNav() {

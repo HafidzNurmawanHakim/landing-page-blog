@@ -23,7 +23,8 @@ import type { LocalizedTransportProduct } from "@/lib/db/repositories/transport"
 import { cn } from "@/lib/utils";
 import { formatDate, formatCurrency } from "@/lib/utils/format";
 import { useI18n } from "@/lib/i18n/provider";
-import { getWhatsAppLink } from "@/lib/config/site";
+import { buildWhatsAppLink } from "@/lib/config/site";
+import { useSiteConfig } from "@/lib/hooks/use-site-config";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-button";
 
 type SelectedPackage = LocalizedTransportProduct["pricingPackages"][number];
@@ -58,6 +59,7 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
   function TransportBookingDialog({ product, selectedPackage, selectedExtras }, ref) {
     const router = useRouter();
     const { t, locale } = useI18n();
+    const { config } = useSiteConfig();
     const dateLocale = dateLocales[locale] ?? id;
     const [step, setStep] = useState<"form" | "success">("form");
     const [successBooking, setSuccessBooking] =
@@ -130,7 +132,7 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
       if (v.email) lines.push(`• *${t("booking.email")}:* ${v.email}`);
       if (v.notes) lines.push(`• *${t("booking.notes")}:* ${v.notes}`);
       lines.push("", t("wa.bookingOutro"));
-      return getWhatsAppLink(locale, lines.join("\n"));
+      return buildWhatsAppLink(config.whatsapp, locale, lines.join("\n"));
     }
 
     function resetAll() {

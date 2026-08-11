@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useI18n } from "@/lib/i18n/provider";
-import { getWhatsAppLink } from "@/lib/config/site";
+import { buildWhatsAppLink } from "@/lib/config/site";
+import { useSiteConfig } from "@/lib/hooks/use-site-config";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -19,10 +20,11 @@ export function WhatsAppIcon({ className }: { className?: string }) {
 
 export function WhatsAppButton() {
   const { t, locale } = useI18n();
+  const { config } = useSiteConfig();
 
   return (
     <Link
-      href={getWhatsAppLink(locale)}
+      href={buildWhatsAppLink(config.whatsapp, locale)}
       target="_blank"
       rel="noopener noreferrer"
       aria-label={t("wa.chatWithAdmin")}

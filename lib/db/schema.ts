@@ -60,6 +60,32 @@ export const bookings = sqliteTable(
   ]
 );
 
+/** A single social link pair stored on site_config.social. */
+export type SiteConfigSocialLink = {
+  label: string;
+  href: string;
+};
+
+/**
+ * Single-row (id = 1) runtime site configuration. Source of truth for
+ * contact info, social links, WhatsApp admin number and the notification
+ * admin email (admin page `/admin/config`). Empty/null cells fall back to the
+ * static defaults in `lib/config/site.ts`.
+ */
+export const siteConfigTable = sqliteTable("site_config", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  contactPhone: text("contact_phone"),
+  contactPhoneDisplay: text("contact_phone_display"),
+  contactEmail: text("contact_email"),
+  whatsappNumber: text("whatsapp_number"),
+  adminEmail: text("admin_email"),
+  address: text("address", { mode: "json" }).$type<LocalizedString>(),
+  hoursWeekday: text("hours_weekday", { mode: "json" }).$type<LocalizedString>(),
+  hoursTime: text("hours_time", { mode: "json" }).$type<LocalizedString>(),
+  social: text("social", { mode: "json" }).$type<SiteConfigSocialLink[]>(),
+  updatedAt: integer("updated_at"),
+});
+
 export const rateLimits = sqliteTable("rate_limits", {
   key: text("key").primaryKey(),
   timestamps: text("timestamps", { mode: "json" }).$type<number[]>().notNull(),

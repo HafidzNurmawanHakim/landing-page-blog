@@ -78,6 +78,13 @@
       "when": 1786300000000,
       "tag": "0010_blog_localization",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1786439997010,
+      "tag": "0011_colossal_captain_universe",
+      "breakpoints": true
     }
   ]
 }

@@ -123,7 +123,7 @@ export const siteConfig = {
     phoneDisplay: "+62 819 4143 433",
     phone: "+628194143343",
     whatsapp: "628194143343",
-    email: "halo@destitour.id",
+    email: "halo@destitours.com",
     address: {
       id: "Batam Center, Batam, Kepulauan Riau",
       en: "Batam Center, Batam, Riau Islands",
@@ -215,10 +215,18 @@ export function pickSiteText(text: LocalizedText, locale: Locale) {
   return text[locale] ?? text[siteConfig.defaultLocale];
 }
 
-export function getWhatsAppLink(locale: Locale, message?: string) {
+export function buildWhatsAppLink(
+  number: string,
+  locale: Locale,
+  message?: string,
+) {
   const text =
     message ??
     siteConfig.whatsapp.defaultMessage[locale] ??
     siteConfig.whatsapp.defaultMessage[siteConfig.defaultLocale];
-  return `https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent(text)}`;
+  return `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+}
+
+export function getWhatsAppLink(locale: Locale, message?: string) {
+  return buildWhatsAppLink(siteConfig.contact.whatsapp, locale, message);
 }

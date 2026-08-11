@@ -28,7 +28,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n/provider";
-import { siteConfig, pickSiteText } from "@/lib/config/site";
+import { pickSiteText } from "@/lib/config/site";
+import { useSiteConfig } from "@/lib/hooks/use-site-config";
 
 const formSchema = z.object({
   firstName: z.string().min(2).max(255),
@@ -40,6 +41,7 @@ const formSchema = z.object({
 
 export const ContactSection = () => {
   const { t, locale } = useI18n();
+  const { config } = useSiteConfig();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,7 +57,7 @@ export const ContactSection = () => {
     const { firstName, lastName, email, subject, message } = values;
     console.log(values);
 
-    const mailToLink = `mailto:${siteConfig.contact.email}?subject=${subject}&body=Hello I am ${firstName} ${lastName}, my Email is ${email}. %0D%0A${message}`;
+    const mailToLink = `mailto:${config.contact.email}?subject=${subject}&body=Hello I am ${firstName} ${lastName}, my Email is ${email}. %0D%0A${message}`;
 
     window.location.href = mailToLink;
   }
@@ -84,7 +86,7 @@ export const ContactSection = () => {
                 <div className="font-bold">{t("contact.findUs")}</div>
               </div>
 
-              <div>{pickSiteText(siteConfig.contact.address, locale)}</div>
+              <div>{pickSiteText(config.contact.address, locale)}</div>
             </div>
 
             <div>
@@ -94,10 +96,10 @@ export const ContactSection = () => {
               </div>
 
               <a
-                href={`tel:${siteConfig.contact.phone}`}
+                href={`tel:${config.contact.phone}`}
                 className="transition-colors hover:text-primary"
               >
-                {siteConfig.contact.phoneDisplay}
+                {config.contact.phoneDisplay}
               </a>
             </div>
 
@@ -108,10 +110,10 @@ export const ContactSection = () => {
               </div>
 
               <a
-                href={`mailto:${siteConfig.contact.email}`}
+                href={`mailto:${config.contact.email}`}
                 className="transition-colors hover:text-primary"
               >
-                {siteConfig.contact.email}
+                {config.contact.email}
               </a>
             </div>
 
@@ -123,9 +125,9 @@ export const ContactSection = () => {
 
               <div>
                 <div>
-                  {pickSiteText(siteConfig.contact.hours.weekday, locale)}
+                  {pickSiteText(config.contact.hours.weekday, locale)}
                 </div>
-                <div>{pickSiteText(siteConfig.contact.hours.time, locale)}</div>
+                <div>{pickSiteText(config.contact.hours.time, locale)}</div>
               </div>
             </div>
           </div>
