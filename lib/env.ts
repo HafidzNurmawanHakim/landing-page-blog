@@ -18,14 +18,14 @@ const envSchema = z.object({
     .string()
     .min(32)
     .default("dev-secret-change-me-0123456789abcdef"),
-  ADMIN_EMAIL: z.string().email().default("admin@destitour.com"),
+  ADMIN_EMAIL: z.string().email().default("admin@destitours.com"),
   ADMIN_PASSWORD_HASH: z.string().optional(),
 
   RESEND_API_KEY: z.string().optional(),
   RESEND_FROM_EMAIL: z
     .string()
     .email()
-    .default("no-reply@destitour.com"),
+    .default("no-reply@destitours.com"),
   WHATSAPP_ADMIN_NUMBER: z.string().optional(),
 
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),

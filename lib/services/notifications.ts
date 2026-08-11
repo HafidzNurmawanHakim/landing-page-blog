@@ -1,6 +1,9 @@
 import { env } from "../env";
 import type { Booking } from "../db/schema";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
+import { getPackageByCode } from "@/lib/db/repositories/packages";
+import { siteConfig } from "@/lib/config/site";
+import { formatIDR } from "@/lib/utils/format";
 
 /**
  * Notification service. Design contract (docs/07-notifications.md):
@@ -40,6 +43,9 @@ type TemplateStrings = {
   vehicles: string;
   extras: string;
   estTotal: string;
+  price: string;
+  total: string;
+  follow: string;
 };
 
 const TEMPLATES: Record<Locale, TemplateStrings> = {
@@ -68,6 +74,9 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     vehicles: "Kendaraan",
     extras: "Ekstra",
     estTotal: "Estimasi Total",
+    price: "Harga",
+    total: "Total",
+    follow: "Ikuti kami:",
   },
   ms: {
     alert: "🚨 TEMPAHAN BARU",
@@ -94,6 +103,9 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     vehicles: "Kenderaan",
     extras: "Ekstra",
     estTotal: "Anggaran Jumlah",
+    price: "Harga",
+    total: "Jumlah",
+    follow: "Ikuti kami:",
   },
   en: {
     alert: "🚨 NEW BOOKING",
@@ -120,6 +132,9 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     vehicles: "Vehicles",
     extras: "Extras",
     estTotal: "Estimated Total",
+    price: "Price",
+    total: "Total",
+    follow: "Follow us:",
   },
   zh: {
     alert: "🚨 新预订",
@@ -146,6 +161,9 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     vehicles: "车辆",
     extras: "附加",
     estTotal: "预计总额",
+    price: "价格",
+    total: "总额",
+    follow: "关注我们：",
   },
 };
 
@@ -191,7 +209,7 @@ export async function sendBookingEmail(booking: Booking): Promise<SendResult> {
         from: env.RESEND_FROM_EMAIL,
         to: [booking.email],
         subject: `${T.subject} - ${booking.bookingCode}`,
-        html: buildEmailTemplate(booking),
+        html: await buildEmailTemplate(booking),
       }),
       signal: AbortSignal.timeout(10_000),
     });
@@ -218,30 +236,69 @@ export async function dispatchBookingNotifications(booking: Booking): Promise<vo
   await sendBookingEmail(booking);
 }
 
-function buildEmailTemplate(booking: Booking): string {
+async function buildEmailTemplate(booking: Booking): Promise<string> {
   const T = strings(booking.locale);
-  const extraRows =
-    booking.itemType === "transport" && booking.bookingOptions
-      ? transportEmailRows(booking)
-      : `
-        <tr><td style="padding: 6px 0;">${T.depDate}</td><td>${booking.departureDate}</td></tr>
-        <tr><td style="padding: 6px 0;">${T.retDate}</td><td>${booking.returnDate}</td></tr>
-        <tr><td style="padding: 6px 0;">${T.participants}</td><td>${booking.participants} ${T.guests}</td></tr>`;
 
-  return `
-    <div style="font-family: Arial, sans-serif; max-width: 560px; margin: auto; padding: 24px;">
-      <h2 style="margin: 0 0 16px;">${T.subject}</h2>
-      <p>${T.hello} <strong>${escapeHtml(booking.customerName)}</strong>,</p>
-      <p>${T.received}</p>
-      <table style="border-collapse: collapse; width: 100%;">
+  const summaryRows = `
         <tr><td style="padding: 6px 0;">${T.bookingCode}</td><td><strong>${booking.bookingCode}</strong></td></tr>
         <tr><td style="padding: 6px 0;">${T.package}</td><td>${escapeHtml(booking.packageName)}</td></tr>
-        ${extraRows}
-      </table>
-      <p style="margin-top: 16px;">${T.wait}</p>
-      <p style="color: #777;">${T.contact} ${env.WHATSAPP_ADMIN_NUMBER || ""}</p>
+        ${booking.itemType === "transport" && booking.bookingOptions ? transportEmailRows(booking) : await tourEmailRows(booking)}`;
+
+  const socialLinks = siteConfig.social
+    .map(
+      (link) =>
+        `<a href="${escapeHtml(link.href)}" style="color:#4f46e5;text-decoration:none;margin-right:12px;">${escapeHtml(link.label)}</a>`
+    )
+    .join("");
+
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 560px; margin: auto; padding: 24px; background:#f8fafc;">
+      <div style="background:#ffffff; border-radius:16px; overflow:hidden; border:1px solid #e2e8f0;">
+        <div style="background:#4f46e5; padding:24px 32px;">
+          <h1 style="margin:0; color:#ffffff; font-size:20px;">Destitour</h1>
+          <p style="margin:4px 0 0; color:#c7d2fe; font-size:14px;">${T.alert}</p>
+        </div>
+        <div style="padding:24px 32px;">
+          <h2 style="margin:0 0 8px; color:#0f172a; font-size:18px;">${T.subject} - ${booking.bookingCode}</h2>
+          <p style="margin:0 0 16px; color:#475569;">${T.hello} <strong>${escapeHtml(booking.customerName)}</strong>,</p>
+          <p style="margin:0 0 16px; color:#475569;">${T.received}</p>
+          <table style="border-collapse: collapse; width: 100%; color:#334155;">
+            ${summaryRows}
+            ${booking.notes ? `<tr><td style="padding: 6px 0;">${T.notes}</td><td>${escapeHtml(booking.notes)}</td></tr>` : ""}
+          </table>
+          <div style="margin-top:20px; padding:16px; background:#f1f5f9; border-radius:12px;">
+            <p style="margin:0 0 4px; color:#475569;">${T.wait}</p>
+            <p style="margin:0; color:#334155;"><strong>${T.contact}</strong> ${siteConfig.contact.phoneDisplay} · <a href="mailto:${siteConfig.contact.email}" style="color:#4f46e5;text-decoration:none;">${siteConfig.contact.email}</a></p>
+          </div>
+        </div>
+        <div style="border-top:1px solid #e2e8f0; padding:16px 32px; text-align:center;">
+          <p style="margin:0 0 8px; color:#94a3b8; font-size:13px;">${T.follow}</p>
+          <div>${socialLinks}</div>
+          <p style="margin:12px 0 0; color:#94a3b8; font-size:12px;">&copy; ${new Date().getFullYear()} ${siteConfig.name} · ${siteConfig.url.replace(/^https?:\/\//, "")}</p>
+        </div>
+      </div>
     </div>
   `;
+}
+
+async function tourEmailRows(booking: Booking): Promise<string> {
+  const T = strings(booking.locale);
+  let priceRow = "";
+  if (booking.itemType === "hotel" || booking.itemType === "tour") {
+    try {
+      const pkg = await getPackageByCode(booking.packageCode);
+      if (pkg && pkg.price) {
+        priceRow = `<tr><td style="padding: 6px 0;"><strong>${T.price}</strong></td><td><strong>${formatIDR(pkg.price)}</strong></td></tr>`;
+      }
+    } catch {
+      // Price is best-effort; never fail the email over a lookup error.
+    }
+  }
+  return `
+    <tr><td style="padding: 6px 0;">${T.depDate}</td><td>${booking.departureDate}</td></tr>
+    <tr><td style="padding: 6px 0;">${T.retDate}</td><td>${booking.returnDate}</td></tr>
+    <tr><td style="padding: 6px 0;">${T.participants}</td><td>${booking.participants} ${T.guests}</td></tr>
+    ${priceRow}`;
 }
 
 function transportEmailRows(booking: Booking): string {

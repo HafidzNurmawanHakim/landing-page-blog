@@ -15,6 +15,11 @@ export interface FooterColumn {
   links: SiteLink[];
 }
 
+export interface SocialLink {
+  label: string;
+  href: string;
+}
+
 export type LocalizedText = Record<Locale, string>;
 
 export interface PageSeo {
@@ -140,6 +145,13 @@ export const siteConfig = {
       } satisfies LocalizedText,
     },
   },
+
+  social: [
+    { label: "Instagram", href: "https://instagram.com/destitour" },
+    { label: "Facebook", href: "https://facebook.com/destitour" },
+    { label: "TikTok", href: "https://tiktok.com/@destitour" },
+    { label: "YouTube", href: "https://youtube.com/@destitour" },
+  ] satisfies SocialLink[],
 
   whatsapp: {
     defaultMessage: {

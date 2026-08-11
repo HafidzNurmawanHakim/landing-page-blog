@@ -15,7 +15,7 @@ Tanggal: 12-14 Agustus 2026
 Peserta: 4 orang
 Catatan: Minta hotel dekat pusat kota
 
-Lihat detail: https://destitour.com/admin/bookings/123
+Lihat detail: https://destitours.com/admin/bookings/123
 ```
 
 ### Provider WhatsApp

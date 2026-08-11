@@ -96,7 +96,7 @@ export default function AdminLoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@destitour.com"
+                placeholder="nama@email.com"
                 autoComplete="email"
                 aria-invalid={!!errors.email}
                 className={cn(

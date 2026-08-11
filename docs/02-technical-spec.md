@@ -47,12 +47,12 @@
 # DB → D1 binding
 
 # Public
-NEXT_PUBLIC_SITE_URL=https://destitour.com
+NEXT_PUBLIC_SITE_URL=https://destitours.com
 NEXT_PUBLIC_DEFAULT_LOCALE=id
 
 # Secret
 AUTH_SECRET=...
-ADMIN_EMAIL=admin@destitour.com
+ADMIN_EMAIL=admin@destitours.com
 ADMIN_PASSWORD_HASH=...
 
 RESEND_API_KEY=...

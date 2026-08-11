@@ -10,11 +10,34 @@
 	"images": {
 		"binding": "IMAGES",
 	},
+	"workers_dev": true,
+	"routes": [
+		{ "pattern": "destitours.com", "custom_domain": true },
+		{ "pattern": "www.destitours.com", "custom_domain": true },
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",
 			"database_name": "destitour-db",
-			"database_id": "e6c5aab0-8766-423d-9647-f78a5cd40594",
+			"database_id": "33eb1e6e-9ab5-4956-a405-6b75b8682c7b",
 		},
 	],
+	"env": {
+		"staging": {
+			"name": "destitour-staging",
+			"images": {
+				"binding": "IMAGES",
+			},
+			"routes": [
+				{ "pattern": "staging.destitours.com", "custom_domain": true },
+			],
+			"d1_databases": [
+				{
+					"binding": "DB",
+					"database_name": "destitour-db-staging",
+					"database_id": "2816df92-6166-4f76-9f28-f40a85289686",
+				},
+			],
+		},
+	},
 }

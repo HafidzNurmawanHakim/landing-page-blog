@@ -1,10 +1,17 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Music2, Phone, Youtube } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
 import { Logo } from "@/components/layout/logo";
 import { siteConfig, pickSiteText } from "@/lib/config/site";
+
+const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  Instagram,
+  Facebook,
+  TikTok: Music2,
+  YouTube: Youtube,
+};
 
 export const FooterSection = () => {
   const { t, locale } = useI18n();
@@ -62,9 +69,28 @@ export const FooterSection = () => {
         </div>
 
         <Separator className="my-8" />
-        <div className="text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} {siteConfig.name}.{" "}
-          {t("footer.rights")}.
+        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} {siteConfig.name}.{" "}
+            {t("footer.rights")}.
+          </div>
+          <div className="flex items-center gap-3">
+            {siteConfig.social.map((link) => {
+              const Icon = SOCIAL_ICONS[link.label] ?? Instagram;
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={link.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              );
+            })}
+          </div>
         </div>
       </div>
     </footer>

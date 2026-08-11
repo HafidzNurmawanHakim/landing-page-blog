@@ -116,7 +116,7 @@ cp .env.example .env.local
 
 # 3. Seed DB lokal (membuat data/destitour.db + auto-migrate + seed paket/admin/booking contoh)
 npm run db:seed
-#   → Admin default (dev): admin@destitour.com / admin123
+#   → Admin default (dev): admin@destitours.com / admin123
 #   → Ganti password admin: npm run hash-password -- "passwordbaru" lalu update ADMIN_PASSWORD_HASH di .env.local + re-seed
 
 # 4. Jalankan dev server

@@ -15,7 +15,7 @@
     "hash-password": "tsx scripts/hash-password.ts",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "preview": "npm run cf-typegen && opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy:staging": "npm run cf-typegen && cp .env.staging .env && opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:staging": "npm run cf-typegen && cp .env.staging .env && opennextjs-cloudflare build && opennextjs-cloudflare deploy --env staging",
     "deploy:prod": "npm run cf-typegen && cp .env.prod .env && opennextjs-cloudflare build && opennextjs-cloudflare deploy"
   },
   "dependencies": {

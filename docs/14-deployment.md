@@ -137,7 +137,7 @@ npx wrangler d1 execute destitour-db --remote --file=./seed-gallery.sql
 
 ```bash
 # URL worker (dari output deploy)
-URL=https://destitour.hafidznurmawan.workers.dev
+URL=https://destitour.destitours.workers.dev
 
 # 1. Halaman publik
 curl -s -o /dev/null -w "%{http_code}\n" $URL/gallery          # → 200
