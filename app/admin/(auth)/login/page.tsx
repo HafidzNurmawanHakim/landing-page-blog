@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AlertCircle, Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,6 +14,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Logo } from "@/components/layout/logo";
 import { loginAdmin } from "@/app/actions/admin";
 import { cn } from "@/lib/utils";
+import { humanizeError } from "@/lib/utils/errors";
 
 const loginSchema = z.object({
   email: z.string().email("Email tidak valid"),
@@ -42,14 +44,16 @@ export default function AdminLoginPage() {
       const result = await loginAdmin(values);
       if (!result.success) {
         setFormError(result.message);
+        toast.error(result.message);
         return;
       }
+      toast.success("Selamat datang kembali!");
       router.push("/admin/bookings");
       router.refresh();
     } catch (err) {
-      setFormError(
-        err instanceof Error ? err.message : "Terjadi kesalahan. Coba lagi.",
-      );
+      const message = humanizeError(err, "Terjadi kesalahan. Coba lagi.");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

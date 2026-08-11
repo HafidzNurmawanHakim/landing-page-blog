@@ -14,6 +14,7 @@ import {
   Search,
   X,
 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,6 +51,7 @@ import {
 } from "@/lib/i18n/locales";
 import { BlogEditor } from "./blog-editor";
 import { cn } from "@/lib/utils";
+import { humanizeError } from "@/lib/utils/errors";
 import TurndownService from "turndown";
 
 const turndownService = new TurndownService({
@@ -215,6 +217,7 @@ export function BlogForm({
       });
       if (!res.success) {
         setFormError(res.message);
+        toast.error(res.message);
         return;
       }
       setCategoryList((prev) => [
@@ -225,10 +228,11 @@ export function BlogForm({
       categoryDrawerRef.current?.close();
       setCatName({});
       setCatSlug("");
+      toast.success("Kategori berhasil dibuat.");
     } catch (err) {
-      setFormError(
-        err instanceof Error ? err.message : "Gagal membuat kategori."
-      );
+      const message = humanizeError(err, "Gagal membuat kategori.");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setIsSavingCat(false);
     }
@@ -260,14 +264,16 @@ export function BlogForm({
         : await createBlogPostAction(payload);
       if (!result.success) {
         setFormError(result.message);
+        toast.error(result.message);
         return;
       }
+      toast.success(isEdit ? "Artikel berhasil diperbarui." : "Artikel berhasil dibuat.");
       router.push("/admin/blogs");
       router.refresh();
     } catch (err) {
-      setFormError(
-        err instanceof Error ? err.message : "Gagal menyimpan artikel. Coba lagi."
-      );
+      const message = humanizeError(err, "Gagal menyimpan artikel. Coba lagi.");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

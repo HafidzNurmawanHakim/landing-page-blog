@@ -2,16 +2,17 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle, Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { deleteBlogCategoryAction } from "@/app/actions/blog";
 import type { BlogCategory } from "@/lib/db/schema";
 import { localizedFirst } from "@/lib/validations/blog";
+import { humanizeError } from "@/lib/utils/errors";
 
 export function BlogCategoryRowActions({ item }: { item: BlogCategory }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const displayName = localizedFirst(item.name);
 
   async function handleDelete() {
@@ -23,16 +24,16 @@ export function BlogCategoryRowActions({ item }: { item: BlogCategory }) {
       return;
     }
     setBusy(true);
-    setError(null);
     try {
       const result = await deleteBlogCategoryAction(item.id);
       if (!result.success) {
-        setError(result.message ?? "Gagal menghapus kategori.");
+        toast.error(result.message ?? "Gagal menghapus kategori.");
         return;
       }
+      toast.success("Kategori berhasil dihapus.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menghapus kategori.");
+      toast.error(humanizeError(err, "Gagal menghapus kategori."));
     } finally {
       setBusy(false);
     }
@@ -40,12 +41,6 @@ export function BlogCategoryRowActions({ item }: { item: BlogCategory }) {
 
   return (
     <div className="flex items-center justify-end gap-1">
-      {error && (
-        <span className="mr-2 inline-flex items-center gap-1 text-xs text-destructive">
-          <AlertCircle className="h-3.5 w-3.5" />
-          {error}
-        </span>
-      )}
       <Button
         variant="ghost"
         size="icon"

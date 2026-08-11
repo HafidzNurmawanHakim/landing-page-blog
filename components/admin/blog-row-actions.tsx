@@ -3,16 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AlertCircle, Eye, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Eye, Loader2, Pencil, Trash2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { deleteBlogPostAction } from "@/app/actions/blog";
 import type { SerializedBlogPost } from "@/lib/db/repositories/blog";
 import { localizedFirst } from "@/lib/validations/blog";
+import { humanizeError } from "@/lib/utils/errors";
 
 export function BlogRowActions({ item }: { item: SerializedBlogPost }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const displayTitle = localizedFirst(item.title);
 
   async function handleDelete() {
@@ -20,16 +21,16 @@ export function BlogRowActions({ item }: { item: SerializedBlogPost }) {
       return;
     }
     setBusy(true);
-    setError(null);
     try {
       const result = await deleteBlogPostAction(item.id);
       if (!result.success) {
-        setError(result.message ?? "Gagal menghapus artikel.");
+        toast.error(result.message ?? "Gagal menghapus artikel.");
         return;
       }
+      toast.success("Artikel berhasil dihapus.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menghapus artikel.");
+      toast.error(humanizeError(err, "Gagal menghapus artikel."));
     } finally {
       setBusy(false);
     }
@@ -37,12 +38,6 @@ export function BlogRowActions({ item }: { item: SerializedBlogPost }) {
 
   return (
     <div className="flex items-center justify-end gap-1">
-      {error && (
-        <span className="mr-2 inline-flex items-center gap-1 text-xs text-destructive">
-          <AlertCircle className="h-3.5 w-3.5" />
-          {error}
-        </span>
-      )}
       {item.status === "published" && (
         <Button asChild variant="ghost" size="icon" className="rounded-full">
           <Link href={`/blog/${item.slug}`} target="_blank" aria-label="Lihat artikel">

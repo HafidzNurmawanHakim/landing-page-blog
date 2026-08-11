@@ -98,7 +98,7 @@ export function TransportCard({
       </div>
 
       {/* Desktop — horizontal card, from-price badge pinned top-right */}
-      <div className="relative hidden rounded-3xl bg-card sm:block">
+      <div className="relative hidden rounded-3xl bg-gray-50 dark:bg-card sm:block ">
         <div className="flex p-4">
           <div className="relative aspect-[16/10] w-2/5 shrink-0 overflow-hidden rounded-2xl bg-muted lg:w-[36%]">
             <PackageImage

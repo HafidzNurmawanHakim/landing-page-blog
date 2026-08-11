@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { AlertCircle, ImageUp, Languages, Loader2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,6 +30,7 @@ import {
   type Locale,
 } from "@/lib/i18n/locales";
 import { cn } from "@/lib/utils";
+import { humanizeError } from "@/lib/utils/errors";
 
 export function GalleryForm({
   item,
@@ -69,14 +71,16 @@ export function GalleryForm({
 
       if (!result.success) {
         setFormError(result.message);
+        toast.error(result.message);
         return;
       }
+      toast.success(isEdit ? "Gambar galeri berhasil diperbarui." : "Gambar berhasil ditambahkan ke galeri.");
       router.push("/admin/gallery");
       router.refresh();
     } catch (err) {
-      setFormError(
-        err instanceof Error ? err.message : "Gagal menyimpan gambar. Coba lagi."
-      );
+      const message = humanizeError(err, "Gagal menyimpan gambar. Coba lagi.");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

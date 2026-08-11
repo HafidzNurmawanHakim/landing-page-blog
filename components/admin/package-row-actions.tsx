@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AlertCircle, Loader2, Pencil, Power, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Power, Trash2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import {
   deletePackageAction,
@@ -11,25 +12,25 @@ import {
 } from "@/app/actions/packages";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
 import { pickLocale } from "@/lib/i18n/locales";
+import { humanizeError } from "@/lib/utils/errors";
 
 export function PackageRowActions({ pkg }: { pkg: SerializedPackage }) {
   const router = useRouter();
   const [busy, setBusy] = useState<"toggle" | "delete" | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const displayName = pickLocale(pkg.name);
 
   async function handleToggle() {
     setBusy("toggle");
-    setError(null);
     try {
       const result = await togglePackageActiveAction(pkg.id);
       if (!result.success) {
-        setError(result.message);
+        toast.error(result.message);
         return;
       }
+      toast.success(pkg.isActive === 1 ? "Paket dinonaktifkan." : "Paket diaktifkan.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal mengubah status.");
+      toast.error(humanizeError(err, "Gagal mengubah status."));
     } finally {
       setBusy(null);
     }
@@ -40,16 +41,16 @@ export function PackageRowActions({ pkg }: { pkg: SerializedPackage }) {
       return;
     }
     setBusy("delete");
-    setError(null);
     try {
       const result = await deletePackageAction(pkg.id);
       if (!result.success) {
-        setError(result.message ?? "Gagal menghapus paket.");
+        toast.error(result.message ?? "Gagal menghapus paket.");
         return;
       }
+      toast.success("Paket berhasil dihapus.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menghapus paket.");
+      toast.error(humanizeError(err, "Gagal menghapus paket."));
     } finally {
       setBusy(null);
     }
@@ -57,12 +58,6 @@ export function PackageRowActions({ pkg }: { pkg: SerializedPackage }) {
 
   return (
     <div className="flex items-center justify-end gap-1">
-      {error && (
-        <span className="mr-2 inline-flex items-center gap-1 text-xs text-destructive">
-          <AlertCircle className="h-3.5 w-3.5" />
-          {error}
-        </span>
-      )}
       <Button asChild variant="ghost" size="sm" className="rounded-full">
         <Link href={`/admin/packages/${pkg.id}/edit`}>
           <Pencil className="mr-1.5 h-3.5 w-3.5" />

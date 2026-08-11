@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { toast } from "react-hot-toast";
 import { PackageImage } from "@/components/package/package-image";
 import ModalImageUploader from "@/components/ui/image-uploader";
 import type { ImageUploadModalRef } from "@/components/ui/image-uploader/_types";
@@ -51,6 +52,7 @@ import {
   type LocalizedString,
 } from "@/lib/i18n/locales";
 import { cn } from "@/lib/utils";
+import { humanizeError } from "@/lib/utils/errors";
 
 const SERVICE_LABELS: Record<(typeof TRANSPORT_SERVICE_TYPES)[number], string> = {
   DRIVER_ONLY: "Driver Only",
@@ -235,16 +237,16 @@ export function TransportForm({
 
       if (!result.success) {
         setFormError(result.message);
+        toast.error(result.message);
         return;
       }
+      toast.success(isEdit ? "Produk transport berhasil diperbarui." : "Produk transport berhasil dibuat.");
       router.push("/admin/transport");
       router.refresh();
     } catch (err) {
-      setFormError(
-        err instanceof Error
-          ? err.message
-          : "Gagal menyimpan produk. Coba lagi."
-      );
+      const message = humanizeError(err, "Gagal menyimpan produk. Coba lagi.");
+      setFormError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast";
 import { AlertCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -10,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { updateBookingStatus } from "@/app/actions/admin";
 import { statusLabels, statusOrder } from "@/components/booking/status-badge";
 import { cn } from "@/lib/utils";
+import { humanizeError } from "@/lib/utils/errors";
 import type { BookingStatus } from "@/lib/db/repositories/bookings";
 
 export function StatusUpdateForm({
@@ -45,13 +47,15 @@ export function StatusUpdateForm({
       });
       if (!result.success) {
         setError(result.message);
+        toast.error(result.message);
         return;
       }
+      toast.success("Status booking berhasil diperbarui.");
       router.refresh();
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Gagal mengubah status. Coba lagi."
-      );
+      const message = humanizeError(err, "Gagal mengubah status. Coba lagi.");
+      setError(message);
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }

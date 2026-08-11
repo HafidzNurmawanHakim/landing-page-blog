@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AlertCircle, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Loader2, Pencil, Trash2 } from "lucide-react";
+import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import { deleteTestimonialAction } from "@/app/actions/testimonials";
 import type { SerializedTestimonial } from "@/lib/db/repositories/testimonials";
 import { pickLocale } from "@/lib/i18n/locales";
+import { humanizeError } from "@/lib/utils/errors";
 
 export function TestimonialRowActions({
   item,
@@ -16,7 +18,6 @@ export function TestimonialRowActions({
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const preview = pickLocale(item.comment);
 
   async function handleDelete() {
@@ -24,16 +25,16 @@ export function TestimonialRowActions({
       return;
     }
     setBusy(true);
-    setError(null);
     try {
       const result = await deleteTestimonialAction(item.id);
       if (!result.success) {
-        setError(result.message ?? "Gagal menghapus testimoni.");
+        toast.error(result.message ?? "Gagal menghapus testimoni.");
         return;
       }
+      toast.success("Testimoni berhasil dihapus.");
       router.refresh();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal menghapus testimoni.");
+      toast.error(humanizeError(err, "Gagal menghapus testimoni."));
     } finally {
       setBusy(false);
     }
@@ -41,12 +42,6 @@ export function TestimonialRowActions({
 
   return (
     <div className="flex items-center justify-end gap-1">
-      {error && (
-        <span className="mr-2 inline-flex items-center gap-1 text-xs text-destructive">
-          <AlertCircle className="h-3.5 w-3.5" />
-          {error}
-        </span>
-      )}
       <Button asChild variant="ghost" size="sm" className="rounded-full">
         <Link href={`/admin/testimonials/${item.id}/edit`}>
           <Pencil className="mr-1.5 h-3.5 w-3.5" />
