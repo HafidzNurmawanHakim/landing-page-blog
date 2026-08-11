@@ -2,8 +2,8 @@
 
 **Dokumentasi Utama**
 
-**Versi:** 1.5
-**Tanggal:** 9 Agustus 2026
+**Versi:** 1.6
+**Tanggal:** 11 Agustus 2026
 **Tech Stack:** Next.js 15 + Cloudflare Workers (OpenNext) + Cloudflare D1 + Drizzle ORM
 **Target Scale:** 1.000.000 request / bulan
 **Bahasa dokumen:** Bahasa Indonesia
@@ -250,6 +250,10 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 9 Agustus 2026 | **Fitur Blog**: migration `0008` (`blog_posts` + `blog_categories`, content HTML/Markdown + sanitize server, kategori + tag, status draft/published/archived, SEO fields + noindex, reading time auto, view count), editor TipTap (diadaptasi dari podzy-manager, upload gambar via `ModalImageUploader`, mode HTML/Markdown + preview), CRUD admin `/admin/blogs` (+ `/categories`), halaman publik `/blog` (filter kategori + pagination) & `/blog/[slug]` (JSON-LD BlogPosting, share, related posts), section blog di landing page + nav/footer + SEO site config, i18n 4 bahasa, seed 3 kategori + 3 artikel |
 | 9 Agustus 2026 | **Blog reactions & rekomendasi**: migration `0009` (`blog_post_reactions` + kolom `like_count`/`share_count`), Server Actions `toggleBlogPostLikeAction`/`shareBlogPostAction` (rate limit per IP, `ON CONFLICT DO NOTHING`), tombol like/share di halaman baca (Web Share API + clipboard, state per IP di-preload), section **Rekomendasi Blog** (skor tag overlap → kategori → terbaru), i18n 4 bahasa |
 | 9 Agustus 2026 | **Blog i18n penuh**: migration `0010_blog_localization` (data-only backfill `TEXT` → JSON `{ id, ms, en, zh }`), `title`/`excerpt`/`content`/`featured_image_alt`/`seo_title`/`seo_description` di `blog_posts` + `name`/`description` di `blog_categories` jadi LocalizedString (pola `packages`/`gallery`), editor TipTap per-bahasa via locale tabs di admin (konten body per locale), helper `localizeBlogPost`/`localizeBlogCategory` + `pickLocale`, halaman publik `/blog` & `/blog/[slug]` render sesuai locale cookie (fallback ID), `generateMetadata` + JSON-LD terlokalisasi, landing blog section lokal, seed 3 artikel + 3 kategori 4 bahasa |
+| 11 Agustus 2026 | **Export admin (Excel & CSV)**: component reusable `ExportButton` (`components/ui/data-export/`, pola `ModalImageUploader`), generator XLSX minimal tanpa dependency (`lib/export/build.ts`, valid OPC/zip store + inline string) + CSV (RFC 4180 + BOM UTF-8), definisi kolom per resource di `lib/export/resources.ts` (bookings, packages, blogs, gallery, testimonials, transport), endpoint admin-only `GET /api/admin/export` (filter status/search, file dibangun server-side), dipasang di dashboard + 6 halaman list |
+| 11 Agustus 2026 | **Pagination semua list admin**: component reusable `PaginationNav` (`components/ui/pagination-nav.tsx`), dipakai di bookings & blogs (refactor) + ditambahkan ke packages, transport, gallery, testimonials (sebelumnya fetch semua), clamp halaman out-of-range |
+| 11 Agustus 2026 | **Navbar fix semua device**: `components/layout/navbar.tsx` — tablet (md–lg) semua link navigasi dikelompokkan dalam satu popover "Menu", desktop (lg+) inline links + auto-collapse overflow (ResizeObserver) ke popover "Lainnya" (tidak pernah overflow), mobile hamburger sheet; popover sesuai design rules (`rounded-2xl`, borderless); key i18n `nav.menu`/`nav.more` 4 bahasa |
+| 11 Agustus 2026 | **Deploy staging**: export admin, pagination, navbar fix — tanpa migration baru (schema tidak berubah) |
 
 ---
 

@@ -22,6 +22,8 @@ import {
 import { cn } from "@/lib/utils";
 import { formatDate, formatIDR } from "@/lib/utils/format";
 import { useI18n } from "@/lib/i18n/provider";
+import { getWhatsAppLink } from "@/lib/config/site";
+import { WhatsAppIcon } from "@/components/layout/whatsapp-button";
 
 type BookingDialogProps = {
   pkg: { code: string; name: string; price: number };
@@ -64,15 +66,44 @@ export const BookingDialog = forwardRef<ReusableModalRef, BookingDialogProps>(
       handleSubmit,
       reset,
       watch,
+      getValues,
       formState: { errors },
     } = useForm<BookingFormValues>({
       resolver: zodResolver(bookingFormSchema),
+      mode: "onTouched",
       defaultValues: {
         participants: 2,
       },
     });
 
     const departureDate = watch("departureDate");
+    const required = watch();
+    const isComplete = Boolean(
+      (required.customerName ?? "").trim().length >= 3 &&
+        (required.phone ?? "").trim().length >= 9 &&
+        required.departureDate &&
+        required.returnDate &&
+        required.returnDate >= required.departureDate
+    );
+
+    function buildWhatsAppHref() {
+      const v = getValues();
+      const lines = [
+        t("wa.bookingIntro"),
+        "",
+        `📌 *${t("booking.title")}:*`,
+        `• *${t("booking.package")}:* ${pkg.name}`,
+        `• *${t("booking.departureDate")}:* ${formatDate(v.departureDate)}`,
+        `• *${t("booking.returnDate")}:* ${formatDate(v.returnDate)}`,
+        `• *${t("booking.participants")}:* ${v.participants}`,
+        `• *${t("booking.customerName")}:* ${v.customerName}`,
+        `• *${t("booking.phone")}:* ${v.phone}`,
+      ];
+      if (v.email) lines.push(`• *${t("booking.email")}:* ${v.email}`);
+      if (v.notes) lines.push(`• *${t("booking.notes")}:* ${v.notes}`);
+      lines.push("", t("wa.bookingOutro"));
+      return getWhatsAppLink(locale, lines.join("\n"));
+    }
 
     function resetAll() {
       reset({
@@ -320,7 +351,7 @@ export const BookingDialog = forwardRef<ReusableModalRef, BookingDialogProps>(
                     type="submit"
                     size="lg"
                     className="w-full rounded-full"
-                    disabled={isSubmitting}
+                    disabled={!isComplete || isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
@@ -331,6 +362,30 @@ export const BookingDialog = forwardRef<ReusableModalRef, BookingDialogProps>(
                       t("booking.submit")
                     )}
                   </Button>
+
+                  <div className="flex items-center gap-3">
+                    <span className="h-px flex-1 bg-border/60" />
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      {t("booking.or")}
+                    </span>
+                    <span className="h-px flex-1 bg-border/60" />
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={!isComplete}
+                    onClick={() =>
+                      window.open(
+                        buildWhatsAppHref(),
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                    className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#25D366] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1eb65c] disabled:cursor-not-allowed disabled:bg-[#25D366]/40 disabled:text-white/70"
+                  >
+                    <WhatsAppIcon className="h-5 w-5" />
+                    {t("wa.bookingVia")}
+                  </button>
                 </form>
               </div>
             </>

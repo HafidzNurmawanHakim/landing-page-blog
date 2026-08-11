@@ -26,7 +26,6 @@ const envSchema = z.object({
     .string()
     .email()
     .default("no-reply@destitour.com"),
-  WHATSAPP_API_KEY: z.string().optional(),
   WHATSAPP_ADMIN_NUMBER: z.string().optional(),
 
   RATE_LIMIT_MAX: z.coerce.number().int().positive().default(10),
@@ -61,12 +60,6 @@ if (envData.NODE_ENV === "production") {
   }
   if (!envData.RESEND_API_KEY) {
     throw new Error("RESEND_API_KEY must be set in production.");
-  }
-  if (!envData.WHATSAPP_API_KEY || !envData.WHATSAPP_ADMIN_NUMBER) {
-    // WhatsApp is optional: email is the primary notification channel.
-    console.warn(
-      "⚠️ WHATSAPP_API_KEY / WHATSAPP_ADMIN_NUMBER not set. Admin will not get WhatsApp alerts.",
-    );
   }
 }
 

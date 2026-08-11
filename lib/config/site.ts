@@ -115,9 +115,9 @@ export const siteConfig = {
   },
 
   contact: {
-    phoneDisplay: "+62 812 3456 7890",
-    phone: "+6281234567890",
-    whatsapp: "6281234567890",
+    phoneDisplay: "+62 819 4143 433",
+    phone: "+628194143343",
+    whatsapp: "628194143343",
     email: "halo@destitour.id",
     address: {
       id: "Batam Center, Batam, Kepulauan Riau",

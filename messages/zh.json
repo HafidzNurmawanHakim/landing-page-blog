@@ -126,7 +126,8 @@
     "submit": "提交预订",
     "processing": "处理中...",
     "invalid": "提交的数据无效。",
-    "genericError": "出现问题，请重试。"
+    "genericError": "出现问题，请重试。",
+    "or": "或"
   },
   "success": {
     "title": "预订成功！",
@@ -335,7 +336,10 @@
   },
   "wa": {
     "chat": "WhatsApp 聊天",
-    "chatWithAdmin": "与管理員聊天"
+    "chatWithAdmin": "与管理員聊天",
+    "bookingVia": "通过 WhatsApp 预订",
+    "bookingIntro": "您好，巴淡之旅管理员！我想预订以下内容：",
+    "bookingOutro": "请告知可用性和付款总额。谢谢！"
   },
   "admin": {
     "loginTitle": "管理员登录",

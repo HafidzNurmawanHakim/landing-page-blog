@@ -23,6 +23,8 @@ import type { LocalizedTransportProduct } from "@/lib/db/repositories/transport"
 import { cn } from "@/lib/utils";
 import { formatDate, formatCurrency } from "@/lib/utils/format";
 import { useI18n } from "@/lib/i18n/provider";
+import { getWhatsAppLink } from "@/lib/config/site";
+import { WhatsAppIcon } from "@/components/layout/whatsapp-button";
 
 type SelectedPackage = LocalizedTransportProduct["pricingPackages"][number];
 type SelectedExtra = LocalizedTransportProduct["extraCharges"][number];
@@ -68,16 +70,68 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
       control,
       handleSubmit,
       reset,
+      watch,
+      getValues,
       formState: { errors },
     } = useForm<TransportBookingFormValues>({
       resolver: zodResolver(transportBookingFormSchema),
+      mode: "onTouched",
       defaultValues: {
         vehicleQty: 1,
       },
     });
 
+    const required = watch();
+    const isComplete = Boolean(
+      (required.customerName ?? "").trim().length >= 3 &&
+        (required.phone ?? "").trim().length >= 9 &&
+        required.pickupDate &&
+        required.pickupTime &&
+        (required.pickupLocation ?? "").trim().length >= 2
+    );
+
     const extrasTotal = selectedExtras.reduce((sum, e) => sum + e.price, 0);
     const unitTotal = selectedPackage.price + extrasTotal;
+
+    function buildWhatsAppHref() {
+      const v = getValues();
+      const qty = v.vehicleQty > 0 ? v.vehicleQty : 1;
+      const lines = [
+        t("wa.bookingIntro"),
+        "",
+        `📌 *${t("transport.bookingTitle")}:*`,
+        `• *${t("booking.package")}:* ${product.title}`,
+        `• *${t("transport.pricingPackages")}:* ${selectedPackage.name}`,
+      ];
+      for (const extra of selectedExtras) {
+        lines.push(
+          `• *${extra.name}:* +${formatCurrency(extra.price, extra.currency)}`
+        );
+      }
+      lines.push(
+        `• *${t("transport.estimatedTotal")}:* ${formatCurrency(
+          unitTotal * qty,
+          selectedPackage.currency
+        )}`,
+        `• *${t("transport.pickupDate")}:* ${formatDate(v.pickupDate)}`,
+        `• *${t("transport.pickupTime")}:* ${v.pickupTime}`,
+        `• *${t("transport.pickupLocation")}:* ${v.pickupLocation}`
+      );
+      if (v.dropoffLocation) {
+        lines.push(
+          `• *${t("transport.dropoffLocation")}:* ${v.dropoffLocation}`
+        );
+      }
+      lines.push(
+        `• *${t("transport.vehicleQty")}:* ${v.vehicleQty}`,
+        `• *${t("booking.customerName")}:* ${v.customerName}`,
+        `• *${t("booking.phone")}:* ${v.phone}`
+      );
+      if (v.email) lines.push(`• *${t("booking.email")}:* ${v.email}`);
+      if (v.notes) lines.push(`• *${t("booking.notes")}:* ${v.notes}`);
+      lines.push("", t("wa.bookingOutro"));
+      return getWhatsAppLink(locale, lines.join("\n"));
+    }
 
     function resetAll() {
       reset({
@@ -414,7 +468,7 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
                     type="submit"
                     size="lg"
                     className="w-full rounded-full"
-                    disabled={isSubmitting}
+                    disabled={!isComplete || isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
@@ -425,6 +479,30 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
                       t("booking.submit")
                     )}
                   </Button>
+
+                  <div className="flex items-center gap-3">
+                    <span className="h-px flex-1 bg-border/60" />
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      {t("booking.or")}
+                    </span>
+                    <span className="h-px flex-1 bg-border/60" />
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={!isComplete}
+                    onClick={() =>
+                      window.open(
+                        buildWhatsAppHref(),
+                        "_blank",
+                        "noopener,noreferrer"
+                      )
+                    }
+                    className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#25D366] text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1eb65c] disabled:cursor-not-allowed disabled:bg-[#25D366]/40 disabled:text-white/70"
+                  >
+                    <WhatsAppIcon className="h-5 w-5" />
+                    {t("wa.bookingVia")}
+                  </button>
                 </form>
               </div>
             </>

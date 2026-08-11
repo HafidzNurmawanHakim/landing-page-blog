@@ -126,7 +126,8 @@
     "submit": "Submit Booking",
     "processing": "Processing...",
     "invalid": "The submitted data is invalid.",
-    "genericError": "Something went wrong. Please try again."
+    "genericError": "Something went wrong. Please try again.",
+    "or": "or"
   },
   "success": {
     "title": "Booking Successful!",
@@ -335,7 +336,10 @@
   },
   "wa": {
     "chat": "Chat on WhatsApp",
-    "chatWithAdmin": "Chat with our admin"
+    "chatWithAdmin": "Chat with our admin",
+    "bookingVia": "Book via WhatsApp",
+    "bookingIntro": "Hello Destitour Admin! I would like to book the following:",
+    "bookingOutro": "Please let me know availability and the total payment. Thank you!"
   },
   "admin": {
     "loginTitle": "Admin Login",

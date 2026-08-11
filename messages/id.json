@@ -126,7 +126,8 @@
     "submit": "Kirim Booking",
     "processing": "Memproses...",
     "invalid": "Data yang dikirim tidak valid.",
-    "genericError": "Terjadi kesalahan. Coba lagi."
+    "genericError": "Terjadi kesalahan. Coba lagi.",
+    "or": "atau"
   },
   "success": {
     "title": "Booking Berhasil!",
@@ -335,7 +336,10 @@
   },
   "wa": {
     "chat": "Chat WhatsApp",
-    "chatWithAdmin": "Chat dengan admin"
+    "chatWithAdmin": "Chat dengan admin",
+    "bookingVia": "Booking via WhatsApp",
+    "bookingIntro": "Halo Admin Destitour! Saya ingin booking berikut:",
+    "bookingOutro": "Mohon info ketersediaan dan total pembayarannya. Terima kasih!"
   },
   "admin": {
     "loginTitle": "Login Admin",

@@ -126,7 +126,8 @@
     "submit": "Hantar Tempahan",
     "processing": "Memproses...",
     "invalid": "Data yang dihantar tidak sah.",
-    "genericError": "Berlaku ralat. Sila cuba lagi."
+    "genericError": "Berlaku ralat. Sila cuba lagi.",
+    "or": "atau"
   },
   "success": {
     "title": "Tempahan Berjaya!",
@@ -335,7 +336,10 @@
   },
   "wa": {
     "chat": "Chat WhatsApp",
-    "chatWithAdmin": "Chat dengan admin"
+    "chatWithAdmin": "Chat dengan admin",
+    "bookingVia": "Tempah melalui WhatsApp",
+    "bookingIntro": "Halo Admin Destitour! Saya ingin membuat tempahan berikut:",
+    "bookingOutro": "Sila beritahu ketersediaan dan jumlah bayaran. Terima kasih!"
   },
   "admin": {
     "loginTitle": "Login Admin",

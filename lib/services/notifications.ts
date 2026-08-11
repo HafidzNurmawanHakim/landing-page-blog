@@ -168,45 +168,6 @@ function logError(kind: string, err: unknown): void {
   );
 }
 
-export async function sendWhatsAppToAdmin(
-  booking: Booking,
-): Promise<SendResult> {
-  const apiKey = env.WHATSAPP_API_KEY;
-  const adminNumber = env.WHATSAPP_ADMIN_NUMBER;
-
-  if (!apiKey || !adminNumber) {
-    logSkipped("whatsapp", "WHATSAPP_API_KEY / WHATSAPP_ADMIN_NUMBER not set");
-    return { ok: false, error: "not configured" };
-  }
-
-  const message = buildWhatsAppTemplate(booking);
-
-  try {
-    // Provider-agnostic: plug in Wati / AiSensy / Interakt endpoint here.
-    // Kept as a clearly marked integration point; does not block booking.
-    const res = await fetch("https://api.whatsapp.com/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        to: adminNumber,
-        text: message,
-      }),
-      signal: AbortSignal.timeout(10_000),
-    });
-
-    if (!res.ok) {
-      throw new Error(`WhatsApp API responded ${res.status}`);
-    }
-    return { ok: true, provider: "whatsapp" };
-  } catch (err) {
-    logError("whatsapp", err);
-    return { ok: false, error: err instanceof Error ? err.message : "unknown" };
-  }
-}
-
 export async function sendBookingEmail(booking: Booking): Promise<SendResult> {
   if (!booking.email) {
     logSkipped("email", "customer email not provided");
@@ -246,64 +207,15 @@ export async function sendBookingEmail(booking: Booking): Promise<SendResult> {
 }
 
 /**
- * Fires both notifications. Call this inside `after()` (Next.js) or another
- * background context so it is not killed when the request ends in serverless.
- * Booking pipeline must NOT await this.
+ * Fires the booking confirmation email. Call this inside `after()` (Next.js) or
+ * another background context so it is not killed when the request ends in
+ * serverless. Booking pipeline must NOT await this.
+ *
+ * WhatsApp booking is handled client-side via wa.me links (see
+ * `getWhatsAppLink` + booking dialogs); no server-side WhatsApp provider.
  */
 export async function dispatchBookingNotifications(booking: Booking): Promise<void> {
-  await Promise.allSettled([sendWhatsAppToAdmin(booking), sendBookingEmail(booking)]);
-}
-
-function buildWhatsAppTemplate(booking: Booking): string {
-  const siteUrl = env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
-  const adminLink = `${siteUrl}/admin/bookings/${booking.id}`;
-  const T = strings(booking.locale);
-
-  if (booking.itemType === "transport" && booking.bookingOptions) {
-    const o = booking.bookingOptions;
-    const unitTotal = o.price + o.extraTotal;
-    const grandTotal = unitTotal * o.vehicleQty;
-    const extrasLine =
-      o.extraCharges.length > 0
-        ? o.extraCharges
-            .map((e) => `+${e.price} ${e.currency} (${e.name})`)
-            .join(", ")
-        : "-";
-
-    return [
-      T.alert,
-      "",
-      `${T.code}: ${booking.bookingCode}`,
-      `${T.package}: ${booking.packageName}`,
-      `${T.name}: ${booking.customerName}`,
-      `${T.phone}: ${booking.phone}`,
-      `${T.pickup}: ${o.pickupLocation} (${o.pickupDate} ${o.pickupTime})`,
-      ...(o.dropoffLocation
-        ? [`${T.dropoff}: ${o.dropoffLocation}`]
-        : []),
-      `${T.vehicles}: ${o.vehicleQty}`,
-      `${T.package} ${o.pricingPackageName}: ${o.price} ${o.currency}`,
-      `${T.extras}: ${extrasLine}`,
-      `${T.estTotal}: ${grandTotal} ${o.currency}`,
-      ...(booking.notes ? [`${T.notes}: ${booking.notes}`] : []),
-      "",
-      `${T.view}: ${adminLink}`,
-    ].join("\n");
-  }
-
-  return [
-    T.alert,
-    "",
-    `${T.code}: ${booking.bookingCode}`,
-    `${T.package}: ${booking.packageName}`,
-    `${T.name}: ${booking.customerName}`,
-    `${T.phone}: ${booking.phone}`,
-    `${T.dates}: ${booking.departureDate} → ${booking.returnDate}`,
-    `${T.participants}: ${booking.participants} ${T.guests}`,
-    ...(booking.notes ? [`${T.notes}: ${booking.notes}`] : []),
-    "",
-    `${T.view}: ${adminLink}`,
-  ].join("\n");
+  await sendBookingEmail(booking);
 }
 
 function buildEmailTemplate(booking: Booking): string {
