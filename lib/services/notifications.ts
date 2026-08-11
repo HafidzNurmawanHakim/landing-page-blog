@@ -3,7 +3,10 @@ import type { Booking } from "../db/schema";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import { getPackageByCode } from "@/lib/db/repositories/packages";
 import { siteConfig, buildWhatsAppLink } from "@/lib/config/site";
-import { getSiteConfig, type ResolvedSiteConfig } from "@/lib/services/site-config";
+import {
+  getSiteConfig,
+  type ResolvedSiteConfig,
+} from "@/lib/services/site-config";
 import { formatIDR } from "@/lib/utils/format";
 
 /**
@@ -58,7 +61,7 @@ type TemplateStrings = {
 
 const TEMPLATES: Record<Locale, TemplateStrings> = {
   id: {
-    alert: "🚨 BOOKING BARU",
+    alert: "BOOKING BARU",
     code: "Kode",
     package: "Paket",
     name: "Nama",
@@ -92,7 +95,7 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     follow: "Ikuti kami:",
   },
   ms: {
-    alert: "🚨 TEMPAHAN BARU",
+    alert: "TEMPAHAN BARU",
     code: "Kod",
     package: "Pakej",
     name: "Nama",
@@ -126,7 +129,7 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     follow: "Ikuti kami:",
   },
   en: {
-    alert: "🚨 NEW BOOKING",
+    alert: "NEW BOOKING",
     code: "Code",
     package: "Package",
     name: "Name",
@@ -160,7 +163,7 @@ const TEMPLATES: Record<Locale, TemplateStrings> = {
     follow: "Follow us:",
   },
   zh: {
-    alert: "🚨 新预订",
+    alert: "新预订",
     code: "预订代码",
     package: "套餐",
     name: "姓名",
@@ -303,7 +306,9 @@ export async function sendAdminNotificationEmail(
  * this. Two emails: admin alert (always) + customer confirmation (only when
  * the guest provided an email).
  */
-export async function dispatchBookingNotifications(booking: Booking): Promise<void> {
+export async function dispatchBookingNotifications(
+  booking: Booking,
+): Promise<void> {
   await Promise.allSettled([
     sendBookingEmail(booking),
     sendAdminNotificationEmail(booking),
@@ -410,7 +415,7 @@ async function buildCustomerEmail(
   const summaryRows = `
     ${summaryRow(T.bookingCode, escapeHtml(booking.bookingCode))}
     ${summaryRow(T.package, escapeHtml(booking.packageName))}
-    ${booking.itemType === "transport" && booking.bookingOptions ? transportEmailRows(booking) : await tourEmailRows(booking)}
+    ${booking.itemType === "transport" && booking.bookingOptions ? transportEmailRows(booking, T) : await tourEmailRows(booking, T)}
     ${summaryRow(T.participants, `${booking.participants} ${T.guests}`)}
     ${booking.notes ? summaryRow(T.notes, escapeHtml(booking.notes)) : ""}`;
 
@@ -419,7 +424,9 @@ async function buildCustomerEmail(
     (booking.locale as Locale) ?? DEFAULT_LOCALE,
   );
 
-  return shell(cfg, `
+  return shell(
+    cfg,
+    `
     <h2 style="margin:16px 0 6px; color:${C.fg}; font-size:20px; font-weight:600; letter-spacing:-0.01em; text-align:center;">
       ${T.subject}
     </h2>
@@ -436,7 +443,8 @@ async function buildCustomerEmail(
       </p>
       ${ctaButton(waLink, T.chat)}
     </div>
-  `);
+  `,
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -447,12 +455,13 @@ async function buildAdminEmail(
   booking: Booking,
   cfg: ResolvedSiteConfig,
 ): Promise<string> {
-  const T = strings(booking.locale);
+  // Admin notification is always Indonesian (docs/07-notifications.md §7.1).
+  const T = strings("id");
 
   const summaryRows = `
     ${summaryRow(T.bookingCode, escapeHtml(booking.bookingCode))}
     ${summaryRow(T.package, escapeHtml(booking.packageName))}
-    ${booking.itemType === "transport" && booking.bookingOptions ? transportEmailRows(booking) : await tourEmailRows(booking)}
+    ${booking.itemType === "transport" && booking.bookingOptions ? transportEmailRows(booking, T) : await tourEmailRows(booking, T)}
     ${summaryRow(T.name, escapeHtml(booking.customerName))}
     ${summaryRow(T.phone, escapeHtml(booking.phone))}
     ${booking.email ? summaryRow(T.email, escapeHtml(booking.email)) : ""}
@@ -461,7 +470,9 @@ async function buildAdminEmail(
 
   const adminUrl = `${siteConfig.url}/admin/bookings/${booking.id}`;
 
-  return shell(cfg, `
+  return shell(
+    cfg,
+    `
     <h2 style="margin:16px 0 6px; color:${C.fg}; font-size:20px; font-weight:600; letter-spacing:-0.01em; text-align:center;">
       ${T.alert}
     </h2>
@@ -473,24 +484,24 @@ async function buildAdminEmail(
     <div style="margin-top:24px; text-align:center;">
       ${ctaButton(adminUrl, `${T.view} ${T.dashboard}`)}
     </div>
-  `);
+  `,
+  );
 }
 
 // ---------------------------------------------------------------------------
 // Shared row builders
 // ---------------------------------------------------------------------------
 
-async function tourEmailRows(booking: Booking): Promise<string> {
-  const T = strings(booking.locale);
+async function tourEmailRows(
+  booking: Booking,
+  T: TemplateStrings,
+): Promise<string> {
   let priceRow = "";
   if (booking.itemType === "hotel" || booking.itemType === "tour") {
     try {
       const pkg = await getPackageByCode(booking.packageCode);
       if (pkg && pkg.price) {
-        priceRow = summaryRowStrong(
-          T.price,
-          formatIDR(pkg.price),
-        );
+        priceRow = summaryRowStrong(T.price, formatIDR(pkg.price));
       }
     } catch {
       // Price is best-effort; never fail the email over a lookup error.
@@ -502,8 +513,10 @@ async function tourEmailRows(booking: Booking): Promise<string> {
     ${priceRow}`;
 }
 
-function transportEmailRows(booking: Booking): string {
-  const T = strings(booking.locale);
+function transportEmailRows(
+  booking: Booking,
+  T: TemplateStrings,
+): string {
   const o = booking.bookingOptions;
   if (!o) return "";
   const unitTotal = o.price + o.extraTotal;

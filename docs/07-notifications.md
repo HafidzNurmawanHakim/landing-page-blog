@@ -5,7 +5,7 @@
 ## 7.1 WhatsApp ke Admin (Template)
 
 ```
-🚨 BOOKING BARU
+BOOKING BARU
 
 Kode: BT-20260805-001
 Paket: Batam 3D2N

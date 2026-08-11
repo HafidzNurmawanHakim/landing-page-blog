@@ -44,14 +44,16 @@ export default async function Home() {
     limit: 12,
   });
   const testimonials = testimonialRows.map(serializeTestimonial);
-  const { items: blogRows } = await listPublishedPostsWithCategory({ limit: 3 });
+  const { items: blogRows } = await listPublishedPostsWithCategory({
+    limit: 3,
+  });
 
   return (
     <>
       <HeroSection />
       <BenefitsSection />
-      <FeaturesSection />
       <FeaturedPackages packages={packages} />
+      <FeaturesSection />
       <TestimonialSection testimonials={testimonials} />
       <BlogSection posts={blogRows} />
       <ContactSection />
