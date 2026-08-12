@@ -5,7 +5,7 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Building2, Clock, Mail, Phone } from "lucide-react";
+import { Building2, Clock, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,8 +28,9 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useI18n } from "@/lib/i18n/provider";
-import { pickSiteText } from "@/lib/config/site";
+import { pickSiteText, buildWhatsAppLink } from "@/lib/config/site";
 import { useSiteConfig } from "@/lib/hooks/use-site-config";
+import { WhatsAppIcon } from "@/components/layout/whatsapp-button";
 
 const formSchema = z.object({
   firstName: z.string().min(2).max(255),
@@ -91,16 +92,23 @@ export const ContactSection = () => {
 
             <div>
               <div className="flex gap-2 mb-1">
-                <Phone />
-                <div className="font-bold">{t("contact.callUs")}</div>
+                <WhatsAppIcon className="h-5 w-5 text-primary" />
+                <div className="font-bold">{t("contact.whatsappUs")}</div>
               </div>
 
-              <a
-                href={`tel:${config.contact.phone}`}
-                className="transition-colors hover:text-primary"
-              >
-                {config.contact.phoneDisplay}
-              </a>
+              <div className="flex flex-col gap-1">
+                {config.whatsappNumbers.map((item) => (
+                  <a
+                    key={item.number}
+                    href={buildWhatsAppLink(item.number, locale)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="transition-colors hover:text-primary"
+                  >
+                    {item.label ? `${item.label} · ${item.number}` : item.number}
+                  </a>
+                ))}
+              </div>
             </div>
 
             <div>

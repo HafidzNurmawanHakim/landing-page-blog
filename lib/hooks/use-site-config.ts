@@ -15,8 +15,6 @@ import type {
 
 const DEFAULTS: PublicSiteConfig = {
   contact: {
-    phone: siteConfig.contact.phone,
-    phoneDisplay: siteConfig.contact.phoneDisplay,
     email: siteConfig.contact.email,
     address: { ...siteConfig.contact.address },
     hours: {
@@ -27,6 +25,7 @@ const DEFAULTS: PublicSiteConfig = {
   whatsappNumbers: siteConfig.whatsapp.numbers.map((w) => ({
     label: w.label,
     number: w.number,
+    isDefault: !!w.isDefault,
   })),
   social: siteConfig.social.map((s) => ({ label: s.label, href: s.href })),
 };
@@ -37,9 +36,6 @@ function mergeDefaults(
   if (!data) return DEFAULTS;
   return {
     contact: {
-      phone: data.contact?.phone || DEFAULTS.contact.phone,
-      phoneDisplay:
-        data.contact?.phoneDisplay || DEFAULTS.contact.phoneDisplay,
       email: data.contact?.email || DEFAULTS.contact.email,
       address: { ...DEFAULTS.contact.address, ...data.contact?.address },
       hours: {
@@ -55,6 +51,7 @@ function mergeDefaults(
         ? data.whatsappNumbers.map((w) => ({
             label: w.label || "",
             number: w.number || "",
+            isDefault: !!w.isDefault,
           }))
         : DEFAULTS.whatsappNumbers,
     social: Array.isArray(data.social) && data.social.length > 0

@@ -69,6 +69,8 @@ export type SiteConfigSocialLink = {
 export type SiteConfigWhatsApp = {
   label: string;
   number: string;
+  /** Exactly one number should be marked as default; used for booking forms. */
+  isDefault?: boolean;
 };
 
 /**
@@ -79,8 +81,6 @@ export type SiteConfigWhatsApp = {
  */
 export const siteConfigTable = sqliteTable("site_config", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  contactPhone: text("contact_phone"),
-  contactPhoneDisplay: text("contact_phone_display"),
   contactEmail: text("contact_email"),
   whatsappNumber: text("whatsapp_number"),
   adminEmail: text("admin_email"),

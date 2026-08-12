@@ -18,8 +18,6 @@ import type { LocalizedString, Locale } from "@/lib/i18n/locales";
 
 export type ResolvedSiteConfig = {
   contact: {
-    phone: string;
-    phoneDisplay: string;
     email: string;
     address: LocalizedText;
     hours: {
@@ -54,9 +52,20 @@ function pickLocalized(
 
 /**
  * Parses the `whatsapp_number` column, which stores a JSON array of
- * `{ label, number }`. Legacy rows (single plain number, pre-multi-number
- * config) fall back to one entry with the default label.
+ * `{ label, number, isDefault }`. Legacy rows (single plain number,
+ * pre-multi-number config) fall back to one entry with the default label.
+ * The result is normalized so exactly one entry is the default.
  */
+function normalizeWhatsAppDefaults(
+  list: SiteConfigWhatsApp[]
+): SiteConfigWhatsApp[] {
+  if (list.length === 0) return list;
+  if (list.some((w) => w.isDefault)) return list;
+  return list.map((w, i) =>
+    i === 0 ? { ...w, isDefault: true } : { ...w, isDefault: false }
+  );
+}
+
 function parseWhatsAppNumbers(
   raw: string | null | undefined
 ): SiteConfigWhatsApp[] {
@@ -81,8 +90,9 @@ function parseWhatsAppNumbers(
                   ? w.label.trim()
                   : "",
               number: (w.number as string).trim(),
+              isDefault: w.isDefault === true,
             }));
-          if (list.length > 0) return list;
+          if (list.length > 0) return normalizeWhatsAppDefaults(list);
         }
       } catch {
         // Fall through to defaults below.
@@ -92,11 +102,14 @@ function parseWhatsAppNumbers(
         {
           label: defaults.whatsapp.numbers[0]?.label ?? "",
           number: value,
+          isDefault: true,
         },
       ];
     }
   }
-  return defaults.whatsapp.numbers.map((w) => ({ ...w }));
+  return normalizeWhatsAppDefaults(
+    defaults.whatsapp.numbers.map((w) => ({ ...w }))
+  );
 }
 
 export async function getSiteConfig(): Promise<ResolvedSiteConfig> {
@@ -109,8 +122,6 @@ export async function getSiteConfig(): Promise<ResolvedSiteConfig> {
 
   return {
     contact: {
-      phone: pick(row?.contactPhone, defaults.contact.phone),
-      phoneDisplay: pick(row?.contactPhoneDisplay, defaults.contact.phoneDisplay),
       email: pick(row?.contactEmail, defaults.contact.email),
       address: pickLocalized(row?.address, defaults.contact.address),
       hours: {

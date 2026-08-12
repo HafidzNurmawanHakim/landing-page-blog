@@ -27,8 +27,6 @@ export async function getSiteConfigRow(): Promise<SiteConfigRow | null> {
 }
 
 export type SiteConfigInput = {
-  contactPhone?: string | null;
-  contactPhoneDisplay?: string | null;
   contactEmail?: string | null;
   whatsappNumbers?: SiteConfigWhatsApp[] | null;
   adminEmail?: string | null;
@@ -57,6 +55,7 @@ function toWhatsAppNumbers(value: SiteConfigWhatsApp[] | null | undefined): stri
     list.map((w) => ({
       label: w.label?.trim() ?? "",
       number: w.number.trim(),
+      ...(w.isDefault ? { isDefault: true } : {}),
     }))
   );
 }
@@ -69,8 +68,6 @@ export async function upsertSiteConfig(
   const existing = await getSiteConfigRow();
 
   const values = {
-    contactPhone: toNull(data.contactPhone),
-    contactPhoneDisplay: toNull(data.contactPhoneDisplay),
     contactEmail: toNull(data.contactEmail),
     whatsappNumber: toWhatsAppNumbers(data.whatsappNumbers),
     adminEmail: toNull(data.adminEmail),

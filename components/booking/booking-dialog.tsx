@@ -22,7 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { formatDate, formatIDR } from "@/lib/utils/format";
 import { useI18n } from "@/lib/i18n/provider";
-import { buildWhatsAppLink } from "@/lib/config/site";
+import { buildWhatsAppLink, getDefaultWhatsAppNumber } from "@/lib/config/site";
 import { useSiteConfig } from "@/lib/hooks/use-site-config";
 import { WhatsAppIcon } from "@/components/layout/whatsapp-button";
 
@@ -61,11 +61,7 @@ export const BookingDialog = forwardRef<ReusableModalRef, BookingDialogProps>(
       useState<SuccessBooking | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formError, setFormError] = useState<string | null>(null);
-    const [selectedWaNumber, setSelectedWaNumber] = useState("");
-    const waNumbers = config.whatsappNumbers;
-    const activeWaNumber = waNumbers.some((n) => n.number === selectedWaNumber)
-      ? selectedWaNumber
-      : (waNumbers[0]?.number ?? "");
+    const waNumber = getDefaultWhatsAppNumber(config.whatsappNumbers);
 
     const {
       register,
@@ -109,7 +105,7 @@ export const BookingDialog = forwardRef<ReusableModalRef, BookingDialogProps>(
       if (v.email) lines.push(`• *${t("booking.email")}:* ${v.email}`);
       if (v.notes) lines.push(`• *${t("booking.notes")}:* ${v.notes}`);
       lines.push("", t("wa.bookingOutro"));
-      return buildWhatsAppLink(activeWaNumber, locale, lines.join("\n"));
+      return buildWhatsAppLink(waNumber, locale, lines.join("\n"));
     }
 
     function resetAll() {
@@ -377,21 +373,6 @@ export const BookingDialog = forwardRef<ReusableModalRef, BookingDialogProps>(
                     </span>
                     <span className="h-px flex-1 bg-border/60" />
                   </div>
-
-                  {waNumbers.length > 1 && (
-                    <select
-                      value={activeWaNumber}
-                      onChange={(e) => setSelectedWaNumber(e.target.value)}
-                      aria-label={t("wa.pickNumber")}
-                      className="h-11 w-full rounded-full border border-input bg-background px-4 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                    >
-                      {waNumbers.map((item) => (
-                        <option key={item.number} value={item.number}>
-                          {item.label} — {item.number}
-                        </option>
-                      ))}
-                    </select>
-                  )}
 
                   <button
                     type="button"

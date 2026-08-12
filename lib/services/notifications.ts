@@ -2,7 +2,7 @@ import { env } from "../env";
 import type { Booking } from "../db/schema";
 import { DEFAULT_LOCALE, type Locale } from "@/lib/i18n/locales";
 import { getPackageByCode } from "@/lib/db/repositories/packages";
-import { siteConfig, buildWhatsAppLink } from "@/lib/config/site";
+import { siteConfig, buildWhatsAppLink, getDefaultWhatsAppNumber } from "@/lib/config/site";
 import {
   getSiteConfig,
   type ResolvedSiteConfig,
@@ -422,7 +422,7 @@ async function buildCustomerEmail(
     ${booking.notes ? summaryRow(T.notes, escapeHtml(booking.notes)) : ""}`;
 
   const waLink = buildWhatsAppLink(
-    cfg.whatsappNumbers[0]?.number ?? "",
+    getDefaultWhatsAppNumber(cfg.whatsappNumbers),
     (booking.locale as Locale) ?? DEFAULT_LOCALE,
   );
 
@@ -441,7 +441,7 @@ async function buildCustomerEmail(
     <div style="margin-top:20px; padding:16px 20px; background:${C.soft}; border-radius:${C.radiusMd};">
       <p style="margin:0 0 4px; color:${C.muted}; font-size:14px;">${T.wait}</p>
       <p style="margin:0 0 12px; color:${C.fg}; font-size:14px;">
-        <strong>${T.contact}</strong> ${escapeHtml(cfg.contact.phoneDisplay)} · <a href="mailto:${escapeHtml(cfg.contact.email)}" style="color:${C.primary}; text-decoration:none;">${escapeHtml(cfg.contact.email)}</a>
+        <strong>${T.contact}</strong> <a href="mailto:${escapeHtml(cfg.contact.email)}" style="color:${C.primary}; text-decoration:none;">${escapeHtml(cfg.contact.email)}</a>
       </p>
       ${ctaButton(waLink, T.chat)}
     </div>

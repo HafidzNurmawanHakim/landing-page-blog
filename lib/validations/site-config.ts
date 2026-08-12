@@ -33,19 +33,10 @@ const whatsappItemSchema = z.object({
     .min(1, "Nomor WhatsApp wajib diisi")
     .max(20, "Maksimal 20 karakter")
     .regex(/^\d+$/, "Nomor WhatsApp hanya angka (kode negara tanpa +)"),
+  isDefault: z.boolean().optional(),
 });
 
 export const siteConfigSchema = z.object({
-  contactPhone: z
-    .string()
-    .trim()
-    .min(1, "Nomor telepon wajib diisi")
-    .max(40, "Maksimal 40 karakter"),
-  contactPhoneDisplay: z
-    .string()
-    .trim()
-    .min(1, "Tampilan nomor wajib diisi")
-    .max(60, "Maksimal 60 karakter"),
   contactEmail: z
     .string()
     .trim()
@@ -54,7 +45,11 @@ export const siteConfigSchema = z.object({
   whatsappNumbers: z
     .array(whatsappItemSchema)
     .min(1, "Minimal 1 nomor WhatsApp")
-    .max(5, "Maksimal 5 nomor WhatsApp"),
+    .max(5, "Maksimal 5 nomor WhatsApp")
+    .refine(
+      (arr) => arr.filter((w) => w.isDefault).length === 1,
+      "Tentukan satu nomor default"
+    ),
   adminEmail: z
     .string()
     .trim()

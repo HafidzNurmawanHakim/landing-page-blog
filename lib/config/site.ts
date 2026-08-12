@@ -121,8 +121,6 @@ export const siteConfig = {
   },
 
   contact: {
-    phoneDisplay: "+62 819 4143 433",
-    phone: "+628194143343",
     email: "halo@destitours.com",
     address: {
       id: "Batam Center, Batam, Kepulauan Riau",
@@ -155,7 +153,7 @@ export const siteConfig = {
 
   whatsapp: {
     numbers: [
-      { label: "Indonesia", number: "628194143343" },
+      { label: "Indonesia", number: "628194143343", isDefault: true },
     ] satisfies SiteConfigWhatsApp[],
     defaultMessage: {
       id: "Halo Destitour, saya ingin bertanya tentang paket wisata.",
@@ -230,10 +228,22 @@ export function buildWhatsAppLink(
 }
 
 export function getWhatsAppLink(locale: Locale, message?: string) {
-  const primary = siteConfig.whatsapp.numbers[0];
-  return buildWhatsAppLink(primary?.number ?? "", locale, message);
+  const primary = getDefaultWhatsAppNumber(siteConfig.whatsapp.numbers);
+  return buildWhatsAppLink(primary, locale, message);
+}
+
+/**
+ * The main/default WhatsApp number used for booking forms and notifications.
+ * Falls back to the first number when no entry is flagged as default.
+ */
+export function getDefaultWhatsAppNumber(
+  numbers: readonly SiteConfigWhatsApp[]
+): string {
+  return (
+    numbers.find((n) => n.isDefault)?.number ?? numbers[0]?.number ?? ""
+  );
 }
 
 export function getPrimaryWhatsAppNumber(): string {
-  return siteConfig.whatsapp.numbers[0]?.number ?? "";
+  return getDefaultWhatsAppNumber(siteConfig.whatsapp.numbers);
 }

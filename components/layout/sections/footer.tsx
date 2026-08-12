@@ -1,10 +1,11 @@
 "use client";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { Facebook, Instagram, Mail, MapPin, Music2, Phone, Youtube } from "lucide-react";
+import { Facebook, Instagram, Mail, MapPin, Music2, Youtube } from "lucide-react";
 import { useI18n } from "@/lib/i18n/provider";
 import { Logo } from "@/components/layout/logo";
-import { siteConfig, pickSiteText } from "@/lib/config/site";
+import { WhatsAppIcon } from "@/components/layout/whatsapp-button";
+import { siteConfig, pickSiteText, buildWhatsAppLink } from "@/lib/config/site";
 import { useSiteConfig } from "@/lib/hooks/use-site-config";
 
 const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -36,19 +37,30 @@ export const FooterSection = () => {
                 {pickSiteText(config.contact.address, locale)}
               </div>
               <a
-                href={`tel:${config.contact.phone}`}
-                className="flex items-center gap-2 transition-colors hover:text-primary"
-              >
-                <Phone className="h-4 w-4 shrink-0 text-primary" />
-                {config.contact.phoneDisplay}
-              </a>
-              <a
                 href={`mailto:${config.contact.email}`}
                 className="flex items-center gap-2 transition-colors hover:text-primary"
               >
                 <Mail className="h-4 w-4 shrink-0 text-primary" />
                 {config.contact.email}
               </a>
+              {config.whatsappNumbers.length > 0 && (
+                <div className="flex items-start gap-2">
+                  <WhatsAppIcon className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                  <div className="flex flex-col gap-1">
+                    {config.whatsappNumbers.map((item) => (
+                      <a
+                        key={item.number}
+                        href={buildWhatsAppLink(item.number, locale)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="transition-colors hover:text-primary"
+                      >
+                        {item.label ? `${item.label} · ${item.number}` : item.number}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

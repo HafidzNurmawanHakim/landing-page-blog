@@ -289,16 +289,16 @@ Perubahan di sini langsung terlihat publik (tanpa deploy).
 
 | Bagian                  | Isi                                                                                |
 | ----------------------- | ---------------------------------------------------------------------------------- |
-| **Kontak**              | Nomor telepon yang ditampilkan (contoh `+62 819 4143 433`), nomor untuk tombol `tel:` (contoh `+628194143343`), email kontak. |
-| **WhatsApp & Notifikasi Admin** | Nomor WhatsApp admin (untuk menerima notifikasi booking) & email admin.    |
+| **Kontak**              | Email kontak.                                                                      |
+| **WhatsApp & Notifikasi Admin** | Daftar nomor WhatsApp admin (label + nomor) — semua tampil di footer, floating button, dan halaman kontak. Tandai satu sebagai **nomor default** (dipakai semua form booking & notifikasi email). Plus email admin. |
 | **Sosial Media**        | Akun Instagram, Facebook, TikTok, YouTube — tampil di footer. Klik **Tambah Sosial Media** untuk menambah, ikon 🗑 untuk menghapus. |
 | **Alamat & Jam Operasional** | Alamat, hari operasional, dan jam — isi per bahasa (tab bahasa di atas).    |
 
 Setelah mengubah, klik **Simpan Konfigurasi**. Perubahan langsung aktif.
 
-> ⚠️ **Nomor WhatsApp admin** sangat penting — notifikasi booking baru
-> dikirim ke nomor ini. Formatnya hanya angka dengan kode negara, tanpa `+`
-> (contoh `628194143343`).
+> ⚠️ **Nomor WhatsApp admin** sangat penting — dipakai untuk kontak publik
+> dan default untuk form booking. Formatnya hanya angka dengan kode negara,
+> tanpa `+` (contoh `628194143343`).
 
 ---
 

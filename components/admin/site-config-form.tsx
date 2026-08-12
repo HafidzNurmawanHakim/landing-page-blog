@@ -50,17 +50,14 @@ export function SiteConfigForm({ config }: { config: ResolvedSiteConfig }) {
     register,
     handleSubmit,
     control,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<z.input<typeof siteConfigSchema>, any, z.output<typeof siteConfigSchema>>({
     resolver: zodResolver(siteConfigSchema),
     defaultValues: {
-      contactPhone: config.contact.phone,
-      contactPhoneDisplay: config.contact.phoneDisplay,
       contactEmail: config.contact.email,
-      whatsappNumbers: config.whatsappNumbers.map((w) => ({
-        label: w.label,
-        number: w.number,
-      })),
+      whatsappNumbers: normalizeWhatsAppDefaults(config.whatsappNumbers),
       adminEmail: config.adminEmail,
       address: fillLocalized(config.contact.address),
       hoursWeekday: fillLocalized(config.contact.hours.weekday),
@@ -68,6 +65,26 @@ export function SiteConfigForm({ config }: { config: ResolvedSiteConfig }) {
       social: config.social.map((s) => ({ label: s.label, href: s.href })),
     },
   });
+
+  function normalizeWhatsAppDefaults(
+    numbers: { label: string; number: string; isDefault?: boolean }[]
+  ): { label: string; number: string; isDefault: boolean }[] {
+    const out = numbers.map((w) => ({
+      label: w.label,
+      number: w.number,
+      isDefault: !!w.isDefault,
+    }));
+    if (out.length > 0 && !out.some((w) => w.isDefault)) out[0].isDefault = true;
+    return out;
+  }
+
+  function setWaDefault(index: number) {
+    waFields.fields.forEach((_, i) =>
+      setValue(`whatsappNumbers.${i}.isDefault`, i === index, {
+        shouldValidate: true,
+      })
+    );
+  }
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -115,43 +132,6 @@ export function SiteConfigForm({ config }: { config: ResolvedSiteConfig }) {
       {/* Kontak */}
       <section className="space-y-5">
         <h2 className="text-lg font-semibold tracking-tight">Kontak</h2>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="contactPhoneDisplay">
-              Nomor yang ditampilkan <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="contactPhoneDisplay"
-              placeholder="+62 819 4143 433"
-              aria-invalid={!!errors.contactPhoneDisplay}
-              className={cn(
-                "rounded-full",
-                errors.contactPhoneDisplay && "border-destructive"
-              )}
-              {...register("contactPhoneDisplay")}
-            />
-            {errors.contactPhoneDisplay && (
-              <p className="text-sm text-destructive">
-                {errors.contactPhoneDisplay.message}
-              </p>
-            )}
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="contactPhone">
-              Nomor telepon (untuk tel:) <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="contactPhone"
-              placeholder="+628194143343"
-              aria-invalid={!!errors.contactPhone}
-              className={cn("rounded-full", errors.contactPhone && "border-destructive")}
-              {...register("contactPhone")}
-            />
-            {errors.contactPhone && (
-              <p className="text-sm text-destructive">{errors.contactPhone.message}</p>
-            )}
-          </div>
-        </div>
         <div className="space-y-2">
           <Label htmlFor="contactEmail">
             Email kontak <span className="text-destructive">*</span>
@@ -246,6 +226,23 @@ export function SiteConfigForm({ config }: { config: ResolvedSiteConfig }) {
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
+                <div className="col-span-full">
+                  <label
+                    className="flex w-fit cursor-pointer items-center gap-2 text-sm"
+                    onClick={() => setWaDefault(index)}
+                  >
+                    <input
+                      type="radio"
+                      name="waDefault"
+                      checked={!!watch(`whatsappNumbers.${index}.isDefault`)}
+                      onChange={() => setWaDefault(index)}
+                      className="h-4 w-4 accent-primary"
+                    />
+                    <span className="font-medium">
+                      Nomor default (dipakai form booking)
+                    </span>
+                  </label>
+                </div>
               </div>
             ))}
           </div>

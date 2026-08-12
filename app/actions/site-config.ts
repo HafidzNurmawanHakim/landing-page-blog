@@ -38,8 +38,6 @@ export async function updateSiteConfigAction(
 
   try {
     await upsertSiteConfig({
-      contactPhone: parsed.data.contactPhone,
-      contactPhoneDisplay: parsed.data.contactPhoneDisplay,
       contactEmail: parsed.data.contactEmail,
       whatsappNumbers: parsed.data.whatsappNumbers,
       adminEmail: parsed.data.adminEmail,
