@@ -85,6 +85,13 @@
       "when": 1786439997010,
       "tag": "0011_colossal_captain_universe",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1786499319575,
+      "tag": "0012_slow_scalphunter",
+      "breakpoints": true
     }
   ]
 }

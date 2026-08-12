@@ -21,9 +21,7 @@
   },
   "common": {
     "all": "Semua",
-    "tour": "Tour",
     "transport": "Pengangkutan",
-    "hotel": "Hotel",
     "price": "Harga",
     "duration": "Tempoh",
     "participants": "Peserta",
@@ -324,7 +322,6 @@
     "info": "Maklumat",
     "tour": "Pakej Tour",
     "transport": "Pengangkutan",
-    "hotel": "Hotel",
     "howToBook": "Cara Tempah",
     "contact": "Hubungi Kami",
     "faq": "FAQ",

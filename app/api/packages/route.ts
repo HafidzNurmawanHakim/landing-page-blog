@@ -9,14 +9,13 @@ import { LOCALES, type Locale } from "@/lib/i18n/locales";
 export const dynamic = "force-dynamic";
 
 /**
- * GET /api/packages?category=tour&page=1&limit=10&locale=en
+ * GET /api/packages?page=1&limit=10&locale=en
  *
  * Response contract (docs/05-api-server-actions.md):
  *   { data: Package[], meta: { page, limit, total, totalPages } }
  * Localized fields are resolved when a valid `locale` is provided.
  */
 export async function GET(req: NextRequest) {
-  const category = req.nextUrl.searchParams.get("category");
   const page = Math.max(1, Number(req.nextUrl.searchParams.get("page")) || 1);
   const limit = Math.min(
     100,
@@ -28,11 +27,7 @@ export async function GET(req: NextRequest) {
     : null;
 
   try {
-    const valid = ["tour", "transport", "hotel", "all"];
-    const resolved = valid.includes(category ?? "") ? category : "all";
-
     const { items, total, totalPages } = await listPackages({
-      category: resolved as "all" | "tour" | "transport" | "hotel",
       page,
       limit,
     });

@@ -3,7 +3,6 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle2, Clock, MapPin, XCircle } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PackageImage } from "@/components/package/package-image";
@@ -51,12 +50,6 @@ export function PackageDetailView({ pkg }: { pkg: SerializedPackage }) {
           {/* Title & Metadata Badges Header */}
           <header className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <Badge
-                variant="secondary"
-                className="rounded-full px-3.5 py-1 text-xs font-medium"
-              >
-                {t(`common.${pkg.category}`)}
-              </Badge>
               {pkg.duration && (
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground">
                   <Clock className="h-3.5 w-3.5" />

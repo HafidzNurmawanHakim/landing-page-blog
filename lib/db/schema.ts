@@ -16,7 +16,6 @@ export const packages = sqliteTable(
     code: text("code").notNull().unique(),
     name: text("name", { mode: "json" }).$type<LocalizedString>().notNull(),
     slug: text("slug").notNull().unique(),
-    category: text("category").notNull(),
     duration: text("duration"),
     price: integer("price").notNull(),
     description: text("description", { mode: "json" }).$type<LocalizedString>(),

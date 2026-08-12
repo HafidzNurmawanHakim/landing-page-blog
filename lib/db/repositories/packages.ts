@@ -9,14 +9,6 @@ import {
 export { localizePackage, type LocalizedFields } from "@/lib/i18n/localize";
 export type { LocalizedPackage } from "@/lib/i18n/localize";
 
-export const PACKAGE_CATEGORIES = ["tour", "transport", "hotel"] as const;
-
-export type PackageCategory = (typeof PACKAGE_CATEGORIES)[number];
-
-export function isPackageCategory(value: string): value is PackageCategory {
-  return (PACKAGE_CATEGORIES as readonly string[]).includes(value);
-}
-
 export type PackageListResult = {
   items: Package[];
   total: number;
@@ -26,7 +18,6 @@ export type PackageListResult = {
 };
 
 export type PackageFilters = {
-  category?: PackageCategory | "all";
   activeOnly?: boolean;
   page?: number;
   limit?: number;
@@ -63,9 +54,6 @@ export async function listPackages(
 
   const conditions = [];
 
-  if (filters.category && filters.category !== "all") {
-    conditions.push(eq(packages.category, filters.category));
-  }
   if (filters.activeOnly ?? true) {
     conditions.push(eq(packages.isActive, 1));
   }
@@ -143,7 +131,6 @@ export type PackageInput = {
   code: string;
   name: LocalizedString;
   slug: string;
-  category: PackageCategory;
   duration?: string | null;
   price: number;
   description?: LocalizedString | null;

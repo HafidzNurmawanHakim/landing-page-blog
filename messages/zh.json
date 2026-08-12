@@ -21,9 +21,7 @@
   },
   "common": {
     "all": "全部",
-    "tour": "旅游",
     "transport": "交通",
-    "hotel": "酒店",
     "price": "价格",
     "duration": "时长",
     "participants": "人数",
@@ -324,7 +322,6 @@
     "info": "信息",
     "tour": "旅游套餐",
     "transport": "交通",
-    "hotel": "酒店",
     "howToBook": "如何预订",
     "contact": "联系我们",
     "faq": "常见问题",

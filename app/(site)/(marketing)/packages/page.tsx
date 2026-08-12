@@ -14,18 +14,9 @@ export async function generateMetadata() {
   });
 }
 
-export default async function PackagesPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ category?: string }>;
-}) {
-  const { category } = await searchParams;
-  const selected = category === "tour" ? "tour" : "all";
-
-  const { items } = await listPackages({
-    category: selected as "all" | "tour",
-  });
+export default async function PackagesPage() {
+  const { items } = await listPackages();
   const packages = items.map(serializePackage);
 
-  return <PackagesView packages={packages} selected={selected} />;
+  return <PackagesView packages={packages} />;
 }

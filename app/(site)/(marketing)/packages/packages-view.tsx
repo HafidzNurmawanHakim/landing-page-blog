@@ -3,15 +3,12 @@
 import { Package } from "lucide-react";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
 import { useI18n } from "@/lib/i18n/provider";
-import { CategoryFilter } from "./category-filter";
 import { PackageCard } from "@/components/package/package-card";
 
 export function PackagesView({
   packages,
-  selected,
 }: {
   packages: SerializedPackage[];
-  selected: string;
 }) {
   const { t } = useI18n();
 
@@ -25,8 +22,6 @@ export function PackagesView({
           {t("packages.subtitle")}
         </p>
       </header>
-
-      <CategoryFilter selected={selected} />
 
       {packages.length === 0 ? (
         <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-3xl bg-card p-10 text-center">

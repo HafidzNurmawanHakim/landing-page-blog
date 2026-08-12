@@ -175,9 +175,8 @@ export const siteConfig = {
       {
         titleKey: "footer.packages",
         links: [
-          { labelKey: "footer.tour", href: "/packages?category=tour" },
+          { labelKey: "footer.tour", href: "/packages" },
           { labelKey: "footer.transport", href: "/transport" },
-          { labelKey: "footer.hotel", href: "/packages?category=hotel" },
         ],
       },
       {

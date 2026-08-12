@@ -5,8 +5,8 @@
 ## 15.1 Masalah Desain Saat Ini
 
 Tabel `packages` (lihat [03-database-schema.md](./03-database-schema.md) §3.1)
-berisi `category` = `tour | transport | hotel` dengan satu harga flat `price`
-dan satu `duration`. Model ini **tidak cocok** untuk produk rental kendaraan:
+berisi paket tour dengan satu harga flat `price` dan satu `duration`. Model ini
+**tidak cocok** untuk produk rental kendaraan:
 
 | Kebutuhan Transport                    | Yang dimiliki `packages`                 |
 | -------------------------------------- | ---------------------------------------- |
@@ -22,10 +22,10 @@ dan satu `duration`. Model ini **tidak cocok** untuk produk rental kendaraan:
 
 **Keputusan (best practice):** `packages` menjadi **katalog paket tour saja**.
 `transport` dan `hotel` keluar dari tabel ini menjadi produk mandiri dengan
-tabel sendiri. Kolom `category` di `packages` dipertahankan untuk kompatibilitas
-(baris lama bertipe `transport`/`hotel` bisa dimigrasi bertahap), tapi ke depan
-hanya `tour` yang dipakai; dropdown kategori di admin-form tidak lagi menawarkan
-`transport`/`hotel` (lihat §15.10).
+tabel sendiri. Kolom `category` di `packages` **sudah dihapus** (migration
+`0012_slow_scalphunter`) — semua paket adalah tour; baris legacy
+bertipe `transport`/`hotel` ikut dibersihkan. Transport punya modul sendiri
+(dokumen ini), hotel menyusul terpisah (lihat §15.10).
 
 ## 15.2 Model Data (Target, sejalan dengan contoh)
 
@@ -325,17 +325,17 @@ Server Action & repository mengikuti pola `packages` yang ada
 | 4 | Halaman publik `/transport` + `/transport/[slug]`             | ✅      |
 | 5 | Booking polymorphic: `item_type` + `booking_options`          | ✅      |
 | 6 | Deprecate `transport`/`hotel` di katalog publik (filter `/packages` tour-only; legacy seed non-aktif) | ✅ |
-| 7 | (Fase lanjut) Produk `hotel_products` — pola sama: properti/room + rate plan | ⏳ |
+| 7 | Hapus kolom `category` dari `packages` + baris legacy (`0012_slow_scalphunter`, migration & seed dibersihkan) | ✅ |
+| 8 | (Fase lanjut) Produk `hotel_products` — pola sama: properti/room + rate plan | ⏳ |
 
 ### Checklist migrasi existing data
 
-- [x] Baris `packages` ber-`category='transport'` / `'hotel'` di seed di-set
-      non-aktif (`isActive=0`) sebagai arsip — produk transport baru punya
-      tabel & halaman sendiri.
+- [x] Baris `packages` ber-`category='transport'` / `'hotel'` dihapus dari DB
+      & seed — produk transport punya tabel & halaman sendiri.
 - [x] Booking lama tetap `item_type='tour'` (default kolom) — tidak perlu backfill.
-- [x] Filter publik `/packages` hanya `all | tour`; `/transport` jadi halaman sendiri.
-      Dropdown kategori di admin-form `packages` dipertahankan untuk backward
-      compat mengedit baris legacy.
+- [x] Kolom `category` dihapus dari tabel `packages` (migration
+      `0012_slow_scalphunter`); katalog `/packages` tour-only tanpa filter kategori,
+      dropdown kategori di admin-form dihapus.
 
 ---
 

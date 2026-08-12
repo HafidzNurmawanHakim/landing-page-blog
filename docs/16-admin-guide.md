@@ -127,7 +127,6 @@ Klik **Tambah Paket** → isi form:
 | **Kode Paket**      | Singkatan unik, contoh `BT-TUR-01`. Dipakai di komunikasi internal.        |
 | **Nama Paket**      | Nama yang tampil di website — **wajib diisi untuk 4 bahasa** (lihat §16.8).|
 | **Slug**            | Identitas URL, contoh `barelang-city-tour`. Otomatis terisi, biarkan saja. |
-| **Kategori**        | Pilih **Tour** (kategori lain legacy / tidak dipakai).                     |
 | **Durasi**          | Contoh `3D2N`, `1 Hari`.                                                   |
 | **Harga**           | Harga paket dalam Rupiah.                                                  |
 | **Deskripsi**       | Teks panjang yang menjelaskan paket. Isi untuk 4 bahasa.                   |

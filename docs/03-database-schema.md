@@ -10,7 +10,6 @@ CREATE TABLE packages (
   code TEXT NOT NULL UNIQUE,           -- BATAM-3D2N
   name TEXT NOT NULL,
   slug TEXT NOT NULL UNIQUE,
-  category TEXT NOT NULL,              -- tour | transport | hotel
   duration TEXT,                       -- 3D2N
   price INTEGER NOT NULL,              -- dalam Rupiah
   description TEXT,
@@ -33,8 +32,7 @@ CREATE TABLE packages (
 | `code`        | TEXT    | Kode unik paket, contoh `BATAM-3D2N`                                                                                                                |
 | `name`        | TEXT    | JSON object `{ id, ms, en, zh }` — nama tampilan per bahasa. Minimal `id` terisi.                                                                     |
 | `slug`        | TEXT    | Slug URL, contoh `batam-3d2n`                                                                                                                       |
-| `category`    | TEXT    | Salah satu: `tour` \| `transport` \| `hotel`                                                                                                        |
-| `duration`    | TEXT    | Durasi, contoh `3D2N`                                                                                                                               |
+| `duration`    | TEXT    | Durasi, contoh `3D2N`. Katalog `packages` hanya berisi paket **tour** — transport & hotel punya modul terpisah.                                       |
 | `price`       | INTEGER | Harga dalam Rupiah (integer, hindari float)                                                                                                         |
 | `description` | TEXT    | JSON object `{ id, ms, en, zh }` — deskripsi panjang paket per bahasa.                                                                               |
 | `image_url`   | TEXT    | URL gambar paket. Disimpan **di DB hanya URL-nya** — binary di Cloudflare R2 (atau `/public/uploads` di local dev). Kosong = tampilkan placeholder. |

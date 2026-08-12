@@ -49,7 +49,7 @@ Semua action testimoni memakai `requireAdmin()` + redirect `/admin/login`, valid
 
 | Method | Path                      | Deskripsi                                                                    |
 | ------ | ------------------------- | ---------------------------------------------------------------------------- |
-| GET    | `/api/packages`           | List paket aktif (+ filter kategori, **pagination**)                         |
+| GET    | `/api/packages`           | List paket aktif (tour, **pagination**)                                      |
 | GET    | `/api/packages/[slug]`    | Detail satu paket                                                            |
 | POST   | `/api/bookings`           | Buat booking baru (fallback tanpa JS)                                        |
 | POST   | `/api/admin/media/upload` | Upload gambar produk (admin session, multipart `file`) → `{ data: { url } }` |
@@ -97,7 +97,6 @@ Semua response memakai bentuk konsisten `{ data, meta }`.
       "code": "BATAM-3D2N",
       "name": "Batam 3 Hari 2 Malam",
       "slug": "batam-3d2n",
-      "category": "tour",
       "duration": "3D2N",
       "price": 1850000,
       "description": "...",
@@ -118,11 +117,10 @@ Semua response memakai bentuk konsisten `{ data, meta }`.
 
 **Parameter query:**
 
-| Param      | Tipe    | Default | Keterangan                                |
-| ---------- | ------- | ------- | ----------------------------------------- |
-| `category` | string  | `all`   | `tour` \| `transport` \| `hotel` \| `all` |
-| `page`     | integer | `1`     | Halaman (mulai dari 1)                    |
-| `limit`    | integer | `10`    | Item per halaman, maksimal 100            |
+| Param   | Tipe    | Default | Keterangan                     |
+| ------- | ------- | ------- | ------------------------------ |
+| `page`  | integer | `1`     | Halaman (mulai dari 1)         |
+| `limit` | integer | `10`    | Item per halaman, maksimal 100 |
 
 `meta` menjelaskan posisi & ukuran data:
 

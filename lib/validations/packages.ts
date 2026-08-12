@@ -1,8 +1,6 @@
 import { z } from "zod";
 import { LOCALES } from "@/lib/i18n/locales";
 
-export const PACKAGE_CATEGORIES = ["tour", "transport", "hotel"] as const;
-
 /**
  * Per-locale content fields (docs/06-i18n.md). Every locale is optional;
  * `name.id` is required so there is always a resolvable default.
@@ -48,7 +46,6 @@ export const packageFormSchema = z.object({
     )
     .optional()
     .or(z.literal("")),
-  category: z.enum(PACKAGE_CATEGORIES),
   duration: z.string().trim().max(20).optional().or(z.literal("")),
   price: z.coerce
     .number()

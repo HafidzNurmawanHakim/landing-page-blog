@@ -56,7 +56,7 @@ destitour/
 │   ├── actions/gallery.ts    # create/update/delete foto galeri (auth session)
 │   ├── actions/testimonials.ts # create/update/delete testimoni (auth session)
 │   ├── actions/blog.ts        # CRUD artikel + kategori blog (auth session, reading time auto)
-│   ├── (marketing)/packages/ # Katalog paket (filter kategori) + detail [slug] (real data)
+│   ├── (marketing)/packages/ # Katalog paket tour + detail [slug] (real data)
 │   │   └── [slug]/           # Detail paket + BookingDialog modal (form + sukses)
 │   ├── (marketing)/gallery/  # Grid galeri publik (Instagram-style, caption per bahasa)
 │   ├── (marketing)/blog/     # Blog publik: daftar + filter kategori + pagination
@@ -73,7 +73,7 @@ destitour/
 │   │   ├── blogs/            # CRUD blog (list, new, [id]/edit) + categories/
 │   │   └── config/           # Konfigurasi situs (kontak, WA, sosmed, alamat)
 │   └── api/
-│       ├── packages/         # GET /api/packages (+ filter category)
+│       ├── packages/         # GET /api/packages (pagination)
 │       ├── packages/[slug]/  # GET /api/packages/[slug]
 │       └── bookings/         # POST /api/bookings (fallback tanpa JS)
 ├── components/
@@ -205,7 +205,7 @@ Detail lengkap: [03-database-schema.md](./03-database-schema.md)
 
 ### Alur Utama
 
-- **Customer:** homepage → pilih kategori → detail paket → form booking → submit → sukses + nomor booking
+- **Customer:** homepage → pilih paket tour → detail paket → form booking → submit → sukses + nomor booking
 - **Sistem saat submit:** generate booking_code → simpan D1 → WA admin → email customer
 - **Admin:** login → dashboard → filter → detail → ubah status
 
@@ -262,6 +262,8 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 12 Agustus 2026 | Docs: [16-admin-guide.md](./16-admin-guide.md) — panduan admin dashboard berbahasa Indonesia untuk owner non-teknis (login, booking, paket, transport, galeri, testimoni, blog, konfigurasi, export, cheat sheet harian) |
 | 12 Agustus 2026 | **Fix booking i18n + estimasi total transport**: nama paket/transport/extra di denormalisasi booking (`package_name`, `pricing_package_name`, extra charges) selalu di-simpan dalam Bahasa Indonesia (`DEFAULT_LOCALE`) terlepas dari locale UI tamu; "Estimasi Total" di form booking transport konsisten (header × qty kendaraan, sama dengan WhatsApp & success screen), success screen menampilkan jumlah kendaraan |
 | 12 Agustus 2026 | **Deploy staging + prod**: fix booking i18n & estimasi total transport ke staging (staging.destitours.com) & production (destitours.com), tanpa migration baru — verifikasi halaman publik 200, canonical, admin guard, upload locked, data D1 |
+| 12 Agustus 2026 | **Hapus kategori dari paket tour**: kolom `category` di `packages` di-drop (migration `0012_slow_scalphunter`) — transport & hotel punya modul sendiri, katalog `/packages` tour-only. Seed & DB dibersihkan dari baris legacy `transport`/`hotel`, field kategori dihapus dari form & tabel admin, filter kategori publik dihapus (category-filter.tsx), API tanpa param `category`, footer tanpa link hotel, key i18n `common.tour/hotel` + `footer.hotel` dihapus, export paket tanpa kolom Kategori, docs disinkronkan |
+| 12 Agustus 2026 | **Deploy staging + prod (hapus kategori)**: migration `0012` di-sync ke `migrations/` + apply ke D1 staging & prod. Deploy `destitour-staging` & `destitour`. Verifikasi curl staging & prod: halaman publik 200, canonical benar, guard admin redirect login, upload 401, API tanpa `category`, data tour tampil. Catatan: **D1 prod katalog kosong** (0 paket/transport/galeri/testimoni; hanya admin + site_config) — tidak di-seed atas permintaan user, staging penuh. |
 
 ---
 

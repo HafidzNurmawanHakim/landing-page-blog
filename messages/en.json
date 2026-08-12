@@ -21,9 +21,7 @@
   },
   "common": {
     "all": "All",
-    "tour": "Tour",
     "transport": "Transport",
-    "hotel": "Hotel",
     "price": "Price",
     "duration": "Duration",
     "participants": "Guests",
@@ -324,7 +322,6 @@
     "info": "Information",
     "tour": "Tour Packages",
     "transport": "Transport",
-    "hotel": "Hotel",
     "howToBook": "How to Book",
     "contact": "Contact Us",
     "faq": "FAQ",

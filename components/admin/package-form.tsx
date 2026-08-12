@@ -112,7 +112,6 @@ export function PackageForm({
       code: pkg?.code ?? "",
       name: pkg?.name ?? {},
       slug: pkg?.slug ?? "",
-      category: (pkg?.category as PackageFormValues["category"]) ?? "tour",
       duration: pkg?.duration ?? "",
       price: pkg?.price ?? 0,
       description: pkg?.description ?? {},
@@ -243,42 +242,15 @@ export function PackageForm({
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field
+          <Field id="code" label="Kode Paket" error={errors.code?.message}>
+            <Input
               id="code"
-              label="Kode Paket"
-              error={errors.code?.message}
-            >
-              <Input
-                id="code"
-                placeholder="BATAM-3D2N"
-                aria-invalid={!!errors.code}
-                className={cn("rounded-full", errors.code && "border-destructive")}
-                {...register("code")}
-              />
-            </Field>
-            <Field id="category" label="Kategori" error={errors.category?.message}>
-              <Select
-                value={watch("category")}
-                onValueChange={(value) =>
-                  setValue(
-                    "category",
-                    value as PackageFormValues["category"],
-                    { shouldValidate: true }
-                  )
-                }
-              >
-                <SelectTrigger id="category" className="rounded-full">
-                  <SelectValue placeholder="Pilih kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="tour">Tour</SelectItem>
-                  <SelectItem value="transport">Transport</SelectItem>
-                  <SelectItem value="hotel">Hotel</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
+              placeholder="BATAM-3D2N"
+              aria-invalid={!!errors.code}
+              className={cn("rounded-full", errors.code && "border-destructive")}
+              {...register("code")}
+            />
+          </Field>
 
           <Field
             id="name"

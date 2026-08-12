@@ -155,8 +155,8 @@ async function seed() {
         },
         {
           bookingCode: "BT-20260804-003",
-          packageCode: "BATAM-ECO-STAY",
-          packageName: "Eco Stay Resort",
+          packageCode: "BATAM-CITY-TOUR",
+          packageName: "City Tour & Barelang",
           customerName: "John Tan",
           phone: "+6588112233",
           email: "john.tan@example.com",

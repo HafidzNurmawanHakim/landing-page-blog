@@ -4,7 +4,7 @@
 
 ## 10.1 Kriteria
 
-- [x] Customer bisa melihat daftar paket Tour, Transport, Hotel (filter kategori)
+- [x] Customer bisa melihat daftar paket Tour (transport & hotel punya halaman/modul sendiri)
 - [x] Customer bisa submit booking lengkap (validasi zod + rate limit)
 - [x] Data booking tersimpan (D1 di prod / SQLite lokal)
 - [x] Admin menerima WhatsApp notifikasi (fire-and-forget, saat API key di-set)
@@ -19,7 +19,7 @@
 ### Customer Path
 
 - [ ] Buka homepage → pilih bahasa EN → konten berubah ke English
-- [ ] Klik kategori Hotel → list paket hotel tampil
+- [ ] Buka daftar paket → semua paket tour tampil (tanpa filter kategori)
 - [ ] Buka detail paket → itinerary, include/exclude terlihat
 - [ ] Submit form booking tanpa email → berhasil (email opsional)
 - [ ] Submit form dengan tanggal pulang sebelum berangkat → muncul error validasi

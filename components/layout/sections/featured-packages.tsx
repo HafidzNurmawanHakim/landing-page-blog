@@ -6,8 +6,6 @@ import { PackageCard } from "@/components/package/package-card";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
 import { useI18n } from "@/lib/i18n/provider";
 
-const FILTERS = ["all", "tour", "transport", "hotel"] as const;
-
 export function FeaturedPackages({
   packages,
 }: {
@@ -27,18 +25,6 @@ export function FeaturedPackages({
       <h3 className="md:w-1/2 mx-auto text-xl text-center text-muted-foreground mb-10">
         {t("services.desc")}
       </h3>
-
-      <div className="mb-10 flex flex-wrap justify-center gap-2">
-        {FILTERS.map((value) => (
-          <Link
-            key={value}
-            href={value === "all" ? "/packages" : `/packages?category=${value}`}
-            className="rounded-full bg-secondary px-5 py-1.5 text-sm font-medium text-secondary-foreground transition-colors hover:bg-accent"
-          >
-            {value === "all" ? t("common.all") : t(`common.${value}`)}
-          </Link>
-        ))}
-      </div>
 
       {packages.length === 0 ? (
         <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-3xl bg-card p-10 text-center">

@@ -324,8 +324,6 @@ type SeedPackage = Omit<
 const L = {
   id: { id: "Batam 3 Hari 2 Malam", ms: "Batam 3 Hari 2 Malam", en: "Batam 3 Days 2 Nights", zh: "巴淡 3 天 2 夜" },
   city: { id: "City Tour & Barelang", ms: "City Tour & Barelang", en: "City Tour & Barelang", zh: "城市观光与巴兰桥" },
-  transfer: { id: "Airport Transfer", ms: "Airport Transfer", en: "Airport Transfer", zh: "机场接送" },
-  eco: { id: "Eco Stay Resort", ms: "Eco Stay Resort", en: "Eco Stay Resort", zh: "生态度假村" },
 } as const;
 
 export const seedPackages: SeedPackage[] = [
@@ -333,7 +331,6 @@ export const seedPackages: SeedPackage[] = [
     code: "BATAM-3D2N",
     name: L.id,
     slug: "batam-3d2n",
-    category: "tour",
     duration: "3D2N",
     price: 1_850_000,
     description: {
@@ -370,7 +367,6 @@ export const seedPackages: SeedPackage[] = [
     code: "BATAM-CITY-TOUR",
     name: L.city,
     slug: "batam-city-tour",
-    category: "tour",
     duration: "1D",
     price: 450_000,
     description: {
@@ -404,78 +400,6 @@ export const seedPackages: SeedPackage[] = [
     imageUrl: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?q=80&w=1200&auto=format&fit=crop",
     imageAlt: L.city,
     isActive: 1,
-  },
-  {
-    code: "BATAM-TRANSFER",
-    name: L.transfer,
-    slug: "batam-transfer",
-    category: "transport",
-    duration: "Flexible",
-    price: 250_000,
-    description: {
-      id: "Layanan antar-jemput bandara Hang Nadim ke seluruh area Batam dengan armada nyaman.",
-      ms: "Perkhidmatan jemputan dan hantaran lapangan terbang Hang Nadim ke seluruh kawasan Batam dengan armada selesa.",
-      en: "Hang Nadim airport pickup and drop-off across Batam with comfortable vehicles.",
-      zh: "汉纳丁机场接送服务，覆盖巴淡岛全境，车队舒适。",
-    },
-    itinerary: {
-      id: [
-        "Penjemputan dari Hang Nadim Airport",
-        "Antar ke tujuan di Batam (Nagoya, Batam Center, dll)",
-      ],
-      en: [
-        "Pickup from Hang Nadim Airport",
-        "Drop off anywhere in Batam (Nagoya, Batam Center, etc.)",
-      ],
-    },
-    includes: {
-      id: ["Armada AC", "Driver berpengalaman", "Bensin / tol"],
-      en: ["Air-conditioned vehicle", "Experienced driver", "Fuel / toll"],
-    },
-    excludes: {
-      id: ["Tiket pesawat", "Parkir tambahan"],
-      en: ["Flight tickets", "Extra parking"],
-    },
-    imageUrl: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop",
-    imageAlt: L.transfer,
-    isActive: 0,
-  },
-  {
-    code: "BATAM-ECO-STAY",
-    name: L.eco,
-    slug: "batam-eco-stay",
-    category: "hotel",
-    duration: "2D1N",
-    price: 980_000,
-    description: {
-      id: "Penginapan resort dengan nuansa alam di kawasan Turi Beach, cocok untuk relaksasi.",
-      ms: "Penginapan resort bernuansa alam di kawasan Turi Beach, sesuai untuk relaksasi.",
-      en: "A nature-themed resort stay in the Turi Beach area, perfect for relaxing.",
-      zh: "图里海滩地区的自然风度假村住宿，非常适合放松。",
-    },
-    itinerary: {
-      id: [
-        "Check-in dan berenang di private beach",
-        "BBQ malam dan santai",
-        "Check-out sore hari",
-      ],
-      en: [
-        "Check-in and swim at the private beach",
-        "Evening BBQ and leisure",
-        "Afternoon check-out",
-      ],
-    },
-    includes: {
-      id: ["Kamar resort 1 malam", "Sarapan 2x", "Akses fasilitas resort"],
-      en: ["1 night resort room", "Breakfast x2", "Resort facility access"],
-    },
-    excludes: {
-      id: ["Transport", "Makan siang", "Spa / extra"],
-      en: ["Transport", "Lunch", "Spa / extras"],
-    },
-    imageUrl: "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1200&auto=format&fit=crop",
-    imageAlt: L.eco,
-    isActive: 0,
   },
 ];
 

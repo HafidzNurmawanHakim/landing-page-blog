@@ -7,8 +7,8 @@
 ```
 1. Customer buka homepage
 2. Pilih bahasa
-3. Klik kategori (Paket Tour / Transport / Hotel)
-4. Pilih paket → masuk halaman detail
+3. Pilih paket tour dari daftar (transport/hotel punya halaman terpisah)
+4. Buka detail paket
 5. Klik "Booking Sekarang" → form terbuka di modal/drawer
 6. Isi form (di modal):
    - Nama

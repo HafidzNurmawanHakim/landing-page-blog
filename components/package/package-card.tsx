@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { ArrowRight, Clock } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PackageImage } from "@/components/package/package-image";
 import type { SerializedPackage } from "@/lib/db/repositories/packages";
@@ -11,12 +10,6 @@ import { formatIDR } from "@/lib/utils/format";
 import { useI18n } from "@/lib/i18n/provider";
 import ClientOnly from "../ui/client-only";
 import { Spinner } from "../ui/spinner";
-
-const categoryColor: Record<string, string> = {
-  tour: "bg-primary text-primary-foreground",
-  transport: "bg-sky-500 text-white",
-  hotel: "bg-emerald-500 text-white",
-};
 
 interface PackageCardProps {
   pkg: SerializedPackage;
@@ -40,15 +33,8 @@ export function PackageCard({ pkg }: PackageCardProps) {
 
       {/* Content Overlay */}
       <div className="relative z-10 flex h-full flex-col justify-between p-6 text-white">
-        {/* Header: Badge Category & Duration */}
-        <div className="flex items-center justify-between">
-          <Badge
-            className={`border-0 rounded-full px-3 py-1 text-xs font-medium backdrop-blur-md ${
-              categoryColor[pkg.category] ?? "bg-white/20 text-white"
-            }`}
-          >
-            {t(`common.${pkg.category}`)}
-          </Badge>
+        {/* Header: Duration */}
+        <div className="flex items-center justify-end">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-black/30 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-md">
             <Clock className="h-3.5 w-3.5 text-white/80" />
             {pkg.duration}

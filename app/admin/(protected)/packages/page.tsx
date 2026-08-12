@@ -15,12 +15,6 @@ export const metadata = {
   title: "Paket Tour - Admin Destitour",
 };
 
-const categoryLabels: Record<string, string> = {
-  tour: "Tour",
-  transport: "Transport (legacy)",
-  hotel: "Hotel (legacy)",
-};
-
 export default async function AdminPackagesPage({
   searchParams,
 }: {
@@ -84,7 +78,6 @@ export default async function AdminPackagesPage({
                 <tr className="border-b border-secondary text-left text-muted-foreground">
                   <th className="p-4 font-medium">Paket</th>
                   <th className="p-4 font-medium">Kode</th>
-                  <th className="p-4 font-medium">Kategori</th>
                   <th className="p-4 font-medium">Durasi</th>
                   <th className="p-4 font-medium">Harga</th>
                   <th className="p-4 font-medium">Status</th>
@@ -115,9 +108,6 @@ export default async function AdminPackagesPage({
                       </div>
                     </td>
                     <td className="p-4 font-mono text-xs">{pkg.code}</td>
-                    <td className="p-4">
-                      {categoryLabels[pkg.category] ?? pkg.category}
-                    </td>
                     <td className="p-4">{pkg.duration || "-"}</td>
                     <td className="p-4 font-medium">{formatIDR(pkg.price)}</td>
                     <td className="p-4">
