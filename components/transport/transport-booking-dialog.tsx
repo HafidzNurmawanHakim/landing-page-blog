@@ -40,6 +40,7 @@ type SuccessBooking = {
   bookingCode: string;
   packageName: string;
   date: string;
+  vehicleQty: number;
   total: string;
 };
 
@@ -94,6 +95,9 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
 
     const extrasTotal = selectedExtras.reduce((sum, e) => sum + e.price, 0);
     const unitTotal = selectedPackage.price + extrasTotal;
+    const vehicleQty = watch("vehicleQty");
+    const estimatedQty = vehicleQty > 0 ? vehicleQty : 1;
+    const estimatedTotal = unitTotal * estimatedQty;
 
     function buildWhatsAppHref() {
       const v = getValues();
@@ -112,7 +116,7 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
       }
       lines.push(
         `• *${t("transport.estimatedTotal")}:* ${formatCurrency(
-          unitTotal * qty,
+          estimatedTotal,
           selectedPackage.currency
         )}`,
         `• *${t("transport.pickupDate")}:* ${formatDate(v.pickupDate)}`,
@@ -125,7 +129,7 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
         );
       }
       lines.push(
-        `• *${t("transport.vehicleQty")}:* ${v.vehicleQty}`,
+        `• *${t("transport.vehicleQty")}:* ${qty}`,
         `• *${t("booking.customerName")}:* ${v.customerName}`,
         `• *${t("booking.phone")}:* ${v.phone}`
       );
@@ -199,6 +203,7 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
           bookingCode: result.bookingCode,
           packageName: product.title,
           date: values.pickupDate,
+          vehicleQty: values.vehicleQty,
           total: formatCurrency(total, selectedPackage.currency),
         });
         setStep("success");
@@ -230,7 +235,7 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
                 </p>
                 <p className="mt-1 text-sm font-semibold text-foreground">
                   {t("transport.estimatedTotal")}:{" "}
-                  {formatCurrency(unitTotal, selectedPackage.currency)}
+                  {formatCurrency(estimatedTotal, selectedPackage.currency)}
                   {selectedPackage.durationHours
                     ? ` (${selectedPackage.durationHours}h)`
                     : ""}
@@ -541,6 +546,14 @@ export const TransportBookingDialog = forwardRef<ReusableModalRef, Props>(
                     </dt>
                     <dd className="font-medium">
                       {formatDate(successBooking.date)}
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <dt className="text-muted-foreground">
+                      {t("transport.vehicleQty")}
+                    </dt>
+                    <dd className="font-medium">
+                      {successBooking.vehicleQty}
                     </dd>
                   </div>
                   <div className="flex items-center justify-between gap-4">

@@ -2,8 +2,8 @@
 
 **Dokumentasi Utama**
 
-**Versi:** 1.6
-**Tanggal:** 11 Agustus 2026
+**Versi:** 1.7
+**Tanggal:** 12 Agustus 2026
 **Tech Stack:** Next.js 15 + Cloudflare Workers (OpenNext) + Cloudflare D1 + Drizzle ORM
 **Target Scale:** 1.000.000 request / bulan
 **Bahasa dokumen:** Bahasa Indonesia
@@ -35,6 +35,7 @@ Platform marketplace paket tour Batam. Customer bisa memilih paket (Tour, Transp
 | Testimoni (fitur)        | ✅ Carousel beranda dinamis (DB), komentar/role per bahasa, rating 0–5, CRUD admin `/admin/testimonials` |
 | Transport (produk)       | ✅ Produk mandiri (`/transport` + `/admin/transport`): 3 tabel, paket harga + biaya tambahan, multi-currency, booking polymorphic (`item_type` + `booking_options`) |
 | Blog (fitur)             | ✅ Database-driven CMS: TipTap editor (diadaptasi dari podzy-manager), kategori + tag, draft/publish/archive, SEO fields + JSON-LD BlogPosting, like & share per IP, rekomendasi berbasis tag, halaman `/blog` + `/blog/[slug]`, section blog di landing, CRUD admin `/admin/blogs` (+ `/categories`) |
+| Konfigurasi situs (fitur) | ✅ Persistent site config via database + UI admin `/admin/config`: kontak, WhatsApp admin, sosmed, alamat & jam operasional (per bahasa) — perubahan langsung diterapkan di seluruh situs tanpa deploy |
 
 Repo berisi **shadcn landing page template** (14 section) + **platform booking MVP** yang dibangun di atasnya mengikuti dokumen ini.
 
@@ -69,7 +70,8 @@ destitour/
 │   │   ├── packages/         # CRUD paket (list, new, [id]/edit)
 │   │   ├── gallery/          # CRUD galeri (list, new, [id]/edit)
 │   │   ├── testimonials/     # CRUD testimoni (list, new, [id]/edit)
-│   │   └── blogs/            # CRUD blog (list, new, [id]/edit) + categories/
+│   │   ├── blogs/            # CRUD blog (list, new, [id]/edit) + categories/
+│   │   └── config/           # Konfigurasi situs (kontak, WA, sosmed, alamat)
 │   └── api/
 │       ├── packages/         # GET /api/packages (+ filter category)
 │       ├── packages/[slug]/  # GET /api/packages/[slug]
@@ -162,6 +164,7 @@ npm run db:studio
 | 13  | [13-blog.md](./13-blog.md)                               | PRD Blog: TipTap JSON, R2, SEO, roadmap                                                |
 | 14  | [14-deployment.md](./14-deployment.md)                   | Panduan deploy ke Cloudflare: env, migration, verifikasi, rollback                     |
 | 15  | [15-transport-product.md](./15-transport-product.md)     | Produk transport/rental kendaraan: model data, schema, integrasi booking, roadmap     |
+| 16  | [16-admin-guide.md](./16-admin-guide.md)                 | Panduan non-teknis untuk owner: cara pakai semua fitur admin dashboard               |
 
 ---
 
@@ -254,6 +257,11 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 11 Agustus 2026 | **Pagination semua list admin**: component reusable `PaginationNav` (`components/ui/pagination-nav.tsx`), dipakai di bookings & blogs (refactor) + ditambahkan ke packages, transport, gallery, testimonials (sebelumnya fetch semua), clamp halaman out-of-range |
 | 11 Agustus 2026 | **Navbar fix semua device**: `components/layout/navbar.tsx` — tablet (md–lg) semua link navigasi dikelompokkan dalam satu popover "Menu", desktop (lg+) inline links + auto-collapse overflow (ResizeObserver) ke popover "Lainnya" (tidak pernah overflow), mobile hamburger sheet; popover sesuai design rules (`rounded-2xl`, borderless); key i18n `nav.menu`/`nav.more` 4 bahasa |
 | 11 Agustus 2026 | **Deploy staging**: export admin, pagination, navbar fix — tanpa migration baru (schema tidak berubah) |
+| 11 Agustus 2026 | **Logo baru + SEO**: ganti logo jadi `logo-destitour.webp` (tanpa teks, title "Destitour" di navbar/footer/email), OG image default `og-destitour.webp` di semua halaman publik, helper `lib/seo.ts` (`buildPageMetadata`), canonical + OG/twitter lengkap di home/packages/transport/blog/gallery/about, sitemap.xml, robots.ts reference sitemap |
+| 12 Agustus 2026 | **Deploy prod**: logo + SEO ke production (destitours.com), verifikasi canonical/OG/admin guard/upload/sitemap |
+| 12 Agustus 2026 | Docs: [16-admin-guide.md](./16-admin-guide.md) — panduan admin dashboard berbahasa Indonesia untuk owner non-teknis (login, booking, paket, transport, galeri, testimoni, blog, konfigurasi, export, cheat sheet harian) |
+| 12 Agustus 2026 | **Fix booking i18n + estimasi total transport**: nama paket/transport/extra di denormalisasi booking (`package_name`, `pricing_package_name`, extra charges) selalu di-simpan dalam Bahasa Indonesia (`DEFAULT_LOCALE`) terlepas dari locale UI tamu; "Estimasi Total" di form booking transport konsisten (header × qty kendaraan, sama dengan WhatsApp & success screen), success screen menampilkan jumlah kendaraan |
+| 12 Agustus 2026 | **Deploy staging + prod**: fix booking i18n & estimasi total transport ke staging (staging.destitours.com) & production (destitours.com), tanpa migration baru — verifikasi halaman publik 200, canonical, admin guard, upload locked, data D1 |
 
 ---
 

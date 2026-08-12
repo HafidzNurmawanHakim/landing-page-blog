@@ -102,15 +102,15 @@ export async function createBooking(
 
     itemType = "transport";
     itemCode = product.code;
-    itemName = pickLocale(product.title, locale);
+    itemName = pickLocale(product.title, DEFAULT_LOCALE);
     bookingOptions = {
       pricingPackageId: pricingPackage.id,
-      pricingPackageName: pickLocale(pricingPackage.name, locale),
+      pricingPackageName: pickLocale(pricingPackage.name, DEFAULT_LOCALE),
       price: pricingPackage.price,
       currency: pricingPackage.currency as BookingOptions["currency"],
       extraCharges: selectedExtras.map((e) => ({
         id: e.id,
-        name: pickLocale(e.name, locale),
+        name: pickLocale(e.name, DEFAULT_LOCALE),
         price: e.price,
         currency: e.currency as BookingOptions["currency"],
         unit: e.unit ?? undefined,
@@ -133,7 +133,7 @@ export async function createBooking(
     }
     itemType = data.itemType === "hotel" ? "hotel" : "tour";
     itemCode = pkg.code;
-    itemName = pickLocale(pkg.name, locale);
+    itemName = pickLocale(pkg.name, DEFAULT_LOCALE);
   }
 
   // 4. Persist booking (status pending)
