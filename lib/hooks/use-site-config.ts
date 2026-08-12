@@ -24,7 +24,10 @@ const DEFAULTS: PublicSiteConfig = {
       time: { ...siteConfig.contact.hours.time },
     },
   },
-  whatsapp: siteConfig.contact.whatsapp,
+  whatsappNumbers: siteConfig.whatsapp.numbers.map((w) => ({
+    label: w.label,
+    number: w.number,
+  })),
   social: siteConfig.social.map((s) => ({ label: s.label, href: s.href })),
 };
 
@@ -47,7 +50,13 @@ function mergeDefaults(
         time: { ...DEFAULTS.contact.hours.time, ...data.contact?.hours?.time },
       },
     },
-    whatsapp: data.whatsapp || DEFAULTS.whatsapp,
+    whatsappNumbers:
+      Array.isArray(data.whatsappNumbers) && data.whatsappNumbers.length > 0
+        ? data.whatsappNumbers.map((w) => ({
+            label: w.label || "",
+            number: w.number || "",
+          }))
+        : DEFAULTS.whatsappNumbers,
     social: Array.isArray(data.social) && data.social.length > 0
       ? data.social.map((s) => ({ label: s.label, href: s.href }))
       : DEFAULTS.social,

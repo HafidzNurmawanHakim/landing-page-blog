@@ -41,7 +41,7 @@ export async function updateSiteConfigAction(
       contactPhone: parsed.data.contactPhone,
       contactPhoneDisplay: parsed.data.contactPhoneDisplay,
       contactEmail: parsed.data.contactEmail,
-      whatsappNumber: parsed.data.whatsappNumber,
+      whatsappNumbers: parsed.data.whatsappNumbers,
       adminEmail: parsed.data.adminEmail,
       address: cleanLocalized(parsed.data.address),
       hoursWeekday: cleanLocalized(parsed.data.hoursWeekday),

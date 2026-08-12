@@ -2,6 +2,7 @@ import {
   siteConfig as defaults,
   type LocalizedText,
 } from "@/lib/config/site";
+import type { SiteConfigWhatsApp } from "@/lib/db/schema";
 import { env } from "@/lib/env";
 import { getSiteConfigRow } from "@/lib/db/repositories/site-config";
 import type { LocalizedString, Locale } from "@/lib/i18n/locales";
@@ -26,7 +27,7 @@ export type ResolvedSiteConfig = {
       time: LocalizedText;
     };
   };
-  whatsapp: string;
+  whatsappNumbers: SiteConfigWhatsApp[];
   adminEmail: string;
   social: { label: string; href: string }[];
 };
@@ -51,6 +52,53 @@ function pickLocalized(
   return out;
 }
 
+/**
+ * Parses the `whatsapp_number` column, which stores a JSON array of
+ * `{ label, number }`. Legacy rows (single plain number, pre-multi-number
+ * config) fall back to one entry with the default label.
+ */
+function parseWhatsAppNumbers(
+  raw: string | null | undefined
+): SiteConfigWhatsApp[] {
+  const value = raw?.trim();
+  if (value) {
+    if (value.startsWith("[")) {
+      try {
+        const parsed: unknown = JSON.parse(value);
+        if (Array.isArray(parsed)) {
+          const list = parsed
+            .filter(
+              (w): w is Record<string, unknown> =>
+                !!w &&
+                typeof w === "object" &&
+                typeof (w as Record<string, unknown>).number === "string" &&
+                ((w as Record<string, unknown>).number as string).trim().length >
+                  0
+            )
+            .map((w) => ({
+              label:
+                typeof w.label === "string" && w.label.trim()
+                  ? w.label.trim()
+                  : "",
+              number: (w.number as string).trim(),
+            }));
+          if (list.length > 0) return list;
+        }
+      } catch {
+        // Fall through to defaults below.
+      }
+    } else {
+      return [
+        {
+          label: defaults.whatsapp.numbers[0]?.label ?? "",
+          number: value,
+        },
+      ];
+    }
+  }
+  return defaults.whatsapp.numbers.map((w) => ({ ...w }));
+}
+
 export async function getSiteConfig(): Promise<ResolvedSiteConfig> {
   const row = await getSiteConfigRow();
 
@@ -70,7 +118,7 @@ export async function getSiteConfig(): Promise<ResolvedSiteConfig> {
         time: pickLocalized(row?.hoursTime, defaults.contact.hours.time),
       },
     },
-    whatsapp: pick(row?.whatsappNumber, defaults.contact.whatsapp),
+    whatsappNumbers: parseWhatsAppNumbers(row?.whatsappNumber),
     adminEmail: pick(row?.adminEmail, env.ADMIN_EMAIL),
     social,
   };

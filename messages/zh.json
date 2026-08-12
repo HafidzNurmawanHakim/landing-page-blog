@@ -334,6 +334,7 @@
   "wa": {
     "chat": "WhatsApp 聊天",
     "chatWithAdmin": "与管理員聊天",
+    "pickNumber": "选择号码",
     "bookingVia": "通过 WhatsApp 预订",
     "bookingIntro": "您好，巴淡之旅管理员！我想预订以下内容：",
     "bookingOutro": "请告知可用性和付款总额。谢谢！"

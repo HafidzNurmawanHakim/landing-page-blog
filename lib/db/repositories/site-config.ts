@@ -1,6 +1,10 @@
 import { eq } from "drizzle-orm";
 import { getDb } from "../client";
-import { siteConfigTable, type SiteConfigSocialLink } from "../schema";
+import {
+  siteConfigTable,
+  type SiteConfigSocialLink,
+  type SiteConfigWhatsApp,
+} from "../schema";
 import type { LocalizedString } from "@/lib/i18n/locales";
 
 /**
@@ -26,7 +30,7 @@ export type SiteConfigInput = {
   contactPhone?: string | null;
   contactPhoneDisplay?: string | null;
   contactEmail?: string | null;
-  whatsappNumber?: string | null;
+  whatsappNumbers?: SiteConfigWhatsApp[] | null;
   adminEmail?: string | null;
   address?: LocalizedString | null;
   hoursWeekday?: LocalizedString | null;
@@ -37,6 +41,24 @@ export type SiteConfigInput = {
 function toNull(value: string | null | undefined): string | null {
   const v = value?.trim();
   return v ? v : null;
+}
+
+/**
+ * The `whatsapp_number` column stores the list of WhatsApp contacts as JSON.
+ * Legacy rows may still hold a single plain number; `parseWhatsAppNumbers` in
+ * the service layer handles that fallback.
+ */
+function toWhatsAppNumbers(value: SiteConfigWhatsApp[] | null | undefined): string | null {
+  const list = Array.isArray(value)
+    ? value.filter((w) => w && w.number && w.number.trim())
+    : [];
+  if (list.length === 0) return null;
+  return JSON.stringify(
+    list.map((w) => ({
+      label: w.label?.trim() ?? "",
+      number: w.number.trim(),
+    }))
+  );
 }
 
 export async function upsertSiteConfig(
@@ -50,7 +72,7 @@ export async function upsertSiteConfig(
     contactPhone: toNull(data.contactPhone),
     contactPhoneDisplay: toNull(data.contactPhoneDisplay),
     contactEmail: toNull(data.contactEmail),
-    whatsappNumber: toNull(data.whatsappNumber),
+    whatsappNumber: toWhatsAppNumbers(data.whatsappNumbers),
     adminEmail: toNull(data.adminEmail),
     address: data.address ?? null,
     hoursWeekday: data.hoursWeekday ?? null,

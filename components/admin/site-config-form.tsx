@@ -57,7 +57,10 @@ export function SiteConfigForm({ config }: { config: ResolvedSiteConfig }) {
       contactPhone: config.contact.phone,
       contactPhoneDisplay: config.contact.phoneDisplay,
       contactEmail: config.contact.email,
-      whatsappNumber: config.whatsapp,
+      whatsappNumbers: config.whatsappNumbers.map((w) => ({
+        label: w.label,
+        number: w.number,
+      })),
       adminEmail: config.adminEmail,
       address: fillLocalized(config.contact.address),
       hoursWeekday: fillLocalized(config.contact.hours.weekday),
@@ -69,6 +72,11 @@ export function SiteConfigForm({ config }: { config: ResolvedSiteConfig }) {
   const { fields, append, remove } = useFieldArray({
     control,
     name: "social",
+  });
+
+  const waFields = useFieldArray({
+    control,
+    name: "whatsappNumbers",
   });
 
   async function onSubmit(values: SiteConfigFormValues) {
@@ -164,45 +172,104 @@ export function SiteConfigForm({ config }: { config: ResolvedSiteConfig }) {
 
       {/* WhatsApp & Notifikasi */}
       <section className="space-y-5">
-        <h2 className="text-lg font-semibold tracking-tight">
-          WhatsApp & Notifikasi Admin
-        </h2>
-        <div className="grid gap-5 sm:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="whatsappNumber">
-              Nomor WhatsApp admin <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="whatsappNumber"
-              placeholder="628194143343"
-              inputMode="numeric"
-              aria-invalid={!!errors.whatsappNumber}
-              className={cn("rounded-full", errors.whatsappNumber && "border-destructive")}
-              {...register("whatsappNumber")}
-            />
-            {errors.whatsappNumber && (
-              <p className="text-sm text-destructive">{errors.whatsappNumber.message}</p>
-            )}
-            <p className="text-xs text-muted-foreground">
-              Hanya angka, dengan kode negara, tanpa &quot;+&quot;.
-            </p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-lg font-semibold tracking-tight">
+            WhatsApp & Notifikasi Admin
+          </h2>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="rounded-full"
+            disabled={waFields.fields.length >= 5}
+            onClick={() => waFields.append({ label: "", number: "" })}
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Tambah Nomor
+          </Button>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Nomor WhatsApp admin. Bisa lebih dari satu untuk beda negara — isi
+          label dengan nama atau emoji bendera (contoh: 🇮🇩 atau 🇲🇾).
+        </p>
+        {waFields.fields.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            Belum ada nomor WhatsApp. Klik &quot;Tambah Nomor&quot;.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {waFields.fields.map((field, index) => (
+              <div
+                key={field.id}
+                className="grid grid-cols-[1fr_1.5fr_auto] items-start gap-3 rounded-3xl bg-secondary/50 p-4"
+              >
+                <div className="space-y-2">
+                  <Label htmlFor={`whatsappNumbers.${index}.label`}>Label</Label>
+                  <Input
+                    id={`whatsappNumbers.${index}.label`}
+                    placeholder="Indonesia / 🇮🇩"
+                    className="rounded-full"
+                    aria-invalid={!!errors.whatsappNumbers?.[index]?.label}
+                    {...register(`whatsappNumbers.${index}.label`)}
+                  />
+                  {errors.whatsappNumbers?.[index]?.label && (
+                    <p className="text-sm text-destructive">
+                      {errors.whatsappNumbers[index].label.message}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor={`whatsappNumbers.${index}.number`}>
+                    Nomor
+                  </Label>
+                  <Input
+                    id={`whatsappNumbers.${index}.number`}
+                    placeholder="628194143343"
+                    inputMode="numeric"
+                    className="rounded-full"
+                    aria-invalid={!!errors.whatsappNumbers?.[index]?.number}
+                    {...register(`whatsappNumbers.${index}.number`)}
+                  />
+                  {errors.whatsappNumbers?.[index]?.number && (
+                    <p className="text-sm text-destructive">
+                      {errors.whatsappNumbers[index].number.message}
+                    </p>
+                  )}
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="mt-7 rounded-full"
+                  onClick={() => waFields.remove(index)}
+                  aria-label="Hapus nomor WhatsApp"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="adminEmail">
-              Email admin (notifikasi booking) <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="adminEmail"
-              type="email"
-              placeholder="manager@destitours.com"
-              aria-invalid={!!errors.adminEmail}
-              className={cn("rounded-full", errors.adminEmail && "border-destructive")}
-              {...register("adminEmail")}
-            />
-            {errors.adminEmail && (
-              <p className="text-sm text-destructive">{errors.adminEmail.message}</p>
-            )}
-          </div>
+        )}
+        {errors.whatsappNumbers?.root && (
+          <p className="text-sm text-destructive">
+            {errors.whatsappNumbers.root.message}
+          </p>
+        )}
+        <div className="space-y-2">
+          <Label htmlFor="adminEmail">
+            Email admin (notifikasi booking) <span className="text-destructive">*</span>
+          </Label>
+          <Input
+            id="adminEmail"
+            type="email"
+            placeholder="manager@destitours.com"
+            aria-invalid={!!errors.adminEmail}
+            className={cn("rounded-full", errors.adminEmail && "border-destructive")}
+            {...register("adminEmail")}
+          />
+          {errors.adminEmail && (
+            <p className="text-sm text-destructive">{errors.adminEmail.message}</p>
+          )}
         </div>
       </section>
 

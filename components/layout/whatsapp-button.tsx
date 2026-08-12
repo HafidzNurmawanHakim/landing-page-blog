@@ -4,6 +4,11 @@ import Link from "next/link";
 import { useI18n } from "@/lib/i18n/provider";
 import { buildWhatsAppLink } from "@/lib/config/site";
 import { useSiteConfig } from "@/lib/hooks/use-site-config";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export function WhatsAppIcon({ className }: { className?: string }) {
   return (
@@ -18,22 +23,65 @@ export function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+const buttonClassName =
+  "fixed bottom-6 right-6 z-50 flex h-14 items-center gap-2 rounded-full bg-[#25D366] pl-4 pr-5 text-white shadow-lg shadow-[#25D366]/30 transition-all duration-200 hover:bg-[#1eb65c] hover:shadow-xl hover:shadow-[#25D366]/40";
+
 export function WhatsAppButton() {
   const { t, locale } = useI18n();
   const { config } = useSiteConfig();
+  const numbers = config.whatsappNumbers;
+
+  if (numbers.length <= 1) {
+    return (
+      <Link
+        href={buildWhatsAppLink(numbers[0]?.number ?? "", locale)}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={t("wa.chatWithAdmin")}
+        className={buttonClassName}
+      >
+        <WhatsAppIcon className="h-7 w-7" />
+        <span className="whitespace-nowrap text-sm font-semibold">
+          {t("wa.chat")}
+        </span>
+      </Link>
+    );
+  }
 
   return (
-    <Link
-      href={buildWhatsAppLink(config.whatsapp, locale)}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={t("wa.chatWithAdmin")}
-      className="fixed bottom-6 right-6 z-50 flex h-14 items-center gap-2 rounded-full bg-[#25D366] pl-4 pr-5 text-white shadow-lg shadow-[#25D366]/30 transition-all duration-200 hover:bg-[#1eb65c] hover:shadow-xl hover:shadow-[#25D366]/40"
-    >
-      <WhatsAppIcon className="h-7 w-7" />
-      <span className="whitespace-nowrap text-sm font-semibold">
-        {t("wa.chat")}
-      </span>
-    </Link>
+    <Popover>
+      <PopoverTrigger
+        aria-label={t("wa.chatWithAdmin")}
+        className={buttonClassName}
+      >
+        <WhatsAppIcon className="h-7 w-7" />
+        <span className="whitespace-nowrap text-sm font-semibold">
+          {t("wa.chat")}
+        </span>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        side="top"
+        className="w-64 rounded-2xl p-2"
+      >
+        <p className="px-3 pb-1 pt-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+          {t("wa.pickNumber")}
+        </p>
+        <div className="space-y-1">
+          {numbers.map((item, index) => (
+            <Link
+              key={`${item.number}-${index}`}
+              href={buildWhatsAppLink(item.number, locale)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-secondary"
+            >
+              <span className="font-semibold">{item.label}</span>
+              <span className="text-muted-foreground">{item.number}</span>
+            </Link>
+          ))}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }

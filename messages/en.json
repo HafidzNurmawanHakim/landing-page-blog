@@ -334,6 +334,7 @@
   "wa": {
     "chat": "Chat on WhatsApp",
     "chatWithAdmin": "Chat with our admin",
+    "pickNumber": "Pick a number",
     "bookingVia": "Book via WhatsApp",
     "bookingIntro": "Hello Destitour Admin! I would like to book the following:",
     "bookingOutro": "Please let me know availability and the total payment. Thank you!"

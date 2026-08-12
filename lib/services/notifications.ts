@@ -422,7 +422,7 @@ async function buildCustomerEmail(
     ${booking.notes ? summaryRow(T.notes, escapeHtml(booking.notes)) : ""}`;
 
   const waLink = buildWhatsAppLink(
-    cfg.whatsapp,
+    cfg.whatsappNumbers[0]?.number ?? "",
     (booking.locale as Locale) ?? DEFAULT_LOCALE,
   );
 

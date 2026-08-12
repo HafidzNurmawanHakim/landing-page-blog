@@ -65,6 +65,12 @@ export type SiteConfigSocialLink = {
   href: string;
 };
 
+/** A WhatsApp contact (label + number) stored on site_config.whatsapp_number. */
+export type SiteConfigWhatsApp = {
+  label: string;
+  number: string;
+};
+
 /**
  * Single-row (id = 1) runtime site configuration. Source of truth for
  * contact info, social links, WhatsApp admin number and the notification

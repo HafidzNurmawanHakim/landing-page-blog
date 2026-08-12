@@ -21,6 +21,20 @@ const socialItemSchema = z.object({
     .refine((v) => /^https?:\/\//.test(v), "URL harus dimulai http(s)://"),
 });
 
+const whatsappItemSchema = z.object({
+  label: z
+    .string()
+    .trim()
+    .min(1, "Label WhatsApp wajib diisi")
+    .max(40, "Label maksimal 40 karakter"),
+  number: z
+    .string()
+    .trim()
+    .min(1, "Nomor WhatsApp wajib diisi")
+    .max(20, "Maksimal 20 karakter")
+    .regex(/^\d+$/, "Nomor WhatsApp hanya angka (kode negara tanpa +)"),
+});
+
 export const siteConfigSchema = z.object({
   contactPhone: z
     .string()
@@ -37,12 +51,10 @@ export const siteConfigSchema = z.object({
     .trim()
     .email("Email kontak tidak valid")
     .max(200, "Maksimal 200 karakter"),
-  whatsappNumber: z
-    .string()
-    .trim()
-    .min(1, "Nomor WhatsApp wajib diisi")
-    .max(20, "Maksimal 20 karakter")
-    .regex(/^\d+$/, "Nomor WhatsApp hanya angka (kode negara tanpa +)"),
+  whatsappNumbers: z
+    .array(whatsappItemSchema)
+    .min(1, "Minimal 1 nomor WhatsApp")
+    .max(5, "Maksimal 5 nomor WhatsApp"),
   adminEmail: z
     .string()
     .trim()

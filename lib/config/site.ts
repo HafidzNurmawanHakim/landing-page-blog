@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n/locales";
+import type { SiteConfigWhatsApp } from "@/lib/db/schema";
 
 /**
  * Site-wide configuration. All public website data — SEO, contact, WhatsApp,
@@ -122,7 +123,6 @@ export const siteConfig = {
   contact: {
     phoneDisplay: "+62 819 4143 433",
     phone: "+628194143343",
-    whatsapp: "628194143343",
     email: "halo@destitours.com",
     address: {
       id: "Batam Center, Batam, Kepulauan Riau",
@@ -154,6 +154,9 @@ export const siteConfig = {
   ] satisfies SocialLink[],
 
   whatsapp: {
+    numbers: [
+      { label: "Indonesia", number: "628194143343" },
+    ] satisfies SiteConfigWhatsApp[],
     defaultMessage: {
       id: "Halo Destitour, saya ingin bertanya tentang paket wisata.",
       en: "Hello Destitour, I would like to ask about tour packages.",
@@ -227,5 +230,10 @@ export function buildWhatsAppLink(
 }
 
 export function getWhatsAppLink(locale: Locale, message?: string) {
-  return buildWhatsAppLink(siteConfig.contact.whatsapp, locale, message);
+  const primary = siteConfig.whatsapp.numbers[0];
+  return buildWhatsAppLink(primary?.number ?? "", locale, message);
+}
+
+export function getPrimaryWhatsAppNumber(): string {
+  return siteConfig.whatsapp.numbers[0]?.number ?? "";
 }
