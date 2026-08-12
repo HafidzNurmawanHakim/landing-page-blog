@@ -2,7 +2,7 @@
 
 **Dokumentasi Utama**
 
-**Versi:** 1.7
+**Versi:** 1.8
 **Tanggal:** 12 Agustus 2026
 **Tech Stack:** Next.js 15 + Cloudflare Workers (OpenNext) + Cloudflare D1 + Drizzle ORM
 **Target Scale:** 1.000.000 request / bulan
@@ -165,6 +165,7 @@ npm run db:studio
 | 14  | [14-deployment.md](./14-deployment.md)                   | Panduan deploy ke Cloudflare: env, migration, verifikasi, rollback                     |
 | 15  | [15-transport-product.md](./15-transport-product.md)     | Produk transport/rental kendaraan: model data, schema, integrasi booking, roadmap     |
 | 16  | [16-admin-guide.md](./16-admin-guide.md)                 | Panduan non-teknis untuk owner: cara pakai semua fitur admin dashboard               |
+| 17  | [17-infrastructure.md](./17-infrastructure.md)           | Infrastruktur lengkap: arsitektur Workers/D1/R2/Resend, domain Hostinger+Cloudflare, env, backup, cost, skalabilitas |
 
 ---
 
@@ -264,6 +265,7 @@ Dokumen ini adalah **living document**. Ikuti aturan berikut saat mengupdate:
 | 12 Agustus 2026 | **Deploy staging + prod**: fix booking i18n & estimasi total transport ke staging (staging.destitours.com) & production (destitours.com), tanpa migration baru — verifikasi halaman publik 200, canonical, admin guard, upload locked, data D1 |
 | 12 Agustus 2026 | **Hapus kategori dari paket tour**: kolom `category` di `packages` di-drop (migration `0012_slow_scalphunter`) — transport & hotel punya modul sendiri, katalog `/packages` tour-only. Seed & DB dibersihkan dari baris legacy `transport`/`hotel`, field kategori dihapus dari form & tabel admin, filter kategori publik dihapus (category-filter.tsx), API tanpa param `category`, footer tanpa link hotel, key i18n `common.tour/hotel` + `footer.hotel` dihapus, export paket tanpa kolom Kategori, docs disinkronkan |
 | 12 Agustus 2026 | **Deploy staging + prod (hapus kategori)**: migration `0012` di-sync ke `migrations/` + apply ke D1 staging & prod. Deploy `destitour-staging` & `destitour`. Verifikasi curl staging & prod: halaman publik 200, canonical benar, guard admin redirect login, upload 401, API tanpa `category`, data tour tampil. Catatan: **D1 prod katalog kosong** (0 paket/transport/galeri/testimoni; hanya admin + site_config) — tidak di-seed atas permintaan user, staging penuh. |
+| 12 Agustus 2026 | Docs: [17-infrastructure.md](./17-infrastructure.md) — dokumen infrastruktur lengkap as-is: satu kodebase Next.js (frontend+backend), deploy Cloudflare Workers via OpenNext, D1 (prod+staging) + R2 (S3-compatible) + Resend, WhatsApp via wa.me (tanpa API), domain Hostinger→nameserver Cloudflare, env/secrets, alur data, backup/DR, cost ≤$15/bln, skalabilitas, troubleshooting |
 
 ---
 
